@@ -1,34 +1,21 @@
 const express = require('express');
-const cors = require('cors');
-require('dotenv').config();
-const { sequelize } = require('./models'); // Import sequelize from models
+const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
-
-const app = express();
+const authRoutes = require('./routes/authRoutes');
 const PORT = process.env.PORT || 8080;
 
-app.use(cors());
+dotenv.config();
 
-// Middleware to parse JSON bodies
+const app = express();
 app.use(bodyParser.json());
 
-// Import routes
-const userRoutes = require('./routes/register'); // Adjust route if necessary
-app.use('/api/users', userRoutes);
-
-// Basic route handler for GET /
+// Test route to see if server is receiving requests
 app.get('/', (req, res) => {
-    res.send('Welcome to the API!');
-});
+    res.send('Server is working!');
+  });
 
-// Start server
-app.listen(PORT, async () => {
-    console.log(`Server running on port ${PORT}`);
-    try {
-        // Sync the database with Sequelize
-        await sequelize.sync({ force: false }); // Avoid using 'force: true' in production
-        console.log('Database connected');
-    } catch (error) {
-        console.error('Database connection error:', error);
-    }
+app.use('/api', authRoutes);
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
