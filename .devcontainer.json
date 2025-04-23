@@ -1,64 +1,60 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
 {
 	"name": "Web & Database Computing",
 	"image": "ghcr.io/uadelaide/wdc23:latest",
 
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
+	// Mount Docker socket to access Docker from within the container
+	"mounts": [
+	  "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+	],
 
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// Forward port 8080 inside the container to the host
 	"forwardPorts": [8080],
 
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "uname -a",
-
-	// Configure tool-specific properties.
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"html-validate.vscode-html-validate",
-				"dbaeumer.vscode-eslint",
-				"vsls-contrib.gitdoc",
-				"ms-vsliveshare.vsliveshare-pack",
-				"tonybaloney.vscode-pets",
-				"unjinjang.rest-api-client"
-			]
-		}
-	},
-
-	// Force AMD64 architecture
-	"runArgs": ["--platform=linux/amd64" ],
-
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	// Run the container as root
 	"remoteUser": "root",
 
-	// Default settings
-	"settings": {
-		"extension-uninstaller.uninstall": [
-		  "github.copilot",
-		  "github.copilot-nightly",
-		  "tabnine.tabnine-vscode",
-		  "timkmecl.chatgpt"
-		],
-		"extensions.ignoreRecommendations": true,
-		"files.autoSave": "afterDelay",
-		"files.exclude": {
-		  "**/.*": true
-		},
-		"files.trimTrailingWhitespace": true,
-		"files.watcherExclude": {
-		  "**/.git/objects/**": true,
-		  "**/.git/subtree-cache/**": true,
-		  "**/node_modules/*/**": true
-		},
-		"git.autofetch": true,
-		"gitdoc.autoPull": "off",
-		"gitdoc.commitMessageFormat": "DD, TTT",
-		"gitdoc.commitValidationLevel": "none",
-		"gitdoc.enabled": false,
-		"gitdoc.pullOnOpen": false,
-		"terminal.integrated.defaultProfile.linux": "bash"
-	}
+	// VS Code customizations
+	"customizations": {
+	  "vscode": {
+		"extensions": [
+		  "html-validate.vscode-html-validate",
+		  "dbaeumer.vscode-eslint",
+		  "vsls-contrib.gitdoc",
+		  "ms-vsliveshare.vsliveshare-pack",
+		  "tonybaloney.vscode-pets",
+		  "unjinjang.rest-api-client"
+		]
+	  }
+	},
 
-}
+	// Force AMD64 architecture for the image
+	"runArgs": ["--platform=linux/amd64"],
+
+	// VS Code settings
+	"settings": {
+	  "extension-uninstaller.uninstall": [
+		"github.copilot",
+		"github.copilot-nightly",
+		"tabnine.tabnine-vscode",
+		"timkmecl.chatgpt"
+	  ],
+	  "extensions.ignoreRecommendations": true,
+	  "files.autoSave": "afterDelay",
+	  "files.exclude": {
+		"**/.*": true
+	  },
+	  "files.trimTrailingWhitespace": true,
+	  "files.watcherExclude": {
+		"**/.git/objects/**": true,
+		"**/.git/subtree-cache/**": true,
+		"**/node_modules/*/**": true
+	  },
+	  "git.autofetch": true,
+	  "gitdoc.autoPull": "off",
+	  "gitdoc.commitMessageFormat": "DD, TTT",
+	  "gitdoc.commitValidationLevel": "none",
+	  "gitdoc.enabled": false,
+	  "gitdoc.pullOnOpen": false,
+	  "terminal.integrated.defaultProfile.linux": "bash"
+	}
+  }
