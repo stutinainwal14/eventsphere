@@ -1,10 +1,10 @@
 // src/routes/authRoutes.js
 
-const bcrypt   = require('bcryptjs');
+const bcrypt = require('bcryptjs');
 
-const jwt      = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
-const db       = require('../config/db');
+const db = require('../config/db');
 
 const { publish } = require('../kafka/producer');
 
@@ -80,7 +80,8 @@ exports.signup = async (req, res) => {
 
         newUser.preferences = JSON.parse(newUser.preferences);
 
-      } catch {
+      }
+      catch (err) {
 
         newUser.preferences = {};
 
