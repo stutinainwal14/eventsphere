@@ -21,12 +21,20 @@ app.get('/', (req, res) => {
 app.use('/api', authRoutes);
 app.use('/api/events', authMiddleware, eventRoutes);
 
-app.get('/search-events', async (req, res) => {
+app.get('/search-events', authMiddleware, async (req, res) => {
   try {
+    const now = new Date();
+    const startDateKey = req.query.startDate || now.toISOString();
+    // Set default endDate to 7 days from now if not provided
+    const defaultEnd = new Date();
+    defaultEnd.setDate(now.getDate() + 7);
+    const endDateKey = req.query.endDate || defaultEnd.toISOString();
+
     const events = await searchEvents({
       location: req.query.location || 'Sydney',
-      keyword: req.query.keyword || '',
-      startDate: req.query.startDate,
+      eventType: req.query.keyword || '',
+      startDate: startDateKey,
+      endDate: endDateKey
     });
     res.json(events);
   } catch (err) {
@@ -36,8 +44,6 @@ app.get('/search-events', async (req, res) => {
 });
 
 const start = async () => {
-  //await publish();
-  //await initConsumer();
 
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

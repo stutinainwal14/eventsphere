@@ -22,4 +22,17 @@ const searchEvents = async ({ location, keyword, startDate }) => {
   }
 };
 
-module.exports = { searchEvents };
+const getEventDetails = async (id) => {
+  try {
+    const response = await axios.get(`${API_BASE}/events/${id}.json`, {
+      params: { apikey: API_KEY },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching event details:', error.message);
+    throw new Error('Failed to fetch event details');
+  }
+};
+
+
+module.exports = { searchEvents, getEventDetails };
