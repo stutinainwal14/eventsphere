@@ -1,6 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const authRoutes = require('./routes');
+const authRoutes = require('./routes/authRoutes');
 //const initConsumer = require('./kafka/consumer');
 const { publish } = require('./kafka/producer');
 const authMiddleware = require('./middleware/authMiddleware');
@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
     res.send('Server is working!');
   });
 
-app.use('/api', authRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/events', authMiddleware, eventRoutes);
 
 app.get('/search-events', authMiddleware, async (req, res) => {

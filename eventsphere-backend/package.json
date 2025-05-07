@@ -22,8 +22,10 @@
     "kafkajs": "^2.2.4",
     "mysql2": "^3.14.0",
     "oauth-1.0a": "^2.2.6",
+    "qrcode": "^1.5.4",
     "sequelize": "^6.37.7",
-    "sequelize-cli": "^6.6.2"
+    "sequelize-cli": "^6.6.2",
+    "speakeasy": "^2.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
