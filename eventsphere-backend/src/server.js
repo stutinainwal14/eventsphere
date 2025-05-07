@@ -31,10 +31,34 @@ app.get('/search-events', authMiddleware, async (req, res) => {
     const endDateKey = req.query.endDate || defaultEnd.toISOString();
 
     const events = await searchEvents({
-      location: req.query.location || 'Sydney',
+      location: req.query.location || '',
       eventType: req.query.keyword || '',
       startDate: startDateKey,
-      endDate: endDateKey
+      endDate: endDateKey,
+      sort :req.query.sort || '',
+      countryCode : req.query.countryCode || 'AU'
+    });
+    res.json(events);
+  } catch (err) {
+    console.error('Error fetching events:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/trending-events', async (req, res) => {
+  try {
+    const now = new Date();
+    const startDateKey = req.query.startDate || now.toISOString();
+    // Set default endDate to 7 days from now if not provided
+    const defaultEnd = new Date();
+    defaultEnd.setDate(now.getDate() + 7);
+    const endDateKey = req.query.endDate || defaultEnd.toISOString();
+
+    const events = await searchEvents({
+      startDate: startDateKey,
+      endDate: endDateKey,
+      sort :req.query.sort || '',
+      countryCode : req.query.countryCode || 'AU'
     });
     res.json(events);
   } catch (err) {
