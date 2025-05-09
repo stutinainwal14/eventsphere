@@ -4,13 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EventSphere</title>
-    <!-- Poppins Font -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
 
     <!-- Font Awesome for icons -->
+    <script
+      src="https://kit.fontawesome.com/d62bd036de.js"
+      crossorigin="anonymous"
+    ></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -19,9 +18,16 @@
       referrerpolicy="no-referrer"
     />
 
+    <!-- Poppins Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
     <!-- CSS -->
     <link rel="stylesheet" href="css/style.css" />
   </head>
+
   <body>
     <header class="navbar">
       <div class="logo">
@@ -38,12 +44,56 @@
       </nav>
 
       <div class="nav-right">
-        <button class="theme-toggle">
-          <i class="fa-solid fa-moon"></i> Dark
-        </button>
+        <button class="theme-toggle"><i class="fa fa-moon"></i> Dark</button>
         <button class="login-btn">Login</button>
       </div>
     </header>
+    <div class="homepage-section">
+      <main>
+        <section class="hero">
+          <button class="explore-btn">
+            🥤 <i class="fas fa-arrow-right"></i> Explore - Enjoy
+            <i class="fas fa-arrow-right"></i> 🍭
+          </button>
+
+          <h1 class="hero-heading">
+            <span class="highlight">Event Sphere</span><br />
+            One Platform. Endless Experiences!
+          </h1>
+
+          <p class="description">
+            Discover local events in real time, personalise your picks,<br />
+            and organise them seamlessly in one minimalist hub.
+          </p>
+
+          <button class="cta-btn">
+            Get Started <i class="fas fa-arrow-right"></i>
+          </button>
+
+          <p class="sub-note">
+            🔎 Find, save, share unforgettable experiences 🎉
+          </p>
+        </section>
+        <section class="categories">
+          <ul class="category-list">
+            <li>CONCERTS</li>
+            <li>FESTIVALS</li>
+            <li>EXHIBITIONS</li>
+            <li>PARADE</li>
+            <li>TOURNAMENT</li>
+          </ul>
+        </section>
+        <section class="image-strip">
+          <img src="assets/images/img-1.png" class="img-1" alt="Concert" />
+          <img src="assets/images/img-2.png" class="img-2" alt="Festival" />
+          <img src="assets/images/img-3.png" class="img-3" alt="Exhibition" />
+          <img src="assets/images/img-4.png" class="img-4" alt="Parade" />
+          <img src="assets/images/img-5.png" class="img-5" alt="Tournament" />
+          <img src="assets/images/img-6.png" class="img-6" alt="Cheers" />
+        </section>
+      </main>
+    </div>
+
     <script src="js/script.js"></script>
   </body>
 </html>
