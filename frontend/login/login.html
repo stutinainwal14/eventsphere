@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Sphere - Login</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="login.css">
+</head>
+
+<body>
+    <div class="left-illustration">
+        <!-- Illustration if necessary -->
+    </div>
+
+    <div class="login-container">
+        <div class="login-header">
+            <h4>Welcome to Event Sphere</h4>
+            <h1>Login</h1>
+        </div>
+
+        <div class="alert alert-danger" id="error-alert"></div>
+        <div class="alert alert-success" id="success-alert"></div>
+
+        <form id="login-form">
+            <div class="input-group">
+                <label for="username">Enter your username or email address</label>
+                <input type="text" id="username" name="username" placeholder="Username or email address" required>
+            </div>
+
+            <div class="input-group">
+                <label for="password">Enter your Password</label>
+                <div class="password-field">
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                    <span class="password-toggle" id="password-toggle">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
+            </div>
+
+            <div class="forgot-password">
+                <a href="#">Forgot Password</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="login-btn">
+                Sign in
+                <span class="loading-spinner" id="login-spinner"></span>
+            </button>
+        </form>
+
+        <div class="login-footer">
+            <div class="signup-link">
+                No Account ? <a href="#">Sign up</a>
+            </div>
+        </div>
+
+        <div class="divider">
+            <span>OR</span>
+        </div>
+
+        <button type="button" class="google-btn" id="google-login">
+            <i class="fab fa-google"></i>
+            <span>Sign in with Google</span>
+        </button>
+
+        <div class="social-login">
+            <div class="social-btn facebook-btn" id="facebook-login">
+                <i class="fab fa-facebook-f"></i>
+            </div>
+            <div class="social-btn apple-btn" id="apple-login">
+                <i class="fab fa-apple"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="right-illustration">
+        <!-- Illustration if neccessary-->
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash/4.17.21/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.7/dayjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="login.js"></script>
+</body>
+
+</html>
