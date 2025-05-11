@@ -35,23 +35,40 @@
           <span>Event Sphere</span>
         </div>
       
-        <nav class="nav-center">
-          <div class="nav-links">
-            <a href="#" class="active">Home</a>
-            <a href="#">Events</a>
-            <a href="#">Ask AI</a>
-            <a href="#">FAQs</a>
-            <a href="#">Contact</a>
-          </div>
-        </nav>
+        <!-- Hamburger icon -->
+        <div class="hamburger" onclick="toggleMenu()">
+          <i class="fas fa-bars"></i>
+        </div>
       
-        <div class="nav-right">
+        <!-- Navigation links + theme + login inside one mobile-menu container -->
+        <nav class="nav-center mobile-menu">
+            <div class="nav-links">
+              <a href="#" class="active">Home</a>
+              <a href="#">Events</a>
+              <a href="#">Ask AI</a>
+              <a href="#">FAQs</a>
+              <a href="#">Contact</a>
+          
+              <div class="mobile-controls">
+                <button class="theme-toggle">
+                  <i class="fa fa-moon"></i> Dark
+                </button>
+                <button class="login-btn">Login</button>
+              </div>
+            </div>
+          </nav>
+          
+      
+        <!-- Desktop only right controls -->
+        <div class="nav-right desktop-only">
           <button class="theme-toggle">
             <i class="fa fa-moon"></i> Dark
           </button>
           <button class="login-btn">Login</button>
         </div>
       </header>
+      
+      
     <div class="homepage-section">
       <main>
         <section class="hero">
