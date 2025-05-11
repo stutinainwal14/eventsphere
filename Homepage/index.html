@@ -30,24 +30,45 @@
 
   <body>
     <header class="navbar">
-      <div class="logo">
-        <img src="assets/icons/logo.svg" alt="Event Sphere Logo" />
-        <span>Event Sphere</span>
-      </div>
-
-      <nav class="nav-links">
-        <a href="#" class="active">Home</a>
-        <a href="#">Events</a>
-        <a href="#">Ask AI</a>
-        <a href="#">FAQs</a>
-        <a href="#">Contact</a>
-      </nav>
-
-      <div class="nav-right">
-        <button class="theme-toggle"><i class="fa fa-moon"></i> Dark</button>
-        <button class="login-btn">Login</button>
-      </div>
-    </header>
+        <div class="logo">
+          <img src="assets/icons/logo.svg" alt="Event Sphere Logo" />
+          <span>Event Sphere</span>
+        </div>
+      
+        <!-- Hamburger icon -->
+        <div class="hamburger" onclick="toggleMenu()">
+          <i class="fas fa-bars"></i>
+        </div>
+      
+        <!-- Navigation links + theme + login inside one mobile-menu container -->
+        <nav class="nav-center mobile-menu">
+            <div class="nav-links">
+              <a href="#" class="active">Home</a>
+              <a href="#">Events</a>
+              <a href="#">Ask AI</a>
+              <a href="#">FAQs</a>
+              <a href="#">Contact</a>
+          
+              <div class="mobile-controls">
+                <button class="theme-toggle">
+                  <i class="fa fa-moon"></i> Dark
+                </button>
+                <button class="login-btn">Login</button>
+              </div>
+            </div>
+          </nav>
+          
+      
+        <!-- Desktop only right controls -->
+        <div class="nav-right desktop-only">
+          <button class="theme-toggle">
+            <i class="fa fa-moon"></i> Dark
+          </button>
+          <button class="login-btn">Login</button>
+        </div>
+      </header>
+      
+      
     <div class="homepage-section">
       <main>
         <section class="hero">
@@ -91,8 +112,131 @@
           <img src="assets/images/img-5.png" class="img-5" alt="Tournament" />
           <img src="assets/images/img-6.png" class="img-6" alt="Cheers" />
         </section>
+     
+          
       </main>
     </div>
+    <section class="popular-events">
+        <h2>Popular Events</h2>
+        <p class="subtitle">
+          <i class="fas fa-search"></i> Discover events happening around you right now 🎉
+        </p>
+      
+        <div class="card-row">
+          <!-- Card 1: Red -->
+          <div class="event-card red">
+            <img src="assets/images/event.png" alt="Event Image" class="event-image" />
+            <div class="card-content">
+              <p class="location"><i class="fas fa-map-marker-alt"></i> Adelaide, Australia</p>
+              <h3 class="event-title">Lady Gaga Australia Tour</h3>
+              <p class="date">
+                <i class="fas fa-calendar-alt"></i> 24 May 2025
+                <span class="platform">EventBrite</span>
+              </p>
+              <div class="card-buttons">
+                <button class="bookmark"><i class="fas fa-bookmark"></i> BookMark</button>
+                <button class="start">Get Started <i class="fas fa-arrow-right"></i></button>
+              </div>
+            </div>
+          </div>
+      
+          <!-- Card 2: Blue -->
+          <div class="event-card blue">
+            <img src="assets/images/event.png" alt="Event Image" class="event-image" />
+            <div class="card-content">
+              <p class="location"><i class="fas fa-map-marker-alt"></i> Adelaide, Australia</p>
+              <h3 class="event-title">Lady Gaga Australia Tour</h3>
+              <p class="date">
+                <i class="fas fa-calendar-alt"></i> 24 May 2025
+                <span class="platform">EventBrite</span>
+              </p>
+              <div class="card-buttons">
+                <button class="bookmark"><i class="fas fa-bookmark"></i> BookMark</button>
+                <button class="start">Get Started <i class="fas fa-arrow-right"></i></button>
+              </div>
+            </div>
+          </div>
+      
+          <!-- Card 3: Green -->
+          <div class="event-card green">
+            <img src="assets/images/event.png" alt="Event Image" class="event-image" />
+            <div class="card-content">
+              <p class="location"><i class="fas fa-map-marker-alt"></i> Adelaide, Australia</p>
+              <h3 class="event-title">Lady Gaga Australia Tour</h3>
+              <p class="date">
+                <i class="fas fa-calendar-alt"></i>24 May 2025
+                <span class="platform">EventBrite</span>
+              </p>
+              <div class="card-buttons">
+                <button class="bookmark"><i class="fas fa-bookmark"></i> BookMark</button>
+                <button class="start">Get Started <i class="fas fa-arrow-right"></i></button>
+              </div>
+            </div>
+          </div>
+      
+          <!-- Card 4: Pink -->
+          <div class="event-card pink">
+            <img src="assets/images/event.png" alt="Event Image" class="event-image" />
+            <div class="card-content">
+              <p class="location"><i class="fas fa-map-marker-alt"></i> Adelaide, Australia</p>
+              <h3 class="event-title">Lady Gaga Australia Tour</h3>
+              <p class="date">
+                <i class="fas fa-calendar-alt"></i> 24 May 2025
+                <span class="platform">EventBrite</span>
+              </p>
+              <div class="card-buttons">
+                <button class="bookmark"><i class="fas fa-bookmark"></i> BookMark</button>
+                <button class="start">Get Started <i class="fas fa-arrow-right"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <div class="footer-main">
+            <div class="footer-container">
+
+          <div class="footer-left">
+            <div class="footer-logo">
+              <img src="assets/icons/logo.svg" alt="Logo" />
+              <span>Event Sphere</span>
+            </div>
+            <p>Log in to personalise your experience<br />and save bookmarks & events.</p>
+            <button class="footer-login">Login</button>
+          </div>
+      
+          <div class="footer-links">
+            <div class="footer-column">
+              <p>Home</p>
+              <p>Events</p>
+              <p>Bookmarks</p>
+            </div>
+            <div class="footer-column">
+              <p>Popular Concerts</p>
+              <p>Ask AI</p>
+              <p>Lorem Ipsum</p>
+            </div>
+            <div class="footer-column">
+              <p>Socials</p>
+              <div class="social-icons">
+                <i class="fab fa-facebook-f"></i>
+                <i class="fab fa-instagram"></i>
+                <i class="fab fa-youtube"></i>
+                <i class="fab fa-twitter"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+      
+        <div class="footer-bottom">
+          <p>@ Made by Group 4 WDC - 2025</p>
+        </div>
+      </footer>
+      
+      
+    
 
     <script src="js/script.js"></script>
   </body>
