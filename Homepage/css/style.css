@@ -619,6 +619,7 @@ body {
   }
 
   .mobile-controls {
+    
     margin-top: 2rem;
     display: flex;
     flex-direction: column;
@@ -641,5 +642,12 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 1.2rem;
+  }
+}
+
+/* Hide mobile controls on larger screens */
+@media (min-width: 769px) {
+  .mobile-controls {
+    display: none !important;
   }
 }
