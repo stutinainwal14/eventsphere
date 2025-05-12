@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Sphere - User Dashboard</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="dashboard.css">
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Event Sphere</h2>
+        </div>
+        <div class="sidebar-menu">
+            <a href="#" class="menu-item active">
+                <i class="fas fa-tachometer-alt"></i>
+                Dashboard
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-calendar-alt"></i>
+                My Events
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-ticket-alt"></i>
+                My Tickets
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-heart"></i>
+                Favorites
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-cog"></i>
+                Settings
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-question-circle"></i>
+                Help Center
+            </a>
+            <a href="#" class="menu-item logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+        <div class="dashboard-header">
+            <div class="left-section">
+                <button class="hamburger" id="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="welcome-text">
+                    <h1>My Profile</h1>
+                    <p>Manage your personal information and account settings</p>
+                </div>
+            </div>
+            <div class="user-actions">
+                <div class="notification-bell">
+                    <i class="fas fa-bell"></i>
+                    <div class="notification-count">3</div>
+                </div>
+                <div class="user-profile" id="user-profile-dropdown">
+                    <div class="user-avatar">
+                        <img src="/api/placeholder/200/200" alt="User Avatar" id="nav-user-avatar">
+                    </div>
+                    <div class="user-name" id="nav-user-name">John Doe</div>
+                    <i class="fas fa-chevron-down" style="margin-left: 10px;"></i>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-user"></i>
+                            My Profile
+                        </a>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-cog"></i>
+                            Settings
+                        </a>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Section -->
+        <div class="content-card">
+            <div class="profile-tabs">
+                <div class="profile-tab active" data-tab="personal-info">Personal Information</div>
+                <div class="profile-tab" data-tab="change-password">Change Password</div>
+                <div class="profile-tab" data-tab="notification-settings">Notification Settings</div>
+            </div>
+
+            <!-- Personal Information Tab -->
+            <div class="tab-content active" id="personal-info">
+                <div class="alert alert-success" id="info-success-alert"></div>
+                <div class="alert alert-danger" id="info-error-alert"></div>
+
+                <div class="profile-info">
+                    <div class="profile-avatar">
+                        <img src="/api/placeholder/200/200" alt="User Profile" id="profile-avatar-img">
+                        <label class="avatar-upload">
+                            <input type="file" id="avatar-upload-input" accept="image/*">
+                            <i class="fas fa-camera"></i> Change
+                        </label>
+                    </div>
+                    <div class="profile-details">
+                        <h2 id="profile-name">John Doe</h2>
+                        <p id="profile-username">@johndoe</p>
+                        <p id="profile-email">john.doe@example.com</p>
+                    </div>
+                </div>
+
+                <form id="profile-form">
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="fullname">Full Name</label>
+                                <input type="text" class="form-control" id="fullname" name="fullname"
+                                    placeholder="Enter your full name">
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" class="form-control" id="username" name="username"
+                                    placeholder="Choose a username">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                    placeholder="Enter your email">
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" class="form-control" id="phone" name="phone"
+                                    placeholder="Enter your phone number">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" class="form-control" id="location" name="location"
+                            placeholder="City, Country">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bio">About Me</label>
+                        <textarea class="form-control" id="bio" name="bio" rows="3"
+                            placeholder="Write something about yourself..."></textarea>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button type="button" class="btn btn-secondary" id="cancel-info-btn">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="save-info-btn">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Change Password Tab -->
+            <div class="tab-content" id="change-password">
+                <div class="alert alert-success" id="password-success-alert"></div>
+                <div class="alert alert-danger" id="password-error-alert"></div>
+
+                <form id="password-form">
+                    <div class="form-group">
+                        <label for="current-password">Current Password</label>
+                        <input type="password" class="form-control" id="current-password" name="current-password"
+                            placeholder="Enter your current password">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="new-password">New Password</label>
+                        <input type="password" class="form-control" id="new-password" name="new-password"
+                            placeholder="Enter your new password">
+                        <div class="password-strength" id="password-strength">
+                            <div class="password-strength-meter" id="password-meter"></div>
+                        </div>
+                        <div class="password-strength-text" id="password-text"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirm-new-password">Confirm New Password</label>
+                        <input type="password" class="form-control" id="confirm-new-password"
+                            name="confirm-new-password" placeholder="Confirm your new password">
+                    </div>
+
+                    <div class="action-buttons">
+                        <button type="button" class="btn btn-secondary" id="cancel-password-btn">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="save-password-btn">Update Password</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Notification Settings Tab -->
+            <div class="tab-content" id="notification-settings">
+                <div class="alert alert-success" id="notification-success-alert"></div>
+                <div class="alert alert-danger" id="notification-error-alert"></div>
+
+                <form id="notification-form">
+                    <div class="form-group">
+                        <label class="form-check-label">
+                            <input type="checkbox" id="email-notifications" checked>
+                            Email Notifications
+                        </label>
+                        <p style="color: #8898aa; font-size: 0.875rem; margin-top: 0.25rem;">
+                            Receive email notifications about events you're interested in
+                        </p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-check-label">
+                            <input type="checkbox" id="sms-notifications">
+                            SMS Notifications
+                        </label>
+                        <p style="color: #8898aa; font-size: 0.875rem; margin-top: 0.25rem;">
+                            Receive text messages for event reminders and updates
+                        </p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-check-label">
+                            <input type="checkbox" id="marketing-emails" checked>
+                            Marketing Emails
+                        </label>
+                        <p style="color: #8898aa; font-size: 0.875rem; margin-top: 0.25rem;">
+                            Receive promotional offers and newsletters from Event Sphere
+                        </p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-check-label">
+                            <input type="checkbox" id="new-event-alerts" checked>
+                            New Event Alerts
+                        </label>
+                        <p style="color: #8898aa; font-size: 0.875rem; margin-top: 0.25rem;">
+                            Get notified when new events are added in your area
+                        </p>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button type="button" class="btn btn-secondary" id="cancel-notification-btn">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="save-notification-btn">Save
+                            Preferences</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <div class="card-header">
+                <h3>Account Actions</h3>
+            </div>
+            <div class="card-body">
+                <p style="margin-bottom: 1rem;">These actions are permanent and cannot be undone.</p>
+                <div class="action-buttons" style="justify-content: flex-start;">
+                    <button type="button" class="btn btn-secondary" id="download-data-btn">Download My Data</button>
+                    <button type="button" class="btn btn-danger" id="delete-account-btn">Delete Account</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+
+</html>
