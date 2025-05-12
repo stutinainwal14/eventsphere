@@ -148,7 +148,7 @@ router.get('/2fa/setup', authMiddleware, async (req, res) => {
   res.json({ qrCode, secret: secret.base32 });
 });
 
-router.post('/2fa/verify', authMiddleware, async (req, res) => {
+router.post('/2fa/verify',authMiddleware, async (req, res) => {
   const userId = req.user && req.user.id;
   const { token } = req.body;
   const [users] = await db.query('SELECT twoFactorSecret FROM Users WHERE user_id = ?', [userId]);
