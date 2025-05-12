@@ -26,6 +26,7 @@ app.get('/search-events', async (req, res) => {
   try {
     const now = new Date();
     const startDateKey = req.query.startDate || now.toISOString();
+    // Set default endDate to 7 days from now if not provided
     const defaultEnd = new Date();
     defaultEnd.setDate(now.getDate() + 7);
     const endDateKey = req.query.endDate || defaultEnd.toISOString();

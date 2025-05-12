@@ -3,67 +3,6 @@ function toggleMenu() {
   menu.classList.toggle('show');
 }
 
-function displayEvents(eventData) {
-  const cardRow = document.querySelector('.card-row');
-
-  cardRow.innerHTML = '';
-
-  if (!eventData._embedded || !eventData._embedded.events || eventData._embedded.events.length === 0) {
-    console.log('No events found, showing fallbacks');
-    displayFallbackEvents();
-    return;
-  }
-
-  const events = eventData._embedded.events;
-
-  const cardColors = ['red', 'blue', 'green', 'pink'];
-
-  events.slice(0, 4).forEach((event, index) => {
-    const venue = event._embedded && event._embedded.venues && event._embedded.venues[0] ?
-      `${event._embedded.venues[0].city.name}, ${event._embedded.venues[0].country.name}` :
-      'Australia';
-
-    const eventDate = event.dates && event.dates.start ?
-      new Date(event.dates.start.localDate).toLocaleDateString('en-AU', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric'
-      }) :
-      'Upcoming';
-
-    const cardElement = document.createElement('div');
-    cardElement.className = `event-card ${cardColors[index % cardColors.length]}`;
-
-    const imageUrl = event.images && event.images.length > 0 ?
-      event.images[0].url :
-      'assets/images/event.png';
-
-    cardElement.innerHTML = `
-      <img src="${imageUrl}" alt="${event.name}" class="event-image">
-      <div class="card-content">
-        <p class="location">
-          <i class="fas fa-map-marker-alt"></i> ${venue}
-        </p>
-        <h3 class="event-title">${event.name}</h3>
-        <p class="date">
-          <i class="fas fa-calendar-alt"></i> ${eventDate}
-          <span class="platform">Ticketmaster</span>
-        </p>
-        <div class="card-buttons">
-          <button class="bookmark">
-            <i class="fas fa-bookmark"></i> BookMark
-          </button>
-          <button class="start" onclick="window.open('${event.url}', '_blank')">
-            Get Tickets <i class="fas fa-arrow-right"></i>
-          </button>
-        </div>
-      </div>
-    `;
-
-    cardRow.appendChild(cardElement);
-  });
-}
-
 // Fallback to display static events if API fails
 function displayFallbackEvents() {
   const cardRow = document.querySelector('.card-row');
@@ -161,6 +100,67 @@ function displayFallbackEvents() {
       </div>
     </div>
   `;
+}
+
+function displayEvents(eventData) {
+  const cardRow = document.querySelector('.card-row');
+
+  cardRow.innerHTML = '';
+
+  if (!eventData._embedded || !eventData._embedded.events || eventData._embedded.events.length === 0) {
+    console.log('No events found, showing fallbacks');
+    displayFallbackEvents();
+    return;
+  }
+
+  const events = eventData._embedded.events;
+
+  const cardColors = ['red', 'blue', 'green', 'pink'];
+
+  events.slice(0, 4).forEach((event, index) => {
+    const venue = event._embedded && event._embedded.venues && event._embedded.venues[0] ?
+      `${event._embedded.venues[0].city.name}, ${event._embedded.venues[0].country.name}` :
+      'Australia';
+
+    const eventDate = event.dates && event.dates.start ?
+      new Date(event.dates.start.localDate).toLocaleDateString('en-AU', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      }) :
+      'Upcoming';
+
+    const cardElement = document.createElement('div');
+    cardElement.className = `event-card ${cardColors[index % cardColors.length]}`;
+
+    const imageUrl = event.images && event.images.length > 0 ?
+      event.images[0].url :
+      'assets/images/event.png';
+
+    cardElement.innerHTML = `
+      <img src="${imageUrl}" alt="${event.name}" class="event-image">
+      <div class="card-content">
+        <p class="location">
+          <i class="fas fa-map-marker-alt"></i> ${venue}
+        </p>
+        <h3 class="event-title">${event.name}</h3>
+        <p class="date">
+          <i class="fas fa-calendar-alt"></i> ${eventDate}
+          <span class="platform">Ticketmaster</span>
+        </p>
+        <div class="card-buttons">
+          <button class="bookmark">
+            <i class="fas fa-bookmark"></i> BookMark
+          </button>
+          <button class="start" onclick="window.open('${event.url}', '_blank')">
+            Get Tickets <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    `;
+
+    cardRow.appendChild(cardElement);
+  });
 }
 
 function jsonp(url, callback) {
