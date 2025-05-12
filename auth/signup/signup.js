@@ -146,7 +146,7 @@ $(document).ready(function () {
             showSuccess('Account created successfully! Redirecting to login page...');
 
             setTimeout(function () {
-                window.location.href = '/frontend/login/login.html';
+                window.location.href = '../login/login.html';
             }, 2000);
 
         }, 1500);

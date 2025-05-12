@@ -22,7 +22,9 @@ body {
     color: var(--text-color);
     min-height: 100vh;
     display: flex;
+    align-items: center;
     overflow-x: hidden;
+    justify-content: center;
 }
 
 .left-illustration {
@@ -88,6 +90,7 @@ body {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 2px rgba(226, 144, 0, 0.2);
 }
+
 
 .password-field {
     position: relative;

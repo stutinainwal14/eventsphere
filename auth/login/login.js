@@ -61,7 +61,7 @@ $(document).ready(function () {
             showSuccess('Login successful! Redirecting...');
 
             setTimeout(function () {
-                window.location.href = '/Homepage/index.html';
+                window.location.href = '../../dashboard/home.html';
                 resetButton();
             }, 1500);
         }, 1000);
