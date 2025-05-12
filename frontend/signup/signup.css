@@ -5,6 +5,7 @@
     --text-color: #333333;
     --error-color: #FF5555;
     --success-color: #55AA55;
+    --info-color: #5555AA;
     --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     --transition-speed: 0.3s;
 }
@@ -27,6 +28,7 @@ body {
 .left-illustration {
     background-color: var(--secondary-color);
     width: 50%;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -56,26 +58,27 @@ body {
 }
 
 .login-header h1 {
-    font-size: 42px;
+    font-size: 38px;
     font-weight: 700;
     color: #222;
 }
 
 .input-group {
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
 .input-group label {
     display: block;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     font-weight: 500;
 }
 
 .input-group input {
     width: 100%;
-    padding: 15px;
+    padding: 14px;
     border: 1px solid #ddd;
     font-size: 16px;
+    border-radius: 8px;
     transition: all var(--transition-speed);
 }
 
@@ -98,20 +101,8 @@ body {
     color: #999;
 }
 
-.forgot-password {
-    text-align: right;
-    margin-bottom: 25px;
-}
-
-.forgot-password a {
+.password-toggle:hover {
     color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 500;
-    transition: all var(--transition-speed);
-}
-
-.forgot-password a:hover {
-    text-decoration: underline;
 }
 
 .btn {
@@ -123,6 +114,7 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: all var(--transition-speed);
+    position: relative;
 }
 
 .btn-primary {
@@ -132,6 +124,11 @@ body {
 
 .btn-primary:hover {
     background-color: #c27b00;
+}
+
+.btn-primary:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 
 .login-footer {
@@ -197,7 +194,7 @@ body {
     background-color: transparent;
     border: 1px solid #ddd;
     border-radius: 12px;
-    padding: 10px 15px;
+    padding: 12px 15px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -231,7 +228,7 @@ body {
 
 .right-illustration {
     width: 50%;
-    height: 100%;
+    height: 100vh;
     position: relative;
     display: flex;
     align-items: center;
@@ -239,10 +236,12 @@ body {
 }
 
 .alert {
-    padding: 10px 15px;
+    padding: 15px;
     border-radius: 8px;
     margin-bottom: 20px;
     display: none;
+    font-weight: 500;
+    font-size: 14px;
 }
 
 .alert-danger {
@@ -266,25 +265,54 @@ body {
     border-top-color: white;
     animation: spin 1s ease-in-out infinite;
     margin-left: 10px;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.password-strength {
+    height: 5px;
+    width: 100%;
+    background: #f1f1f1;
+    position: relative;
+    margin-top: 8px;
+    border-radius: 2px;
+    overflow: hidden;
+    display: none;
+}
+
+.password-strength-meter {
+    height: 100%;
+    width: 0;
+    transition: width 0.3s ease-in-out;
+}
+
+.strength-weak {
+    background-color: #ff4d4d;
+    width: 33.33%;
+}
+
+.strength-medium {
+    background-color: #ffd633;
+    width: 66.66%;
+}
+
+.strength-strong {
+    background-color: #47d147;
+    width: 100%;
+}
+
+.password-strength-text {
+    font-size: 12px;
+    margin-top: 5px;
+    color: #777;
+    display: none;
 }
 
 @keyframes spin {
     to {
         transform: rotate(360deg);
-    }
-}
-
-@keyframes explode {
-    0% {
-        transform: scale(0);
-        opacity: 0;
-    }
-    50% {
-        opacity: 1;
-    }
-    100% {
-        transform: scale(10);
-        opacity: 0;
     }
 }
 
@@ -295,11 +323,30 @@ body {
     }
 
     .login-container {
-        margin: 50px auto;
+        margin: 30px auto;
+        width: 90%;
     }
 
     body {
         justify-content: center;
         padding: 20px;
+    }
+
+    .login-header h1 {
+        font-size: 32px;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: 30px 20px;
+    }
+
+    .input-group input {
+        padding: 12px;
+    }
+
+    .btn {
+        padding: 12px;
     }
 }
