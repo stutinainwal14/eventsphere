@@ -1,11 +1,5 @@
-// Redirect if not logged in
+
+// Protect dashboard with token check
 if (!localStorage.getItem("token")) {
-    window.location.href = "../../auth/login/login.html";
-  }
-  
-  // Logout button handler
-  document.getElementById("logoutBtn").addEventListener("click", function () {
-    localStorage.removeItem("token");
-    window.location.href = "../../public/homepage/index.html";
-  });
-  
+  window.location.href = "../../auth/login/login.html";
+}
