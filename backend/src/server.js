@@ -7,14 +7,12 @@ const { publish } = require('./kafka/producer');
 const authMiddleware = require('./middleware/authMiddleware');
 const eventRoutes = require('./routes/eventRoutes');
 const { searchEvents } = require('./services/TicketMasterService');
-const cors = require('cors');
 const PORT = process.env.PORT || 8080;
 
 dotenv.config();
 require('dotenv').config();
 
 const app = express();
-app.use(cors());
 app.use(express.static(path.join(__dirname, '../auth')));
 app.use(express.json());
 
