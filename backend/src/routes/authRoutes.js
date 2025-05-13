@@ -76,6 +76,7 @@ router.post('/signup', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
+  console.log('Backend received login request');
   const { email, password, token: twoFAToken } = req.body;
 
   try {
