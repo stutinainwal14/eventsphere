@@ -64,7 +64,7 @@ $(document).ready(function () {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/signup", {
+      const response = await fetch("/api/auth/signup", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

@@ -36,11 +36,10 @@ $(document).ready(function () {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/login", {
+      console.log('Sending request to /api/auth/login');
+      const response = await fetch("/api/auth/login", {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: {'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
 
