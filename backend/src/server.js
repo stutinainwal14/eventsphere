@@ -26,7 +26,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/events', authMiddleware, eventRoutes);
 
-app.get('/search-events', async (req, res) => {
+app.get('/search-events', authMiddleware, async (req, res) => {
   try {
     const now = new Date();
     const startDateKey = req.query.startDate || now.toISOString();
@@ -43,24 +43,10 @@ app.get('/search-events', async (req, res) => {
       sort: req.query.sort || '',
       countryCode: req.query.countryCode || 'AU'
     });
-
-    const callback = req.query.callback;
-    if (callback) {
-      res.type('text/javascript');
-      res.send(`${callback}(${JSON.stringify(events)})`);
-    } else {
-      res.json(events);
-    }
+    res.json(events);
   } catch (err) {
     console.error('Error fetching events:', err.message);
-
-    const callback = req.query.callback;
-    if (callback) {
-      res.type('text/javascript');
-      res.send(`${callback}(${JSON.stringify({ error: err.message })})`);
-    } else {
-      res.status(500).json({ error: err.message });
-    }
+    res.status(500).json({ error: err.message });
   }
 });
 
