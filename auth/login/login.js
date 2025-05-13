@@ -1,83 +1,63 @@
 $(document).ready(function () {
-    // Toggle password visibility
-    $('#password-toggle').click(function () {
-        const passwordField = $('#password');
-        const icon = $(this).find('i');
+  $('#password-toggle').click(function () {
+    const passwordField = $('#password');
+    const icon = $(this).find('i');
+    passwordField.attr('type', passwordField.attr('type') === 'password' ? 'text' : 'password');
+    icon.toggleClass('fa-eye fa-eye-slash');
+  });
 
-        if (passwordField.attr('type') === 'password') {
-            passwordField.attr('type', 'text');
-            icon.removeClass('fa-eye').addClass('fa-eye-slash');
-        } else {
-            passwordField.attr('type', 'password');
-            icon.removeClass('fa-eye-slash').addClass('fa-eye');
-        }
-    });
+  function showError(message) {
+    $('#error-alert').text(message).slideDown();
+    $('#success-alert').slideUp();
+    setTimeout(() => $('#error-alert').slideUp(), 5000);
+  }
 
-    function showError(message) {
-        $('#error-alert').text(message).slideDown();
-        $('#success-alert').slideUp();
+  function showSuccess(message) {
+    $('#success-alert').text(message).slideDown();
+    $('#error-alert').slideUp();
+  }
 
-        setTimeout(function () {
-            $('#error-alert').slideUp();
-        }, 5000);
+  function resetButton() {
+    $('#login-spinner').hide();
+    $('#login-btn').prop('disabled', false);
+  }
+
+  $('#login-form').submit(async function (e) {
+    e.preventDefault();
+    $('#login-spinner').show();
+    $('#login-btn').prop('disabled', true);
+
+    const email = $('#email').val().trim();
+    const password = $('#password').val();
+
+    if (!email || !password) {
+      showError('Please fill in all fields');
+      return resetButton();
     }
 
-    function showSuccess(message) {
-        $('#success-alert').text(message).slideDown();
-        $('#error-alert').slideUp();
+    try {
+      const response = await fetch("http://localhost:8080/login", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      localStorage.setItem("token", data.token); // Store JWT
+      showSuccess('Login successful! Redirecting...');
+      setTimeout(() => {
+        window.location.href = "../../dashboard/home.html";
+      }, 1000);
+    } catch (error) {
+      showError(error.message);
+      resetButton();
     }
-
-    function showInfo(message) {
-        $('#error-alert').text(message).removeClass('alert-danger').addClass('alert-info')
-            .slideDown();
-
-        setTimeout(function () {
-            $('#error-alert').slideUp().removeClass('alert-info').addClass('alert-danger');
-        }, 3000);
-    }
-
-    function resetButton() {
-        $('#login-spinner').hide();
-        $('#login-btn').prop('disabled', false);
-    }
-
-    // Form submission handling
-    $('#login-form').submit(function (e) {
-        e.preventDefault();
-
-        $('#login-spinner').show();
-        $('#login-btn').prop('disabled', true);
-
-        const username = $('#username').val();
-        const password = $('#password').val();
-
-        if (!username || !password) {
-            showError('Please fill in all fields');
-            resetButton();
-            return;
-        }
-
-        setTimeout(function () {
-            showSuccess('Login successful! Redirecting...');
-
-            setTimeout(function () {
-                window.location.href = '../../dashboard/home.html';
-                resetButton();
-            }, 1500);
-        }, 1000);
-    });
-
-    // Handle social login buttons
-    $('#google-login').click(function () {
-        showInfo('Google login feature coming soon');
-    });
-
-    $('#facebook-login').click(function () {
-        showInfo('Facebook login feature coming soon');
-    });
-
-    $('#apple-login').click(function () {
-        showInfo('Apple login feature coming soon');
-    });
-
+  });
 });

@@ -9,6 +9,7 @@ const { searchEvents } = require('./services/TicketMasterService');
 const PORT = process.env.PORT || 8080;
 
 dotenv.config();
+require('dotenv').config();
 
 const app = express();
 app.use(express.json());
