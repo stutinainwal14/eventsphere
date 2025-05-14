@@ -163,54 +163,78 @@ function displayEvents(eventData) {
   });
 }
 
-function jsonp(url, callback) {
-  const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+// Alternative approach if in case JSONP fails.
+function fetchEventsWithXHR() {
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', 'http://localhost:8080/trending-events?countryCode=AU&sort=date,asc', true);
 
-  const script = document.createElement('script');
-
-  window[callbackName] = function (data) {
-    delete window[callbackName];
-    document.body.removeChild(script);
-
-    callback(data);
-  };
-
-  const separator = url.indexOf('?') === -1 ? '?' : '&';
-  url += `${separator}callback=${callbackName}`;
-
-  script.src = url;
-  document.body.appendChild(script);
-
-  script.onerror = function () {
-    delete window[callbackName];
-    document.body.removeChild(script);
-    callback(null, new Error('Script loading error'));
-  };
-}
-
-async function fetchEvents() {
-  try {
-    jsonp('http://localhost:8080/search-events?countryCode=AU&sort=date,asc', function (data) {
-      if (data) {
+  xhr.onload = function () {
+    if (xhr.status >= 200 && xhr.status < 300) {
+      try {
+        const data = JSON.parse(xhr.responseText);
         displayEvents(data);
-      } else {
-        console.error('No data received from API');
+      } catch (error) {
+        console.error('Error parsing JSON response:', error);
         displayFallbackEvents();
       }
-    });
+    } else {
+      console.error('XHR request failed with status:', xhr.status);
+      displayFallbackEvents();
+    }
+  };
+
+  xhr.onerror = function () {
+    console.error('XHR request failed');
+    displayFallbackEvents();
+  };
+
+  xhr.send();
+}
+
+async function fetchTrendingEvents() {
+  try {
+    fetch('http://localhost:8080/trending-events?countryCode=AU&sort=date,asc')
+      .then(response => response.json())
+      .then(data => {
+        displayEvents(data);
+      })
+      .catch(error => {
+        console.log('Fetch API failed, falling back to JSONP:', error);
+        jsonp('http://localhost:8080/trending-events?countryCode=AU&sort=date,asc', function (data) {
+          if (data) {
+            displayEvents(data);
+          } else {
+            console.error('No data received from API');
+            displayFallbackEvents();
+          }
+        });
+      });
   } catch (error) {
-    console.error('Error fetching events:', error);
+    console.error('Error fetching trending events:', error);
     displayFallbackEvents();
   }
 }
 
 function updateSectionTitle(countryName = 'Australia') {
   const subtitle = document.querySelector('.popular-events .subtitle');
-  subtitle.innerHTML = `<i class="fas fa-search"></i> Discover events happening in ${countryName} right now 🎉`;
+  subtitle.innerHTML = `<i class="fas fa-search"></i> Popular events trending in ${countryName} right now 🎉`;
 }
 
 document.addEventListener('DOMContentLoaded', function () {
   updateSectionTitle('Australia');
 
-  fetchEvents();
+  try {
+    fetchEventsWithXHR();
+  } catch (error) {
+    console.error('XHR method failed:', error);
+    displayFallbackEvents();
+  }
+
+  // Add event listeners for bookmark buttons
+  document.addEventListener('click', function (e) {
+    if (e.target.classList.contains('bookmark') ||
+      (e.target.parentElement && e.target.parentElement.classList.contains('bookmark'))) {
+      alert('Event added to bookmarks!');
+    }
+  });
 });
