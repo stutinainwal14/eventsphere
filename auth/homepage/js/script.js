@@ -166,7 +166,7 @@ function displayEvents(eventData) {
 // Alternative approach if in case JSONP fails.
 function fetchEventsWithXHR() {
   const xhr = new XMLHttpRequest();
-  xhr.open('GET', 'http://localhost:8080/trending-events?countryCode=AU&sort=date,asc', true);
+  xhr.open('GET', '/trending-events?countryCode=AU&sort=date,asc', true);
 
   xhr.onload = function () {
     if (xhr.status >= 200 && xhr.status < 300) {
@@ -193,14 +193,14 @@ function fetchEventsWithXHR() {
 
 async function fetchTrendingEvents() {
   try {
-    fetch('http://localhost:8080/trending-events?countryCode=AU&sort=date,asc')
+    fetch('/trending-events?countryCode=AU&sort=date,asc')
       .then(response => response.json())
       .then(data => {
         displayEvents(data);
       })
       .catch(error => {
         console.log('Fetch API failed, falling back to JSONP:', error);
-        jsonp('http://localhost:8080/trending-events?countryCode=AU&sort=date,asc', function (data) {
+        jsonp('/trending-events?countryCode=AU&sort=date,asc', function (data) {
           if (data) {
             displayEvents(data);
           } else {
