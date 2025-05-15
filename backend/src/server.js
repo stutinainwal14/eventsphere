@@ -16,10 +16,10 @@ const app = express();
 app.use(express.static(path.join(__dirname, '../auth')));
 app.use(express.json());
 
-// Test route to see if server is receiving requests
+// Test route to see if server is working
 app.get('/', (req, res) => {
-    res.send('Server is working!');
-  });
+  res.send('Server is working!');
+});
 
 app.use('/api/auth', authRoutes);
 app.use('/api/events', authMiddleware, eventRoutes);
@@ -38,8 +38,8 @@ app.get('/search-events', authMiddleware, async (req, res) => {
       eventType: req.query.keyword || '',
       startDate: startDateKey,
       endDate: endDateKey,
-      sort :req.query.sort || '',
-      countryCode : req.query.countryCode || 'AU'
+      sort: req.query.sort || '',
+      countryCode: req.query.countryCode || 'AU'
     });
     res.json(events);
   } catch (err) {
@@ -60,8 +60,8 @@ app.get('/trending-events', async (req, res) => {
     const events = await searchEvents({
       startDate: startDateKey,
       endDate: endDateKey,
-      sort :req.query.sort || '',
-      countryCode : req.query.countryCode || 'AU'
+      sort: req.query.sort || '',
+      countryCode: req.query.countryCode || 'AU'
     });
     res.json(events);
   } catch (err) {
@@ -71,7 +71,6 @@ app.get('/trending-events', async (req, res) => {
 });
 
 const start = async () => {
-
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
