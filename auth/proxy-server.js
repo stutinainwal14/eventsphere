@@ -8,6 +8,33 @@ const PORT = 3000;
 // Serve static files from the auth folder (if needed)
 app.use(express.static(path.join(__dirname, '..', 'auth')));
 
+app.use(express.static(path.join(__dirname, '..'), {
+  setHeaders: (res, path) => {
+    // Set the MIME type for CSS files
+    if (path.endsWith('.css')) {
+      res.setHeader('Content-Type', 'text/css');
+    }
+    // Set the MIME type for JavaScript files
+    else if (path.endsWith('.js')) {
+      res.setHeader('Content-Type', 'application/javascript');
+    }
+    // Set the MIME type for HTML files
+    else if (path.endsWith('.html')) {
+      res.setHeader('Content-Type', 'text/html');
+    }
+    // Set the MIME type for images
+    else if (path.endsWith('.png')) {
+      res.setHeader('Content-Type', 'image/png');
+    }
+    else if (path.endsWith('.jpg') || path.endsWith('.jpeg')) {
+      res.setHeader('Content-Type', 'image/jpeg');
+    }
+    else if (path.endsWith('.svg')) {
+      res.setHeader('Content-Type', 'image/svg+xml');
+    }
+  }
+}));
+
 // Proxy API requests to the backend
 app.use(
   createProxyMiddleware({
