@@ -4,13 +4,14 @@ require('dotenv').config();
 const API_BASE = 'https://app.ticketmaster.com/discovery/v2';
 const API_KEY = process.env.TICKETMASTER_API_KEY; // Your API key here
 
-const searchEvents = async ({ location, keyword, startDate, sort, countryCode }) => {
+const searchEvents = async ({ location, keyword, startDateTime, endDateTime, sort, countryCode }) => {
   try {
     const response = await axios.get(`${API_BASE}/events.json`, {
       params: {
         city: location || '',
         keyword: keyword || '',
-        startDate: startDate || new Date().toISOString(),
+        startDateTime: startDateTime, // ✅ Correct
+        endDateTime: endDateTime,
         sort : sort || '',
         countryCode: countryCode || 'AU',
         apikey: API_KEY, // Ensure API key is passed here

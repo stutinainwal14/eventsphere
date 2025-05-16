@@ -26,18 +26,18 @@ app.use('/api/events', authMiddleware, eventRoutes);
 
 app.get('/search-events', authMiddleware, async (req, res) => {
   try {
-    const now = new Date();
-    const startDateKey = req.query.startDate || now.toISOString();
-    // Set default endDate to 7 days from now if not provided
-    const defaultEnd = new Date();
-    defaultEnd.setDate(now.getDate() + 7);
-    const endDateKey = req.query.endDate || defaultEnd.toISOString();
+    // const now = new Date();
+    // const startDateKey = req.query.startDateTime || now.toISOString();
+    // // Set default endDate to 7 days from now if not provided
+    // const defaultEnd = new Date();
+    // defaultEnd.setDate(now.getDate() + 7);
+    // const endDateKey = req.query.endDateTime || defaultEnd.toISOString();
 
     const events = await searchEvents({
       location: req.query.location || '',
-      eventType: req.query.keyword || '',
-      startDate: startDateKey,
-      endDate: endDateKey,
+      keyword: req.query.keyword || '',
+      startDateTime: req.query.startDateTime,
+      endDateTime: req.query.endDateTime,
       sort: req.query.sort || '',
       countryCode: req.query.countryCode || 'AU'
     });
