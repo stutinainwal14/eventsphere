@@ -8,12 +8,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (logoutBtn) {
         logoutBtn.addEventListener('click', function () {
+            console.log('Logging out...');
             logoutSpinner.style.display = 'inline-block';
             setTimeout(function () {
                 logoutSpinner.style.display = 'none';
                 successAlert.style.display = 'block';
                 setTimeout(function () {
-                    window.location.href = '/Homepage/index.html';
+                    window.location.href = '../homepage/index.html';
                 }, 1500);
             }, 1000);
         });
