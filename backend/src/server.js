@@ -26,21 +26,34 @@ app.use('/api/events', authMiddleware, eventRoutes);
 
 app.get('/search-events', authMiddleware, async (req, res) => {
   try {
-    // const now = new Date();
-    // const startDateKey = req.query.startDateTime || now.toISOString();
-    // // Set default endDate to 7 days from now if not provided
-    // const defaultEnd = new Date();
-    // defaultEnd.setDate(now.getDate() + 7);
-    // const endDateKey = req.query.endDateTime || defaultEnd.toISOString();
+    // Extracting all parameters from the request
+    const {
+      location,
+      keyword,
+      startDateTime,
+      endDateTime,
+      sort,
+      countryCode
+    } = req.query;
+
+    console.log('Search request parameters:', {
+      location,
+      keyword,
+      startDateTime,
+      endDateTime,
+      sort,
+      countryCode
+    });
 
     const events = await searchEvents({
-      location: req.query.location || '',
-      keyword: req.query.keyword || '',
-      startDateTime: req.query.startDateTime,
-      endDateTime: req.query.endDateTime,
-      sort: req.query.sort || '',
-      countryCode: req.query.countryCode || 'AU'
+      location: location || '',
+      keyword: keyword || '',
+      startDateTime: startDateTime || undefined,
+      endDateTime: endDateTime || undefined,
+      sort: sort || '',
+      countryCode: countryCode || 'AU'
     });
+
     res.json(events);
   } catch (err) {
     console.error('Error fetching events:', err.message);

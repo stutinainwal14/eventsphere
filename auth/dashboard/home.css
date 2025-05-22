@@ -152,3 +152,102 @@
         min-width: 100%;
     }
 }
+
+/* Carousel Styles */
+.event-carousel {
+    position: relative;
+    width: 100%;
+    margin: 20px 0;
+    overflow: hidden;
+}
+
+.carousel-inner {
+    width: 100%;
+    position: relative;
+}
+
+.carousel-slide {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 20px;
+    width: 100%;
+}
+
+.event-card {
+    flex: 1;
+    min-width: 0;
+    /* Allows cards to shrink below their content size */
+    max-width: calc(25% - 15px);
+    /* 4 cards per row with gap */
+    display: flex;
+    flex-direction: column;
+}
+
+.card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.event-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+/* Navigation buttons */
+.carousel-navigation {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 20px;
+}
+
+.carousel-nav-btn {
+    background-color: #3f51b5;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.carousel-nav-btn:hover {
+    background-color: #303f9f;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .carousel-slide {
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding-bottom: 15px;
+    }
+
+    .event-card {
+        max-width: calc(33.333% - 14px);
+    }
+}
+
+@media (max-width: 768px) {
+    .event-card {
+        max-width: calc(50% - 10px);
+    }
+}
+
+@media (max-width: 576px) {
+    .carousel-slide {
+        flex-wrap: wrap;
+    }
+
+    .event-card {
+        max-width: 100%;
+        margin-bottom: 15px;
+    }
+}
