@@ -315,144 +315,144 @@ function fetchTrendingEvents() {
 }
 
 // Mock event data for fallback purposes
-function getMockEventData() {
-    return {
-        "_embedded": {
-            "events": [
-                {
-                    "name": "Ed Sheeran: Mathematics Tour",
-                    "url": "https://www.ticketmaster.com.au/ed-sheeran-mathematics-tour-sydney-05-14-2025/event/13005E8D8B681234",
-                    "images": [
-                        {
-                            "url": "/auth/homepage/assets/images/event.png"
-                        }
-                    ],
-                    "dates": {
-                        "start": {
-                            "localDate": "2025-05-15"
-                        }
-                    },
-                    "_embedded": {
-                        "venues": [
-                            {
-                                "city": {
-                                    "name": "Sydney"
-                                },
-                                "country": {
-                                    "name": "Australia"
-                                }
-                            }
-                        ]
-                    }
-                },
-                {
-                    "name": "Taylor Swift: The Eras Tour",
-                    "url": "https://www.ticketmaster.com.au/taylor-swift-the-eras-tour-sydney-05-16-2025/event/13005E81F9A25678",
-                    "images": [
-                        {
-                            "url": "/auth/homepage/assets/images/event.png"
-                        }
-                    ],
-                    "dates": {
-                        "start": {
-                            "localDate": "2025-05-16"
-                        }
-                    },
-                    "_embedded": {
-                        "venues": [
-                            {
-                                "city": {
-                                    "name": "Sydney"
-                                },
-                                "country": {
-                                    "name": "Australia"
-                                }
-                            }
-                        ]
-                    }
-                },
-                {
-                    "name": "Coldplay: Music of the Spheres",
-                    "url": "https://www.ticketmaster.com.au/coldplay-music-of-the-spheres-sydney-05-17-2025/event/13005E91CA9D9012",
-                    "images": [
-                        {
-                            "url": "/auth/homepage/assets/images/event.png"
-                        }
-                    ],
-                    "dates": {
-                        "start": {
-                            "localDate": "2025-05-17"
-                        }
-                    },
-                    "_embedded": {
-                        "venues": [
-                            {
-                                "city": {
-                                    "name": "Sydney"
-                                },
-                                "country": {
-                                    "name": "Australia"
-                                }
-                            }
-                        ]
-                    }
-                },
-                {
-                    "name": "Bad Bunny: Most Wanted Tour",
-                    "url": "https://www.ticketmaster.com.au/bad-bunny-most-wanted-tour-sydney-05-18-2025/event/13005E7AD45B3456",
-                    "images": [
-                        {
-                            "url": "/auth/homepage/assets/images/event.png"
-                        }
-                    ],
-                    "dates": {
-                        "start": {
-                            "localDate": "2025-05-18"
-                        }
-                    },
-                    "_embedded": {
-                        "venues": [
-                            {
-                                "city": {
-                                    "name": "Sydney"
-                                },
-                                "country": {
-                                    "name": "Australia"
-                                }
-                            }
-                        ]
-                    }
-                },
-                {
-                    "name": "Adele: Weekend With Adele",
-                    "url": "https://www.ticketmaster.com.au/adele-weekend-with-adele-sydney-05-19-2025/event/13005E84BA7D7890",
-                    "images": [
-                        {
-                            "url": "/auth/homepage/assets/images/event.png"
-                        }
-                    ],
-                    "dates": {
-                        "start": {
-                            "localDate": "2025-05-19"
-                        }
-                    },
-                    "_embedded": {
-                        "venues": [
-                            {
-                                "city": {
-                                    "name": "Sydney"
-                                },
-                                "country": {
-                                    "name": "Australia"
-                                }
-                            }
-                        ]
-                    }
-                }
-            ]
-        }
-    };
-}
+// function getMockEventData() {
+//     return {
+//         "_embedded": {
+//             "events": [
+//                 {
+//                     "name": "Ed Sheeran: Mathematics Tour",
+//                     "url": "https://www.ticketmaster.com.au/ed-sheeran-mathematics-tour-sydney-05-14-2025/event/13005E8D8B681234",
+//                     "images": [
+//                         {
+//                             "url": "/auth/homepage/assets/images/event.png"
+//                         }
+//                     ],
+//                     "dates": {
+//                         "start": {
+//                             "localDate": "2025-05-15"
+//                         }
+//                     },
+//                     "_embedded": {
+//                         "venues": [
+//                             {
+//                                 "city": {
+//                                     "name": "Sydney"
+//                                 },
+//                                 "country": {
+//                                     "name": "Australia"
+//                                 }
+//                             }
+//                         ]
+//                     }
+//                 },
+//                 {
+//                     "name": "Taylor Swift: The Eras Tour",
+//                     "url": "https://www.ticketmaster.com.au/taylor-swift-the-eras-tour-sydney-05-16-2025/event/13005E81F9A25678",
+//                     "images": [
+//                         {
+//                             "url": "/auth/homepage/assets/images/event.png"
+//                         }
+//                     ],
+//                     "dates": {
+//                         "start": {
+//                             "localDate": "2025-05-16"
+//                         }
+//                     },
+//                     "_embedded": {
+//                         "venues": [
+//                             {
+//                                 "city": {
+//                                     "name": "Sydney"
+//                                 },
+//                                 "country": {
+//                                     "name": "Australia"
+//                                 }
+//                             }
+//                         ]
+//                     }
+//                 },
+//                 {
+//                     "name": "Coldplay: Music of the Spheres",
+//                     "url": "https://www.ticketmaster.com.au/coldplay-music-of-the-spheres-sydney-05-17-2025/event/13005E91CA9D9012",
+//                     "images": [
+//                         {
+//                             "url": "/auth/homepage/assets/images/event.png"
+//                         }
+//                     ],
+//                     "dates": {
+//                         "start": {
+//                             "localDate": "2025-05-17"
+//                         }
+//                     },
+//                     "_embedded": {
+//                         "venues": [
+//                             {
+//                                 "city": {
+//                                     "name": "Sydney"
+//                                 },
+//                                 "country": {
+//                                     "name": "Australia"
+//                                 }
+//                             }
+//                         ]
+//                     }
+//                 },
+//                 {
+//                     "name": "Bad Bunny: Most Wanted Tour",
+//                     "url": "https://www.ticketmaster.com.au/bad-bunny-most-wanted-tour-sydney-05-18-2025/event/13005E7AD45B3456",
+//                     "images": [
+//                         {
+//                             "url": "/auth/homepage/assets/images/event.png"
+//                         }
+//                     ],
+//                     "dates": {
+//                         "start": {
+//                             "localDate": "2025-05-18"
+//                         }
+//                     },
+//                     "_embedded": {
+//                         "venues": [
+//                             {
+//                                 "city": {
+//                                     "name": "Sydney"
+//                                 },
+//                                 "country": {
+//                                     "name": "Australia"
+//                                 }
+//                             }
+//                         ]
+//                     }
+//                 },
+//                 {
+//                     "name": "Adele: Weekend With Adele",
+//                     "url": "https://www.ticketmaster.com.au/adele-weekend-with-adele-sydney-05-19-2025/event/13005E84BA7D7890",
+//                     "images": [
+//                         {
+//                             "url": "/auth/homepage/assets/images/event.png"
+//                         }
+//                     ],
+//                     "dates": {
+//                         "start": {
+//                             "localDate": "2025-05-19"
+//                         }
+//                     },
+//                     "_embedded": {
+//                         "venues": [
+//                             {
+//                                 "city": {
+//                                     "name": "Sydney"
+//                                 },
+//                                 "country": {
+//                                     "name": "Australia"
+//                                 }
+//                             }
+//                         ]
+//                     }
+//                 }
+//             ]
+//         }
+//     };
+// }
 
 function displayNoResults() {
     const loading = document.getElementById('loading');
@@ -472,7 +472,7 @@ document.addEventListener('DOMContentLoaded', function () {
     checkAuthStatus();
 
     const themeButtons = document.querySelectorAll('.theme-toggle');
-    themeButtons.forEach(button => {
+    themeButtons.forEach((button) => {
         button.addEventListener('click', toggleTheme);
     });
 

@@ -21,8 +21,15 @@ app.get('/', (req, res) => {
   res.send('Server is working!');
 });
 
+const fs = require('fs');
+const uploadDir = path.join(__dirname, '../uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+
 app.use('/api/auth', authRoutes);
 app.use('/api/events', authMiddleware, eventRoutes);
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.get('/search-events', authMiddleware, async (req, res) => {
   try {
