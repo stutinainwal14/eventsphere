@@ -536,84 +536,6 @@ function getMockEventData() {
                             }
                         ]
                     }
-                },
-                {
-                    "name": "Bruce Springsteen World Tour",
-                    "url": "https://www.ticketmaster.com.au/bruce-springsteen-sydney-05-20-2025/event/13005E84BA7D7891",
-                    "images": [
-                        {
-                            "url": "/auth/homepage/assets/images/event.png"
-                        }
-                    ],
-                    "dates": {
-                        "start": {
-                            "localDate": "2025-05-20"
-                        }
-                    },
-                    "_embedded": {
-                        "venues": [
-                            {
-                                "city": {
-                                    "name": "Sydney"
-                                },
-                                "country": {
-                                    "name": "Australia"
-                                }
-                            }
-                        ]
-                    }
-                },
-                {
-                    "name": "BTS: World Tour",
-                    "url": "https://www.ticketmaster.com.au/bts-world-tour-sydney-05-21-2025/event/13005E84BA7D7892",
-                    "images": [
-                        {
-                            "url": "/auth/homepage/assets/images/event.png"
-                        }
-                    ],
-                    "dates": {
-                        "start": {
-                            "localDate": "2025-05-21"
-                        }
-                    },
-                    "_embedded": {
-                        "venues": [
-                            {
-                                "city": {
-                                    "name": "Sydney"
-                                },
-                                "country": {
-                                    "name": "Australia"
-                                }
-                            }
-                        ]
-                    }
-                },
-                {
-                    "name": "Billie Eilish: Happier Than Ever Tour",
-                    "url": "https://www.ticketmaster.com.au/billie-eilish-sydney-05-22-2025/event/13005E84BA7D7893",
-                    "images": [
-                        {
-                            "url": "/auth/homepage/assets/images/event.png"
-                        }
-                    ],
-                    "dates": {
-                        "start": {
-                            "localDate": "2025-05-22"
-                        }
-                    },
-                    "_embedded": {
-                        "venues": [
-                            {
-                                "city": {
-                                    "name": "Sydney"
-                                },
-                                "country": {
-                                    "name": "Australia"
-                                }
-                            }
-                        ]
-                    }
                 }
             ]
         }
@@ -638,7 +560,7 @@ document.addEventListener('DOMContentLoaded', function () {
     checkAuthStatus();
 
     const themeButtons = document.querySelectorAll('.theme-toggle');
-    themeButtons.forEach(button => {
+    themeButtons.forEach((button) => {
         button.addEventListener('click', toggleTheme);
     });
 

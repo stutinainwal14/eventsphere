@@ -9,6 +9,8 @@ require('dotenv').config();
 const speakeasy = require('speakeasy');
 const qrcode = require('qrcode');
 const authMiddleware = require('../middleware/authMiddleware');
+const path = require('path');
+
 
 router.post('/signup', async (req, res) => {
 
@@ -130,6 +132,73 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+const multer = require('multer');
+
+
+// Configure Multer for avatar uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const uploadPath = path.join(__dirname, '../uploads'); // store in backend/uploads
+    cb(null, uploadPath);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
+const upload = multer({ storage });
+
+// Update user profile
+router.put('/profile', authMiddleware, upload.single('avatar'), async (req, res) => {
+  const userId = req.user.id;
+  const { username, email, preferences } = req.body;
+  const avatar = req.file ? `/uploads/${req.file.filename}` : null;
+
+  try {
+    const updates = [];
+    const params = [];
+
+    if (username) {
+      updates.push('username = ?');
+      params.push(username);
+    }
+
+    if (email) {
+      updates.push('email = ?');
+      params.push(email);
+    }
+
+    if (preferences) {
+      updates.push('preferences = ?');
+      params.push(JSON.stringify(preferences));
+    }
+
+    if (avatar) {
+      updates.push('avatar = ?');
+      params.push(avatar);
+    }
+
+    if (updates.length === 0) {
+      return res.status(400).json({ message: 'No changes provided' });
+    }
+
+    params.push(userId);
+
+    await db.query(`UPDATE Users SET ${updates.join(', ')} WHERE user_id = ?`, params);
+
+    const [rows] = await db.query('SELECT user_id, username, email, preferences, avatar FROM Users WHERE user_id = ?', [userId]);
+    const user = rows[0];
+    user.preferences = JSON.parse(user.preferences || '{}');
+
+    res.json({ message: 'Profile updated', user });
+
+  } catch (err) {
+    console.error('Profile update error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 router.get('/2fa/setup', authMiddleware, async (req, res) => {
   const userId = req.user && req.user.id; // You must decode JWT via middleware
