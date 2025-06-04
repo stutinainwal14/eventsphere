@@ -7,6 +7,7 @@ const { publish } = require('./kafka/producer');
 const authMiddleware = require('./middleware/authMiddleware');
 const eventRoutes = require('./routes/eventRoutes');
 const { searchEvents } = require('./services/TicketMasterService');
+const adminRoutes = require('./routes/adminRoutes');
 const PORT = process.env.PORT || 8080;
 
 dotenv.config();
@@ -28,6 +29,7 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
 app.use('/api/events', authMiddleware, eventRoutes);
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 

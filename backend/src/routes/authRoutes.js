@@ -10,76 +10,86 @@ const speakeasy = require('speakeasy');
 const qrcode = require('qrcode');
 const authMiddleware = require('../middleware/authMiddleware');
 const path = require('path');
+const { body, validationResult } = require('express-validator');
 
 
-router.post('/signup', async (req, res) => {
 
-  const {
-    username,
-    email,
-    password,
-    role = 'user',
-    preferences = {},
-  } = req.body;
-
-  try {
-    // 1) Check for existing user
-    const [existing] = await db.query(
-      'SELECT user_id FROM Users WHERE email = ?',
-      [email]
-    );
-    if (existing.length > 0) {
-      return res.status(400).json({ message: 'User already exists' });
+router.post(
+  '/signup',
+  [
+    body('username').optional()
+      .trim()
+      .isLength({ min: 2, max: 30 }).withMessage('Username must be between 2-30 characters'),
+    body('email')
+      .isEmail().withMessage('Invalid email address')
+      .normalizeEmail(),
+    body('password')
+      .isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+    body('role')
+      .optional()
+      .isIn(['user', 'admin']).withMessage('Role must be either user or admin'),
+    body('preferences')
+      .optional()
+      .isObject().withMessage('Preferences must be a JSON object'),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
 
-    // 2) Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-    // 3) Insert user, capturing insertId
+    const { username, email, password, role = 'user', preferences = {} } = req.body;
 
-    const [result] = await db.query(
-      'INSERT INTO Users (username, email, password, role, preferences) VALUES (?, ?, ?, ?, ?)',
-      [username, email, hashedPassword, role, JSON.stringify(preferences)]
-    );
-
-    const newUserId = result.insertId;
-
-    // 4) Fetch the newly created user
-
-    const [rows] = await db.query(
-      'SELECT user_id, username, email, role, preferences FROM Users WHERE user_id = ?',
-      [newUserId]
-    );
-    let newUser = rows[0];
-
-    // 5) Safely parse preferences (only if it’s a string)
-
-    if (typeof newUser.preferences === 'string') {
-      try {
-        newUser.preferences = JSON.parse(newUser.preferences);
+    try {
+      const [existing] = await db.query('SELECT user_id FROM Users WHERE email = ?', [email]);
+      if (existing.length > 0) {
+        return res.status(400).json({ message: 'User already exists' });
       }
-      catch (err) {
-        newUser.preferences = {};
+
+      const hashedPassword = await bcrypt.hash(password, 12);
+      const [result] = await db.query(
+        'INSERT INTO Users (username, email, password, role, preferences) VALUES (?, ?, ?, ?, ?)',
+        [username, email, hashedPassword, role, JSON.stringify(preferences)]
+      );
+
+      const newUserId = result.insertId;
+      const [rows] = await db.query(
+        'SELECT user_id, username, email, role, preferences FROM Users WHERE user_id = ?',
+        [newUserId]
+      );
+
+      let newUser = rows[0];
+      if (typeof newUser.preferences === 'string') {
+        try {
+          newUser.preferences = JSON.parse(newUser.preferences);
+        } catch {
+          newUser.preferences = {};
+        }
       }
+
+      publish('user-registered', { id: newUser.user_id, email: newUser.email }).catch(console.error);
+      return res.status(201).json({ user: newUser });
+
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: err.message });
     }
-
-    // 6) Publish Kafka event
-
-    publish('user-registered', { id: newUser.user_id, email: newUser.email })
-      .catch(console.error);
-
-    // 7) Respond with the full user object
-    return res.status(201).json({ user: newUser });
-
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: err.message });
   }
+);
 
-});
 
-
-router.post('/login', async (req, res) => {
-  console.log('Backend received login request');
+router.post(
+  '/login',
+  [
+    body('email').isEmail().normalizeEmail(),
+    body('password').isLength({ min: 1 }),
+    body('token').optional().isString(),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
   const { email, password, token: twoFAToken } = req.body;
 
   try {
@@ -150,9 +160,51 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Update user profile
-router.put('/profile', authMiddleware, upload.single('avatar'), async (req, res) => {
+router.put(
+  '/profile',
+  authMiddleware,
+  upload.single('avatar'),
+  [
+    body('username')
+  .optional()
+  .trim()
+  .isLength({ min: 2, max: 30 })
+  .matches(/^[a-zA-Z0-9\s_'-]+$/)
+  .withMessage('Username contains invalid characters'),
+
+    body('email').optional().isEmail().normalizeEmail(),
+    body('preferences')
+  .optional()
+  .customSanitizer(value => {
+    if (typeof value === 'string') {
+      try {
+        return JSON.parse(value);
+      } catch {
+        return null; // let the custom() check fail
+      }
+    }
+    return value;
+  })
+  .custom(value => typeof value === 'object' && value !== null)
+  .withMessage('Preferences must be a valid JSON object')
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
   const userId = req.user.id;
   const { username, email, preferences } = req.body;
+  if (email) {
+    const [existingEmailRows] = await db.query(
+      'SELECT user_id FROM Users WHERE email = ? AND user_id != ?',
+      [email, userId]
+    );
+    if (existingEmailRows.length > 0) {
+      return res.status(400).json({ message: 'Email already in use by another account' });
+    }
+  }
+
   const avatar = req.file ? `/uploads/${req.file.filename}` : null;
 
   try {
@@ -189,7 +241,14 @@ router.put('/profile', authMiddleware, upload.single('avatar'), async (req, res)
 
     const [rows] = await db.query('SELECT user_id, username, email, preferences, avatar FROM Users WHERE user_id = ?', [userId]);
     const user = rows[0];
-    user.preferences = JSON.parse(user.preferences || '{}');
+    try {
+      user.preferences =
+        typeof user.preferences === 'string'
+          ? JSON.parse(user.preferences)
+          : user.preferences || {};
+    } catch {
+      user.preferences = {};
+    }
 
     res.json({ message: 'Profile updated', user });
 
