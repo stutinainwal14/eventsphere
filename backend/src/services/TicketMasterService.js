@@ -6,21 +6,33 @@ const API_KEY = process.env.TICKETMASTER_API_KEY; // Your API key here
 
 const searchEvents = async ({ location, keyword, startDateTime, endDateTime, sort, countryCode }) => {
   try {
-    const response = await axios.get(`${API_BASE}/events.json`, {
-      params: {
-        city: location || '',
-        keyword: keyword || '',
-        startDateTime: startDateTime, // ✅ Correct
-        endDateTime: endDateTime,
-        sort : sort || '',
-        countryCode: countryCode || 'AU',
-        apikey: API_KEY, // Ensure API key is passed here
-      },
-    });
+    // Creating request parameters
+    const params = {
+      city: location || '',
+      keyword: keyword || '',
+      sort: sort || '',
+      countryCode: countryCode || 'AU',
+      apikey: API_KEY,
+    };
+
+    // Only adds date parameters if they exist to avoid sending empty values
+    if (startDateTime) {
+      params.startDateTime = startDateTime;
+    }
+
+    if (endDateTime) {
+      params.endDateTime = endDateTime;
+    }
+
+    const response = await axios.get(`${API_BASE}/events.json`, { params });
 
     return response.data;
   } catch (error) {
     console.error('Error fetching Ticketmaster events:', error.message);
+    if (error.response) {
+      console.error('Response data:', error.response.data);
+      console.error('Response status:', error.response.status);
+    }
     throw new Error('Failed to fetch events from Ticketmaster');
   }
 };
@@ -36,6 +48,5 @@ const getEventDetails = async (id) => {
     throw new Error('Failed to fetch event details');
   }
 };
-
 
 module.exports = { searchEvents, getEventDetails };

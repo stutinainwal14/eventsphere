@@ -82,6 +82,7 @@ function displayEvents(eventData) {
 
     loading.style.display = 'none';
 
+    // Clear existing content
     eventsList.innerHTML = '';
 
     if (!eventData._embedded || !eventData._embedded.events || eventData._embedded.events.length === 0) {
@@ -94,59 +95,123 @@ function displayEvents(eventData) {
     const events = eventData._embedded.events;
     const cardColors = ['red', 'blue', 'green', 'pink'];
 
-    // Creates an event card for each event
-    events.forEach((event, index) => {
-        const venue = event._embedded && event._embedded.venues && event._embedded.venues[0] ?
-            `${event._embedded.venues[0].city.name}, ${event._embedded.venues[0].country.name}` :
-            'Location not specified';
+    // Creates carousel container
+    const carouselContainer = document.createElement('div');
+    carouselContainer.className = 'event-carousel';
 
-        // Format event date
-        const eventDate = event.dates && event.dates.start ?
-            new Date(event.dates.start.localDate).toLocaleDateString('en-AU', {
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric'
-            }) :
-            'Date TBA';
+    // Creates carousel inner container for the slides
+    const carouselInner = document.createElement('div');
+    carouselInner.className = 'carousel-inner';
 
-        // Card element
-        const cardElement = document.createElement('div');
-        cardElement.className = `event-card ${cardColors[index % cardColors.length]}`;
+    const totalEvents = events.length;
+    const eventsPerSlide = 4;
+    const totalSlides = Math.ceil(totalEvents / eventsPerSlide);
 
-        // Gets image URL
-        const imageUrl = event.images && event.images.length > 0 ?
-            event.images[0].url :
-            '/public/homepage/assets/images/event.png';
+    // Create slide pages
+    for (let slideIndex = 0; slideIndex < totalSlides; slideIndex++) {
+        const slideDiv = document.createElement('div');
+        slideDiv.className = 'carousel-slide';
+        slideDiv.id = `slide-${slideIndex}`;
+        slideDiv.style.display = slideIndex === 0 ? 'flex' : 'none';
 
-        // Creates card in HTML
-        cardElement.innerHTML = `
-    <img src="${imageUrl}" alt="${event.name}" class="event-image">
-    <div class="card-content">
-      <p class="location">
-        <i class="fas fa-map-marker-alt"></i> ${venue}
-      </p>
-      <h3 class="event-title">${event.name}</h3>
-      <p class="date">
-        <i class="fas fa-calendar-alt"></i> ${eventDate}
-        <span class="platform">Ticketmaster</span>
-      </p>
-      <div class="card-buttons">
-        <button class="bookmark">
-          <i class="fas fa-bookmark"></i> BookMark
-        </button>
-        <button class="start" onclick="window.open('${event.url}', '_blank')">
-          Get Tickets <i class="fas fa-arrow-right"></i>
-        </button>
-      </div>
-    </div>
-  `;
+        for (let i = 0; i < eventsPerSlide; i++) {
+            const eventIndex = slideIndex * eventsPerSlide + i;
+            if (eventIndex >= totalEvents) break;
 
-        // Adds the card to results
-        eventsList.appendChild(cardElement);
+            const event = events[eventIndex];
+
+            const venue = event._embedded && event._embedded.venues && event._embedded.venues[0] ?
+                `${event._embedded.venues[0].city.name}, ${event._embedded.venues[0].country.name}` :
+                'Location not specified';
+
+            const eventDate = event.dates && event.dates.start ?
+                new Date(event.dates.start.localDate).toLocaleDateString('en-AU', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                }) :
+                'Date TBA';
+
+            const cardElement = document.createElement('div');
+            cardElement.className = `event-card ${cardColors[eventIndex % cardColors.length]}`;
+
+            const imageUrl = event.images && event.images.length > 0 ?
+                event.images[0].url :
+                '/public/homepage/assets/images/event.png';
+
+            cardElement.innerHTML = `
+                <img src="${imageUrl}" alt="${event.name}" class="event-image">
+                <div class="card-content">
+                    <p class="location">
+                        <i class="fas fa-map-marker-alt"></i> ${venue}
+                    </p>
+                    <h3 class="event-title">${event.name}</h3>
+                    <p class="date">
+                        <i class="fas fa-calendar-alt"></i> ${eventDate}
+                        <span class="platform">Ticketmaster</span>
+                    </p>
+                    <div class="card-buttons">
+                        <button class="bookmark">
+                            <i class="fas fa-bookmark"></i> BookMark
+                        </button>
+                        <button class="start" onclick="window.open('${event.url}', '_blank')">
+                            Get Tickets <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            slideDiv.appendChild(cardElement);
+        }
+
+        carouselInner.appendChild(slideDiv);
+    }
+
+    // Creates carousel navigation
+    const carouselNavigation = document.createElement('div');
+    carouselNavigation.className = 'carousel-navigation';
+
+    const prevButton = document.createElement('button');
+    prevButton.className = 'carousel-nav-btn prev-btn';
+    prevButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
+    prevButton.onclick = () => navigateCarousel('prev', totalSlides);
+
+    const nextButton = document.createElement('button');
+    nextButton.className = 'carousel-nav-btn next-btn';
+    nextButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
+    nextButton.onclick = () => navigateCarousel('next', totalSlides);
+
+    carouselNavigation.appendChild(prevButton);
+    carouselNavigation.appendChild(nextButton);
+
+    carouselContainer.appendChild(carouselInner);
+    carouselContainer.appendChild(carouselNavigation);
+
+    eventsList.appendChild(carouselContainer);
+
+    setupBookmarkButtons();
+}
+
+// Function to navigate the carousel
+function navigateCarousel(direction, totalSlides) {
+    const slides = document.querySelectorAll('.carousel-slide');
+    let currentSlideIndex = 0;
+
+    slides.forEach((slide, index) => {
+        if (slide.style.display === 'flex') {
+            currentSlideIndex = index;
+            slide.style.display = 'none';
+        }
     });
 
-    // Add bookmark functionality after displaying events
-    setupBookmarkButtons();
+    let newSlideIndex;
+    if (direction === 'next') {
+        newSlideIndex = (currentSlideIndex + 1) % totalSlides;
+    } else {
+        newSlideIndex = (currentSlideIndex - 1 + totalSlides) % totalSlides;
+    }
+
+    slides[newSlideIndex].style.display = 'flex';
 }
 
 // Setup bookmark buttons - checks if user is logged in before allowing bookmarks
@@ -167,6 +232,23 @@ function setupBookmarkButtons() {
     });
 }
 
+// Formats date in ISO format with timezone for API request
+function formatDateForAPI(dateString) {
+    if (!dateString) return '';
+
+    // Creating Date object from the input
+    const date = new Date(dateString);
+
+    // Format to YYYY-MM-DDThh:mm:ssZ format
+    // For startDateTime, set time to 00:00:00
+    // For endDateTime, set time to 23:59:59
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+}
+
 // Function to fetch events from the API with authentication
 function fetchEvents(searchParams) {
     const loading = document.getElementById('loading');
@@ -176,8 +258,18 @@ function fetchEvents(searchParams) {
 
     if (searchParams.location) queryParams.append('location', searchParams.location);
     if (searchParams.keyword) queryParams.append('keyword', searchParams.keyword);
-    if (searchParams.startDate) queryParams.append('startDate', searchParams.startDate);
-    if (searchParams.endDate) queryParams.append('endDate', searchParams.endDate);
+
+    // Formats the dates correctly for API
+    if (searchParams.startDate) {
+        const formattedStartDate = formatDateForAPI(searchParams.startDate);
+        queryParams.append('startDateTime', `${formattedStartDate}T00:00:00Z`);
+    }
+
+    if (searchParams.endDate) {
+        const formattedEndDate = formatDateForAPI(searchParams.endDate);
+        queryParams.append('endDateTime', `${formattedEndDate}T23:59:59Z`);
+    }
+
     if (searchParams.sort) queryParams.append('sort', searchParams.sort);
 
     queryParams.append('countryCode', 'AU');
@@ -218,11 +310,8 @@ function fetchEvents(searchParams) {
         })
         .catch(error => {
             console.error('Error fetching events:', error);
-
             console.error('Error details:', error.toString());
-
             displayNoResults();
-
             console.log('Falling back to mock data');
             displayEvents(getMockEventData());
         });
@@ -241,23 +330,19 @@ function handleSearchFormSubmit(event) {
     const resultsHeading = document.querySelector('.results-heading');
     resultsHeading.textContent = `${keyword || 'All'} Events in ${location || 'All of Australia'}`;
 
-    const startDateISO = startDate ? new Date(startDate + 'T00:00:00').toISOString() : '';
-    const endDateISO = endDate ? new Date(endDate + 'T23:59:59').toISOString() : '';
-
     console.log('Search parameters:', {
         location: location,
         keyword: keyword,
-        startDate: startDateISO,
-        endDate: endDateISO,
-        sort: sort,
-        countryCode: 'AU'
+        startDate: startDate,
+        endDate: endDate,
+        sort: sort
     });
 
     fetchEvents({
         location: location,
         keyword: keyword,
-        startDate: startDateISO,
-        endDate: endDateISO,
+        startDate: startDate,
+        endDate: endDate,
         sort: sort
     });
 }
@@ -273,12 +358,15 @@ function fetchTrendingEvents() {
     const nextWeek = new Date();
     nextWeek.setDate(today.getDate() + 7);
 
-    queryParams.append('startDate', today.toISOString());
-    queryParams.append('endDate', nextWeek.toISOString());
-    queryParams.append('sort', 'relevance,asc');
+    const formattedToday = formatDateForAPI(today);
+    const formattedNextWeek = formatDateForAPI(nextWeek);
+
+    queryParams.append('startDateTime', `${formattedToday}T00:00:00Z`);
+    queryParams.append('endDateTime', `${formattedNextWeek}T23:59:59Z`);
+    queryParams.append('sort', 'date,asc');
     queryParams.append('countryCode', 'AU');
 
-    const apiUrl = `/trending-events?${queryParams.toString()}`;
+    const apiUrl = `/search-events?${queryParams.toString()}`;
     console.log('Fetching trending events from API:', apiUrl);
 
     const token = localStorage.getItem('token');
@@ -315,144 +403,144 @@ function fetchTrendingEvents() {
 }
 
 // Mock event data for fallback purposes
-// function getMockEventData() {
-//     return {
-//         "_embedded": {
-//             "events": [
-//                 {
-//                     "name": "Ed Sheeran: Mathematics Tour",
-//                     "url": "https://www.ticketmaster.com.au/ed-sheeran-mathematics-tour-sydney-05-14-2025/event/13005E8D8B681234",
-//                     "images": [
-//                         {
-//                             "url": "/auth/homepage/assets/images/event.png"
-//                         }
-//                     ],
-//                     "dates": {
-//                         "start": {
-//                             "localDate": "2025-05-15"
-//                         }
-//                     },
-//                     "_embedded": {
-//                         "venues": [
-//                             {
-//                                 "city": {
-//                                     "name": "Sydney"
-//                                 },
-//                                 "country": {
-//                                     "name": "Australia"
-//                                 }
-//                             }
-//                         ]
-//                     }
-//                 },
-//                 {
-//                     "name": "Taylor Swift: The Eras Tour",
-//                     "url": "https://www.ticketmaster.com.au/taylor-swift-the-eras-tour-sydney-05-16-2025/event/13005E81F9A25678",
-//                     "images": [
-//                         {
-//                             "url": "/auth/homepage/assets/images/event.png"
-//                         }
-//                     ],
-//                     "dates": {
-//                         "start": {
-//                             "localDate": "2025-05-16"
-//                         }
-//                     },
-//                     "_embedded": {
-//                         "venues": [
-//                             {
-//                                 "city": {
-//                                     "name": "Sydney"
-//                                 },
-//                                 "country": {
-//                                     "name": "Australia"
-//                                 }
-//                             }
-//                         ]
-//                     }
-//                 },
-//                 {
-//                     "name": "Coldplay: Music of the Spheres",
-//                     "url": "https://www.ticketmaster.com.au/coldplay-music-of-the-spheres-sydney-05-17-2025/event/13005E91CA9D9012",
-//                     "images": [
-//                         {
-//                             "url": "/auth/homepage/assets/images/event.png"
-//                         }
-//                     ],
-//                     "dates": {
-//                         "start": {
-//                             "localDate": "2025-05-17"
-//                         }
-//                     },
-//                     "_embedded": {
-//                         "venues": [
-//                             {
-//                                 "city": {
-//                                     "name": "Sydney"
-//                                 },
-//                                 "country": {
-//                                     "name": "Australia"
-//                                 }
-//                             }
-//                         ]
-//                     }
-//                 },
-//                 {
-//                     "name": "Bad Bunny: Most Wanted Tour",
-//                     "url": "https://www.ticketmaster.com.au/bad-bunny-most-wanted-tour-sydney-05-18-2025/event/13005E7AD45B3456",
-//                     "images": [
-//                         {
-//                             "url": "/auth/homepage/assets/images/event.png"
-//                         }
-//                     ],
-//                     "dates": {
-//                         "start": {
-//                             "localDate": "2025-05-18"
-//                         }
-//                     },
-//                     "_embedded": {
-//                         "venues": [
-//                             {
-//                                 "city": {
-//                                     "name": "Sydney"
-//                                 },
-//                                 "country": {
-//                                     "name": "Australia"
-//                                 }
-//                             }
-//                         ]
-//                     }
-//                 },
-//                 {
-//                     "name": "Adele: Weekend With Adele",
-//                     "url": "https://www.ticketmaster.com.au/adele-weekend-with-adele-sydney-05-19-2025/event/13005E84BA7D7890",
-//                     "images": [
-//                         {
-//                             "url": "/auth/homepage/assets/images/event.png"
-//                         }
-//                     ],
-//                     "dates": {
-//                         "start": {
-//                             "localDate": "2025-05-19"
-//                         }
-//                     },
-//                     "_embedded": {
-//                         "venues": [
-//                             {
-//                                 "city": {
-//                                     "name": "Sydney"
-//                                 },
-//                                 "country": {
-//                                     "name": "Australia"
-//                                 }
-//                             }
-//                         ]
-//                     }
-//                 }
-//             ]
-//         }
-//     };
-// }
+function getMockEventData() {
+    return {
+        "_embedded": {
+            "events": [
+                {
+                    "name": "Ed Sheeran: Mathematics Tour",
+                    "url": "https://www.ticketmaster.com.au/ed-sheeran-mathematics-tour-sydney-05-14-2025/event/13005E8D8B681234",
+                    "images": [
+                        {
+                            "url": "/auth/homepage/assets/images/event.png"
+                        }
+                    ],
+                    "dates": {
+                        "start": {
+                            "localDate": "2025-05-15"
+                        }
+                    },
+                    "_embedded": {
+                        "venues": [
+                            {
+                                "city": {
+                                    "name": "Sydney"
+                                },
+                                "country": {
+                                    "name": "Australia"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "Taylor Swift: The Eras Tour",
+                    "url": "https://www.ticketmaster.com.au/taylor-swift-the-eras-tour-sydney-05-16-2025/event/13005E81F9A25678",
+                    "images": [
+                        {
+                            "url": "/auth/homepage/assets/images/event.png"
+                        }
+                    ],
+                    "dates": {
+                        "start": {
+                            "localDate": "2025-05-16"
+                        }
+                    },
+                    "_embedded": {
+                        "venues": [
+                            {
+                                "city": {
+                                    "name": "Sydney"
+                                },
+                                "country": {
+                                    "name": "Australia"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "Coldplay: Music of the Spheres",
+                    "url": "https://www.ticketmaster.com.au/coldplay-music-of-the-spheres-sydney-05-17-2025/event/13005E91CA9D9012",
+                    "images": [
+                        {
+                            "url": "/auth/homepage/assets/images/event.png"
+                        }
+                    ],
+                    "dates": {
+                        "start": {
+                            "localDate": "2025-05-17"
+                        }
+                    },
+                    "_embedded": {
+                        "venues": [
+                            {
+                                "city": {
+                                    "name": "Sydney"
+                                },
+                                "country": {
+                                    "name": "Australia"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "Bad Bunny: Most Wanted Tour",
+                    "url": "https://www.ticketmaster.com.au/bad-bunny-most-wanted-tour-sydney-05-18-2025/event/13005E7AD45B3456",
+                    "images": [
+                        {
+                            "url": "/auth/homepage/assets/images/event.png"
+                        }
+                    ],
+                    "dates": {
+                        "start": {
+                            "localDate": "2025-05-18"
+                        }
+                    },
+                    "_embedded": {
+                        "venues": [
+                            {
+                                "city": {
+                                    "name": "Sydney"
+                                },
+                                "country": {
+                                    "name": "Australia"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "Adele: Weekend With Adele",
+                    "url": "https://www.ticketmaster.com.au/adele-weekend-with-adele-sydney-05-19-2025/event/13005E84BA7D7890",
+                    "images": [
+                        {
+                            "url": "/auth/homepage/assets/images/event.png"
+                        }
+                    ],
+                    "dates": {
+                        "start": {
+                            "localDate": "2025-05-19"
+                        }
+                    },
+                    "_embedded": {
+                        "venues": [
+                            {
+                                "city": {
+                                    "name": "Sydney"
+                                },
+                                "country": {
+                                    "name": "Australia"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    };
+}
 
 function displayNoResults() {
     const loading = document.getElementById('loading');
