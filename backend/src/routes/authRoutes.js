@@ -143,6 +143,39 @@ router.post(
   }
 });
 
+// GET /profile - Get current user's profile
+router.get('/profile', authMiddleware, async (req, res) => {
+  const { id: userId } = req.user;
+
+  try {
+    const [rows] = await db.query(
+      'SELECT user_id, username, email, role, preferences, avatar FROM Users WHERE user_id = ?',
+      [userId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const user = rows[0];
+
+    try {
+      user.preferences =
+        typeof user.preferences === 'string'
+          ? JSON.parse(user.preferences)
+          : user.preferences || {};
+    } catch {
+      user.preferences = {};
+    }
+
+    res.json({ user });
+  } catch (err) {
+    console.error('Fetch profile error:', err.message);
+    res.status(500).json({ error: 'Failed to fetch profile details' });
+  }
+});
+
+
 const multer = require('multer');
 
 
