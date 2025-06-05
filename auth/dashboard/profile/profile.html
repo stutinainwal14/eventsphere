@@ -13,7 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" type="text/css" href="dashboard.css">
+    <link rel="stylesheet" type="text/css" href="profile.css">
 </head>
 
 <body>
@@ -100,7 +100,7 @@
             <div class="profile-tabs">
                 <div class="profile-tab active" data-tab="personal-info">Personal Information</div>
                 <div class="profile-tab" data-tab="change-password">Change Password</div>
-                <div class="profile-tab" data-tab="notification-settings">Notification Settings</div>
+                <div class="profile-tab" data-tab="two-factor-auth">Two-Factor Authentication</div>
             </div>
 
             <!-- Personal Information Tab -->
@@ -212,58 +212,70 @@
                 </form>
             </div>
 
-            <!-- Notification Settings Tab -->
-            <div class="tab-content" id="notification-settings">
-                <div class="alert alert-success" id="notification-success-alert"></div>
-                <div class="alert alert-danger" id="notification-error-alert"></div>
+            <!-- Two-Factor Authentication Tab -->
+            <div class="tab-content" id="two-factor-auth">
+                <div class="alert alert-success" id="twofa-success-alert"></div>
+                <div class="alert alert-danger" id="twofa-error-alert"></div>
 
-                <form id="notification-form">
-                    <div class="form-group">
-                        <label class="form-check-label">
-                            <input type="checkbox" id="email-notifications" checked>
-                            Email Notifications
-                        </label>
-                        <p style="color: #8898aa; font-size: 0.875rem; margin-top: 0.25rem;">
-                            Receive email notifications about events you're interested in
-                        </p>
+                <!-- 2FA Status Section -->
+                <div class="form-group">
+                    <h4>Two-Factor Authentication Status</h4>
+                    <div id="twofa-status" class="twofa-status">
+                        <span id="status-indicator" class="status-indicator disabled">
+                            <i class="fas fa-times-circle"></i> Disabled
+                        </span>
+                        <p class="status-text">Two-factor authentication is currently disabled for your account.</p>
+                    </div>
+                </div>
+
+                <!-- Setup 2FA Section -->
+                <div id="setup-2fa-section">
+                    <h4>Setup Two-Factor Authentication</h4>
+                    <p>Secure your account with two-factor authentication using an authenticator app like Google Authenticator or Authy.</p>
+
+                    <div class="setup-steps" id="setup-steps" style="display: none;">
+                        <div class="step">
+                            <h5>Step 1: Scan QR Code</h5>
+                            <p>Scan this QR code with your authenticator app:</p>
+                            <div class="qr-code-container" id="qr-code-container">
+                                <!-- QR code will be inserted here -->
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <h5>Step 2: Enter Verification Code</h5>
+                            <p>Enter the 6-digit code from your authenticator app:</p>
+                            <form id="verify-2fa-form">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="verification-code"
+                                           placeholder="Enter 6-digit code" maxlength="6"
+                                           pattern="[0-9]{6}" style="text-align: center; font-size: 1.2rem; letter-spacing: 0.3rem;">
+                                </div>
+                                <div class="action-buttons">
+                                    <button type="button" class="btn btn-secondary" id="cancel-2fa-setup">Cancel</button>
+                                    <button type="submit" class="btn btn-primary" id="verify-2fa-btn">Enable 2FA</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-check-label">
-                            <input type="checkbox" id="sms-notifications">
-                            SMS Notifications
-                        </label>
-                        <p style="color: #8898aa; font-size: 0.875rem; margin-top: 0.25rem;">
-                            Receive text messages for event reminders and updates
-                        </p>
+                    <div class="action-buttons" id="initial-2fa-buttons">
+                        <button type="button" class="btn btn-primary" id="setup-2fa-btn">
+                            <i class="fas fa-shield-alt"></i> Setup Two-Factor Authentication
+                        </button>
                     </div>
+                </div>
 
-                    <div class="form-group">
-                        <label class="form-check-label">
-                            <input type="checkbox" id="marketing-emails" checked>
-                            Marketing Emails
-                        </label>
-                        <p style="color: #8898aa; font-size: 0.875rem; margin-top: 0.25rem;">
-                            Receive promotional offers and newsletters from Event Sphere
-                        </p>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-check-label">
-                            <input type="checkbox" id="new-event-alerts" checked>
-                            New Event Alerts
-                        </label>
-                        <p style="color: #8898aa; font-size: 0.875rem; margin-top: 0.25rem;">
-                            Get notified when new events are added in your area
-                        </p>
-                    </div>
-
+                <!-- Disable 2FA Section -->
+                <div id="disable-2fa-section" style="display: none;">
+                    <h4>Disable Two-Factor Authentication</h4>
+                    <p>If you disable 2FA, your account will be less secure. You can re-enable it at any time.</p>
                     <div class="action-buttons">
-                        <button type="button" class="btn btn-secondary" id="cancel-notification-btn">Cancel</button>
-                        <button type="submit" class="btn btn-primary" id="save-notification-btn">Save
-                            Preferences</button>
+                        <button type="button" class="btn btn-danger" id="disable-2fa-btn">
+                            <i class="fas fa-times"></i> Disable Two-Factor Authentication
+                        </button>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
 
@@ -281,8 +293,93 @@
         </div>
     </div>
 
+    <style>
+        /* 2FA Specific Styles */
+        .twofa-status {
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1.5rem;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-indicator.enabled {
+            color: var(--success-color);
+        }
+
+        .status-indicator.disabled {
+            color: #6c757d;
+        }
+
+        .status-indicator i {
+            margin-right: 0.5rem;
+        }
+
+        .status-text {
+            color: #6c757d;
+            margin: 0;
+        }
+
+        .setup-steps {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 0.375rem;
+            margin: 1.5rem 0;
+        }
+
+        .step {
+            margin-bottom: 2rem;
+        }
+
+        .step:last-child {
+            margin-bottom: 0;
+        }
+
+        .step h5 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .qr-code-container {
+            text-align: center;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 0.375rem;
+            border: 1px solid #dee2e6;
+            margin: 1rem 0;
+        }
+
+        .qr-code-container img {
+            max-width: 200px;
+            height: auto;
+        }
+
+        #verification-code {
+            max-width: 200px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .setup-steps {
+                padding: 1rem;
+            }
+
+            .qr-code-container img {
+                max-width: 150px;
+            }
+        }
+    </style>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="dashboard.js"></script>
+    <script src="profile.js"></script>
 </body>
 
 </html>

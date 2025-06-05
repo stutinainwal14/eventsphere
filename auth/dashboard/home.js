@@ -24,8 +24,12 @@ function toggleTheme() {
 
 // Checks authentication status and update UI accordingly
 function checkAuthStatus() {
-    const token = localStorage.getItem('token');
+    // Use consistent token key - check both for compatibility
+    const token = localStorage.getItem('authToken') || localStorage.getItem('authtoken');
+    console.log('Checking auth status, token:', token ? 'Token found' : 'No token'); // Don't log actual token for security
+
     const isLoggedIn = !!token;
+    console.log('Is logged in:', isLoggedIn);
 
     const loginBtns = document.querySelectorAll('.login-btn');
     const signupBtns = document.querySelectorAll('.signup-btn');
@@ -33,10 +37,15 @@ function checkAuthStatus() {
     const footerSignup = document.querySelector('.footer-signup');
 
     if (isLoggedIn) {
+        console.log('User is logged in, updating UI');
+
         // If logged in, replace login/signup buttons with profile/logout
         loginBtns.forEach(btn => {
             btn.textContent = 'Profile';
-            btn.closest('a').href = '../dashboard/profile.html';
+            const parentLink = btn.closest('a');
+            if (parentLink) {
+                parentLink.href = '/dashboard/profile/profile.html'; // Adjust path as needed
+            }
         });
 
         signupBtns.forEach(btn => {
@@ -51,7 +60,7 @@ function checkAuthStatus() {
 
         if (footerLogin) {
             footerLogin.textContent = 'Profile';
-            footerLogin.closest('a').href = '../dashboard/profile.html';
+            footerLogin.closest('a').href = '/dashboard/profile/profile.html';
         }
 
         if (footerSignup) {
@@ -63,13 +72,17 @@ function checkAuthStatus() {
                 parent.addEventListener('click', handleLogout);
             }
         }
+    } else {
+        console.log('User is not logged in - UI remains as login/signup');
     }
 }
 
 // Handle logout functionality
 function handleLogout(event) {
     event.preventDefault();
-    localStorage.removeItem('token');
+    // Remove both token variations for cleanup
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('authtoken');
     alert('You have been logged out successfully');
     window.location.href = '../auth/login/login.html';
 }
@@ -216,7 +229,8 @@ function navigateCarousel(direction, totalSlides) {
 
 // Setup bookmark buttons - checks if user is logged in before allowing bookmarks
 function setupBookmarkButtons() {
-    const token = localStorage.getItem('token');
+    // Check both token variations for compatibility
+    const token = localStorage.getItem('authToken') || localStorage.getItem('authtoken');
     const bookmarkButtons = document.querySelectorAll('.bookmark');
 
     bookmarkButtons.forEach(btn => {
@@ -279,11 +293,13 @@ function fetchEvents(searchParams) {
 
     console.log('Fetching events from API:', apiUrl);
 
-    const token = localStorage.getItem('token');
+    // Check both token variations for compatibility
+    const token = localStorage.getItem('authToken') || localStorage.getItem('authtoken');
     const headers = {
         'Content-Type': 'application/json'
     };
 
+    // Only add Authorization header if token exists
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;
     }
@@ -295,8 +311,11 @@ function fetchEvents(searchParams) {
         .then(response => {
             console.log('API Response status:', response.status);
             if (response.status === 401) {
-                alert('Your session has expired. Please login again.');
-                window.location.href = '../auth/login/login.html';
+                // Only show session expired message if user was actually logged in
+                if (token) {
+                    alert('Your session has expired. Please login again.');
+                    window.location.href = '../auth/login/login.html';
+                }
                 throw new Error('Unauthorized');
             }
             if (!response.ok) {
@@ -369,11 +388,13 @@ function fetchTrendingEvents() {
     const apiUrl = `/search-events?${queryParams.toString()}`;
     console.log('Fetching trending events from API:', apiUrl);
 
-    const token = localStorage.getItem('token');
+    // Check both token variations for compatibility
+    const token = localStorage.getItem('authToken') || localStorage.getItem('authtoken');
     const headers = {
         'Content-Type': 'application/json'
     };
 
+    // Only add Authorization header if token exists
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;
     }
