@@ -303,6 +303,7 @@ body {
 
 /* Responsive design */
 @media (max-width: 992px) {
+
     .left-illustration,
     .right-illustration {
         display: none;
@@ -321,5 +322,174 @@ body {
 
     .login-header h1 {
         font-size: 36px;
+    }
+}
+
+/* Input validation states */
+.input-group input.valid {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+.input-group input.invalid {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* Input error messages */
+.input-error {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: none;
+    font-weight: 500;
+}
+
+/* Enhanced password strength indicator */
+.password-strength {
+    margin-top: 0.5rem;
+    height: 4px;
+    background-color: #e9ecef;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.password-strength-meter {
+    height: 100%;
+    width: 0%;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.password-strength-meter.weak {
+    background-color: #dc3545;
+}
+
+.password-strength-meter.medium {
+    background-color: #ffc107;
+}
+
+.password-strength-meter.strong {
+    background-color: #28a745;
+}
+
+.password-strength-text {
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    font-weight: 500;
+}
+
+.password-strength-text.weak-text {
+    color: #dc3545;
+}
+
+.password-strength-text.strong-text {
+    color: #28a745;
+}
+
+/* Security feedback animations */
+.input-group input.valid {
+    animation: validPulse 0.5s ease-in-out;
+}
+
+.input-group input.invalid {
+    animation: invalidShake 0.5s ease-in-out;
+}
+
+@keyframes validPulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes invalidShake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+/* Enhanced alert styling */
+.alert {
+    padding: 12px 16px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    font-weight: 500;
+    display: none;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+/* Loading spinner enhancement */
+.loading-spinner {
+    display: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ffffff;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-left: 8px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Disabled button state */
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Focus states for accessibility */
+input:focus,
+button:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .input-error {
+        font-size: 0.8rem;
+    }
+
+    .password-strength-text {
+        font-size: 0.7rem;
     }
 }
