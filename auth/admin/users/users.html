@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Users | Admin</title>
+  <link rel="stylesheet" href="../main/admin.css" />
+  <link rel="stylesheet" href="../trending/trending.css">
+  <link rel="stylesheet" href="users.css">
+  <!-- Font Awesome for icons -->
+  <script
+  src="https://kit.fontawesome.com/d62bd036de.js"
+  crossorigin="anonymous"
+></script>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  integrity="sha512-Bx85rE+MT5+IsAwIE9X0Z7FOzMZHzBkgq4U+SBe7pCyRYv/d0VHJ/fZzC4VvW2Wv0G/7P1aeZzLRqap8QeY6Rg=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/></head>
+<body data-page="users">
+  <div class="container">
+    <div id="sidebar"></div>
+
+    <main class="main-content">
+      <h1>User Management</h1>
+      <div class="table-container">
+        <table class="trending-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Full Name</th>
+              <th>Email</th>
+              <th>Password</th>
+              <th>Edit</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Jay Chavan</td>
+              <td>jay@gmail.com</td>
+              <td><input type="password" value="jay12345" readonly class="password-field" /></td>
+              <td><button class="edit-btn">Edit</button></td>
+              <td><button class="delete-btn">Delete</button></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Stuti Nainwal</td>
+              <td>stuti@example.com</td>
+              <td><input type="password" value="stutiPass!" readonly class="password-field" /></td>
+              <td><button class="edit-btn">Edit</button></td>
+              <td><button class="delete-btn">Delete</button></td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Anirudh Vemulapalli</td>
+              <td>anirudh@eventsphere.com</td>
+              <td><input type="password" value="anirudh2025" readonly class="password-field" /></td>
+              <td><button class="edit-btn">Edit</button></td>
+              <td><button class="delete-btn">Delete</button></td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </main>
+    
+  </div>
+
+  <script src="../loadSidebar.js"></script>
+</body>
+</html>
