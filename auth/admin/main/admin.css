@@ -1,0 +1,192 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ffffff; /* Changed to white */
+    color: #000;
+  }
+  
+  .container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .sidebar {
+    width: 250px;
+    background-color: #e67e00; /* Updated sidebar color */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .brand {
+    font-size: 24px;
+    color: #fff;
+    margin-bottom: 30px;
+  }
+  
+  .sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .sidebar nav a {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 10px 15px;
+    border-radius: 5px;
+  }
+  
+  .sidebar nav a i {
+    margin-right: 10px;
+  }
+  
+  /* Active Link Styling */
+  .sidebar nav a.active {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  .logout-link {
+    margin-top: auto;
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+  }
+  
+  .logout-link i {
+    margin-right: 10px;
+  }
+  
+  .main-content {
+    flex: 1;
+    padding: 40px;
+    background-color: #ffffff; /* Match body for consistency */
+  }
+  
+  header h1 {
+    margin-bottom: 30px;
+    font-size: 28px;
+    color: #000;
+  }
+  
+  .cards {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .card {
+    background-color: #f2f2f2;
+    padding: 20px;
+    border-radius: 8px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: 0.3s;
+    border: 1px solid #ccc;
+  }
+  
+  .card:hover {
+    background-color: #e6e6e6;
+  }
+  
+  .card i {
+    font-size: 32px;
+    color: #e67e00;
+  }
+  
+  .card p {
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .card h2 {
+    margin-top: 5px;
+    font-size: 24px;
+    color: #000;
+  }
+  
+  /* Make the whole container stretch full height */
+.container {
+  display: flex;
+  min-height: 100vh; /* Ensures full screen height */
+}
+
+/* Sidebar layout */
+.sidebar {
+  width: 250px;
+  background-color: #e67e00;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Pushes logout to the bottom */
+  padding: 20px;
+  color: #fff;
+  height: 100vh; /* Locks sidebar height to full viewport */
+  position: sticky;
+  top: 0;
+}
+
+/* Top brand and navigation section */
+.sidebar .brand {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Nav links */
+.sidebar nav a {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+}
+
+.sidebar nav a i {
+  margin-right: 10px;
+}
+
+.sidebar nav a.active {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Logout button styling */
+.logout-link {
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  margin-top: auto;
+  transition: background 0.3s ease;
+}
+
+.logout-link:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.logout-link i {
+  margin-right: 10px;
+}
