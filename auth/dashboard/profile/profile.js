@@ -72,6 +72,8 @@ $(document).ready(function () {
 
     // Load bookmarked events
     function loadBookmarkedEvents() {
+        console.log('Loading bookmarked events...'); // Debug log
+
         $('#events-loading').show();
         $('#no-events').hide();
         $('#events-grid').empty();
@@ -83,11 +85,14 @@ $(document).ready(function () {
                 'Authorization': `Bearer ${token}`
             },
             success: function (response) {
+                console.log('Bookmarks response:', response); // Debug log
                 $('#events-loading').hide();
 
                 if (response.events && response.events.length > 0) {
+                    console.log('Displaying', response.events.length, 'events'); // Debug log
                     displayBookmarkedEvents(response.events);
                 } else {
+                    console.log('No events found'); // Debug log
                     $('#no-events').show();
                 }
             },
@@ -200,21 +205,31 @@ $(document).ready(function () {
         e.preventDefault();
 
         const section = $(this).data('section');
+        const isLogout = $(this).hasClass('logout-btn');
+
+        // Handle logout separately
+        if (isLogout) {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('authtoken');
+            window.location.href = '/auth/login/login.html';
+            return;
+        }
 
         // Update active menu item
         $('.menu-item').removeClass('active');
         $(this).addClass('active');
 
-        // Hide all content cards
+        // Hide all content sections
         $('.content-card').hide();
         $('#my-events-section').hide();
 
         // Show appropriate section
         if (section === 'my-events') {
+            console.log('Showing My Events section'); // Debug log
             $('#my-events-section').show();
             loadBookmarkedEvents();
         } else {
-            // Show profile section for other menu items
+            // Show profile section for other menu items (Dashboard, Settings, etc.)
             $('.content-card').not('#my-events-section').first().show();
         }
     });
