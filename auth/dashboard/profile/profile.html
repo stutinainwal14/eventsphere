@@ -27,7 +27,7 @@
                 <i class="fas fa-tachometer-alt"></i>
                 Dashboard
             </a>
-            <a href="#" class="menu-item">
+            <a href="#" class="menu-item" data-section="my-events">
                 <i class="fas fa-calendar-alt"></i>
                 My Events
             </a>
@@ -231,7 +231,8 @@
                 <!-- Setup 2FA Section -->
                 <div id="setup-2fa-section">
                     <h4>Setup Two-Factor Authentication</h4>
-                    <p>Secure your account with two-factor authentication using an authenticator app like Google Authenticator or Authy.</p>
+                    <p>Secure your account with two-factor authentication using an authenticator app like Google
+                        Authenticator or Authy.</p>
 
                     <div class="setup-steps" id="setup-steps" style="display: none;">
                         <div class="step">
@@ -248,12 +249,14 @@
                             <form id="verify-2fa-form">
                                 <div class="form-group">
                                     <input type="text" class="form-control" id="verification-code"
-                                           placeholder="Enter 6-digit code" maxlength="6"
-                                           pattern="[0-9]{6}" style="text-align: center; font-size: 1.2rem; letter-spacing: 0.3rem;">
+                                        placeholder="Enter 6-digit code" maxlength="6" pattern="[0-9]{6}"
+                                        style="text-align: center; font-size: 1.2rem; letter-spacing: 0.3rem;">
                                 </div>
                                 <div class="action-buttons">
-                                    <button type="button" class="btn btn-secondary" id="cancel-2fa-setup">Cancel</button>
-                                    <button type="submit" class="btn btn-primary" id="verify-2fa-btn">Enable 2FA</button>
+                                    <button type="button" class="btn btn-secondary"
+                                        id="cancel-2fa-setup">Cancel</button>
+                                    <button type="submit" class="btn btn-primary" id="verify-2fa-btn">Enable
+                                        2FA</button>
                                 </div>
                             </form>
                         </div>

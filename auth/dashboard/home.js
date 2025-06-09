@@ -227,9 +227,8 @@ function navigateCarousel(direction, totalSlides) {
     slides[newSlideIndex].style.display = 'flex';
 }
 
-// Setup bookmark buttons - checks if user is logged in before allowing bookmarks
+// Setup bookmark buttons - saves events to backend when logged in
 function setupBookmarkButtons() {
-    // Check both token variations for compatibility
     const token = localStorage.getItem('authToken') || localStorage.getItem('authtoken');
     const bookmarkButtons = document.querySelectorAll('.bookmark');
 
@@ -240,7 +239,40 @@ function setupBookmarkButtons() {
                 alert('Please login to bookmark events');
                 window.location.href = '../auth/login/login.html';
             } else {
-                alert('Event added to bookmarks!');
+                // Get event data from the card element
+                const eventCard = btn.closest('.event-card');
+                const eventData = {
+                    name: eventCard.querySelector('.event-title').textContent,
+                    location: eventCard.querySelector('.location').textContent.replace(/.*\s/, ''),
+                    date: eventCard.querySelector('.date').textContent.replace(/.*\s/, '').replace('Ticketmaster', '').trim(),
+                    image: eventCard.querySelector('.event-image').src,
+                    ticketUrl: eventCard.querySelector('.start').getAttribute('onclick').match(/'([^']+)'/)[1],
+                    platform: 'Ticketmaster'
+                };
+
+                // Save to backend
+                fetch('/api/events/bookmark', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(eventData)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Event added to bookmarks!');
+                            btn.innerHTML = '<i class="fas fa-bookmark" style="color: #gold;"></i> Bookmarked';
+                            btn.disabled = true;
+                        } else {
+                            alert('Failed to bookmark event');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Bookmark error:', error);
+                        alert('Failed to bookmark event');
+                    });
             }
         });
     });
