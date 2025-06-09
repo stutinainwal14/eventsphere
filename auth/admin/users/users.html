@@ -42,25 +42,10 @@
               <td>Jay Chavan</td>
               <td>jay@gmail.com</td>
               <td><input type="password" value="jay12345" readonly class="password-field" /></td>
-              <td><button class="edit-btn">Edit</button></td>
+              <td><button class="edit-btn" onclick="openModal()">Edit</button></td>
               <td><button class="delete-btn">Delete</button></td>
             </tr>
-            <tr>
-              <td>2</td>
-              <td>Stuti Nainwal</td>
-              <td>stuti@example.com</td>
-              <td><input type="password" value="stutiPass!" readonly class="password-field" /></td>
-              <td><button class="edit-btn">Edit</button></td>
-              <td><button class="delete-btn">Delete</button></td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>Anirudh Vemulapalli</td>
-              <td>anirudh@eventsphere.com</td>
-              <td><input type="password" value="anirudh2025" readonly class="password-field" /></td>
-              <td><button class="edit-btn">Edit</button></td>
-              <td><button class="delete-btn">Delete</button></td>
-            </tr>
+
 
           </tbody>
         </table>
@@ -68,6 +53,32 @@
     </main>
     
   </div>
+  <!-- User Edit Modal -->
+<div id="editModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Edit User</h3>
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+    </div>
+    <form id="editForm">
+      <label>Full Name</label>
+      <input type="text" name="fullname" placeholder="Enter full name" required />
+
+      <label>Email</label>
+      <input type="email" name="email" placeholder="Enter email" required />
+
+      <label>Password</label>
+      <input type="password" name="password" placeholder="Enter new password" required />
+
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn-save">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="users.js"></script>
 
   <script src="../loadSidebar.js"></script>
 </body>

@@ -49,75 +49,10 @@
                 <td>2025-08-10</td>
                 <td>Eventbrite</td>
                 <td><a href="https://example.com" target="_blank">Visit</a></td>
-                <td><button class="edit-btn">Edit</button></td>
+                <td><button class="edit-btn" onclick="openModal()">Edit</button></td>
                 <td><button class="delete-btn">Delete</button></td>
               </tr>
-              <tr>
-                <td>2</td>
-                <td>Sydney</td>
-                <td>Music Fest</td>
-                <td><img src="https://via.placeholder.com/60" alt="Event Image" class="event-img" /></td>
-                <td>2025-09-01</td>
-                <td>Ticketmaster</td>
-                <td><a href="https://example.com" target="_blank">Visit</a></td>
-                <td><button class="edit-btn">Edit</button></td>
-                <td><button class="delete-btn">Delete</button></td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td>Melbourne</td>
-                <td>Startup Expo 2025</td>
-                <td><img src="https://via.placeholder.com/60" alt="Event Image" class="event-img" /></td>
-                <td>2025-07-15</td>
-                <td>LinkedIn Events</td>
-                <td><a href="https://example.com/startup" target="_blank">Visit</a></td>
-                <td><button class="edit-btn">Edit</button></td>
-                <td><button class="delete-btn">Delete</button></td>
-              </tr>
-              <tr>
-                <td>4</td>
-                <td>Perth</td>
-                <td>Data Science Bootcamp</td>
-                <td><img src="https://via.placeholder.com/60" alt="Event Image" class="event-img" /></td>
-                <td>2025-10-05</td>
-                <td>Eventbrite</td>
-                <td><a href="https://example.com/datascience" target="_blank">Visit</a></td>
-                <td><button class="edit-btn">Edit</button></td>
-                <td><button class="delete-btn">Delete</button></td>
-              </tr>
-              <tr>
-                <td>5</td>
-                <td>Brisbane</td>
-                <td>GreenTech Summit</td>
-                <td><img src="https://via.placeholder.com/60" alt="Event Image" class="event-img" /></td>
-                <td>2025-11-20</td>
-                <td>Eventbrite</td>
-                <td><a href="https://example.com/greentech" target="_blank">Visit</a></td>
-                <td><button class="edit-btn">Edit</button></td>
-                <td><button class="delete-btn">Delete</button></td>
-              </tr>
-              <tr>
-                <td>6</td>
-                <td>Hobart</td>
-                <td>Blockchain Week</td>
-                <td><img src="https://via.placeholder.com/60" alt="Event Image" class="event-img" /></td>
-                <td>2025-12-01</td>
-                <td>Ticketmaster</td>
-                <td><a href="https://example.com/blockchain" target="_blank">Visit</a></td>
-                <td><button class="edit-btn">Edit</button></td>
-                <td><button class="delete-btn">Delete</button></td>
-              </tr>
-              <tr>
-                <td>7</td>
-                <td>Canberra</td>
-                <td>EduTech Expo</td>
-                <td><img src="https://via.placeholder.com/60" alt="Event Image" class="event-img" /></td>
-                <td>2025-09-12</td>
-                <td>Eventbrite</td>
-                <td><a href="https://example.com/edutech" target="_blank">Visit</a></td>
-                <td><button class="edit-btn">Edit</button></td>
-                <td><button class="delete-btn">Delete</button></td>
-              </tr>
+
               
             </tbody>
           </table>
@@ -125,7 +60,42 @@
       </main>
       
   </div>
+  <!-- All Events Edit Modal -->
+<div id="editModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Edit Event</h3>
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+    </div>
+    <form id="editForm">
+      <label>Location</label>
+      <input type="text" name="location" placeholder="Enter location" required />
+
+      <label>Event Name</label>
+      <input type="text" name="name" placeholder="Enter event name" required />
+
+      <label>Upload Image</label>
+      <input type="file" name="image" accept="image/*" />
+
+      <label>Date</label>
+      <input type="date" name="date" required />
+
+      <label>Source</label>
+      <input type="text" name="source" placeholder="Enter source" required />
+
+      <label>Link</label>
+      <input type="url" name="link" placeholder="Enter event link" required />
+
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn-save">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 
   <script src="../loadSidebar.js"></script>
+  <script src="allevents.js"></script>
 </body>
 </html>
