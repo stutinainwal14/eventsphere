@@ -554,8 +554,6 @@ body {
     color: #666;
 }
 
-/* Add this CSS to the existing <style> section in profile.html */
-
 .events-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -623,5 +621,100 @@ body {
 @media (max-width: 768px) {
     .events-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.bookmarked-event-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.bookmarked-event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.bookmarked-event-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.bookmarked-event-content {
+    padding: 1.5rem;
+}
+
+.bookmarked-event-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+    line-height: 1.4;
+}
+
+.bookmarked-event-details {
+    margin-bottom: 1.5rem;
+}
+
+.bookmarked-event-details p {
+    margin: 0.5rem 0;
+    color: #6c757d;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+}
+
+.bookmarked-event-details i {
+    margin-right: 0.5rem;
+    width: 16px;
+    color: var(--primary-color);
+}
+
+.bookmarked-event-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: space-between;
+}
+
+.bookmarked-event-actions .btn {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+.btn-outline-danger {
+    border: 1px solid #dc3545;
+    color: #dc3545;
+    background: transparent;
+}
+
+.btn-outline-danger:hover {
+    background: #dc3545;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .events-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .bookmarked-event-actions {
+        flex-direction: column;
+    }
+
+    .bookmarked-event-actions .btn {
+        margin-bottom: 0.5rem;
     }
 }
