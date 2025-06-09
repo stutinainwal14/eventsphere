@@ -142,8 +142,8 @@ $(document).ready(function () {
       const twofaHTML = `
         <div class="input-group" id="twofa-group">
           <label for="twofa-token">Enter 2FA Code</label>
-          <input type="text" id="twofa-token" name="twofa-token" 
-                 placeholder="000000" required maxlength="6" 
+          <input type="text" id="twofa-token" name="twofa-token"
+                 placeholder="000000" required maxlength="6"
                  autocomplete="one-time-code" inputmode="numeric"
                  pattern="[0-9]{6}" />
           <div class="help-text">Enter the 6-digit code from your authenticator app</div>
