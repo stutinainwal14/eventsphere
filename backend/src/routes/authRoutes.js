@@ -195,20 +195,43 @@ router.get('/profile', authMiddleware, async (req, res) => {
 
 
 const multer = require('multer');
-
+const fs = require('fs');
 
 // Configure Multer for avatar uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadPath = path.join(__dirname, '../../uploads'); // store in backend/uploads
+    const uploadPath = path.join(__dirname, '../../uploads'); // Adjusted path based on your structure
+
+    // Create uploads directory if it doesn't exist
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+
     cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
+    cb(null, 'avatar-' + uniqueSuffix + path.extname(file.originalname));
   }
 });
-const upload = multer({ storage });
+
+// Add file filter for security
+const fileFilter = (req, file, cb) => {
+  // Accept only image files
+  if (file.mimetype.startsWith('image/')) {
+    cb(null, true);
+  } else {
+    cb(new Error('Only image files are allowed!'), false);
+  }
+};
+
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  }
+});
 
 // Update user profile
 router.put(
@@ -219,8 +242,8 @@ router.put(
     body('username')
       .optional()
       .trim()
-      .isLength({ min: 2, max: 30 })
-      .matches(/^[a-zA-Z0-9\s_'-]+$/)
+      .isLength({ min: 2, max: 50 })
+      .matches(/^[a-zA-Z0-9\u00C0-\u017F\s._'-]+$/)
       .withMessage('Username contains invalid characters'),
 
     body('email').optional().isEmail().normalizeEmail(),
@@ -231,12 +254,15 @@ router.put(
           try {
             return JSON.parse(value);
           } catch {
-            return null; // let the custom() check fail
+            return null;
           }
         }
         return value;
       })
-      .custom(value => typeof value === 'object' && value !== null)
+      .custom(value => {
+        // Allow null/undefined preferences or valid objects
+        return value === null || value === undefined || (typeof value === 'object' && value !== null);
+      })
       .withMessage('Preferences must be a valid JSON object')
   ],
   async (req, res) => {
@@ -244,21 +270,25 @@ router.put(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
+
     const userId = req.user.id;
     const { username, email, preferences } = req.body;
-    if (email) {
-      const [existingEmailRows] = await db.query(
-        'SELECT user_id FROM Users WHERE email = ? AND user_id != ?',
-        [email, userId]
-      );
-      if (existingEmailRows.length > 0) {
-        return res.status(400).json({ message: 'Email already in use by another account' });
-      }
-    }
-
-    const avatar = req.file ? `/uploads/${req.file.filename}` : null;
 
     try {
+      // Check if email is already in use by another user
+      if (email) {
+        const [existingEmailRows] = await db.query(
+          'SELECT user_id FROM Users WHERE email = ? AND user_id != ?',
+          [email, userId]
+        );
+        if (existingEmailRows.length > 0) {
+          return res.status(400).json({ message: 'Email already in use by another account' });
+        }
+      }
+
+      // Updated avatar path assignment
+      const avatar = req.file ? `/uploads/${req.file.filename}` : null;
+
       const updates = [];
       const params = [];
 
@@ -278,8 +308,14 @@ router.put(
       }
 
       if (avatar) {
-        updates.push('avatar = ?');
-        params.push(avatar);
+        // Check if avatar column exists before updating
+        const [tableInfo] = await db.query("DESCRIBE Users");
+        const hasAvatarColumn = tableInfo.some(column => column.Field === 'avatar');
+
+        if (hasAvatarColumn) {
+          updates.push('avatar = ?');
+          params.push(avatar);
+        }
       }
 
       if (updates.length === 0) {
@@ -290,8 +326,21 @@ router.put(
 
       await db.query(`UPDATE Users SET ${updates.join(', ')} WHERE user_id = ?`, params);
 
-      const [rows] = await db.query('SELECT user_id, username, email, preferences, avatar FROM Users WHERE user_id = ?', [userId]);
+      // Fetch updated user data with dynamic column selection
+      const [tableInfo] = await db.query("DESCRIBE Users");
+      const hasAvatarColumn = tableInfo.some(column => column.Field === 'avatar');
+
+      let selectQuery;
+      if (hasAvatarColumn) {
+        selectQuery = 'SELECT user_id, username, email, preferences, avatar FROM Users WHERE user_id = ?';
+      } else {
+        selectQuery = 'SELECT user_id, username, email, preferences FROM Users WHERE user_id = ?';
+      }
+
+      const [rows] = await db.query(selectQuery, [userId]);
       const user = rows[0];
+
+      // Parse preferences safely
       try {
         user.preferences =
           typeof user.preferences === 'string'
@@ -301,11 +350,21 @@ router.put(
         user.preferences = {};
       }
 
-      res.json({ message: 'Profile updated', user });
+      // Set avatar to null if column doesn't exist
+      if (!hasAvatarColumn) {
+        user.avatar = null;
+      } else if (user.avatar && !user.avatar.startsWith('http')) {
+        // Ensure avatar path starts with /uploads/ for proper serving
+        if (!user.avatar.startsWith('/uploads/')) {
+          user.avatar = `/uploads/${user.avatar}`;
+        }
+      }
+
+      res.json({ message: 'Profile updated successfully', user });
 
     } catch (err) {
       console.error('Profile update error:', err.message);
-      res.status(500).json({ error: err.message });
+      res.status(500).json({ error: 'Failed to update profile: ' + err.message });
     }
   });
 

@@ -226,12 +226,29 @@ $(document).ready(function () {
     });
 
     // Update profile form
+    // Replace the profile form submission code in profile.js with this corrected version:
+
+    // Update profile form
     $('#profile-form').submit(function (e) {
         e.preventDefault();
 
         const formData = new FormData();
-        formData.append('username', $('#username').val());
-        formData.append('email', $('#email').val());
+
+        // Get form values
+        const username = $('#username').val().trim();
+        const email = $('#email').val().trim();
+        const phone = $('#phone').val().trim();
+        const location = $('#location').val().trim();
+        const bio = $('#bio').val().trim();
+
+        // Only append non-empty values
+        if (username) {
+            formData.append('username', username);
+        }
+
+        if (email) {
+            formData.append('email', email);
+        }
 
         // Include avatar if uploaded
         const avatarFile = $('#avatar-upload-input')[0].files[0];
@@ -239,13 +256,19 @@ $(document).ready(function () {
             formData.append('avatar', avatarFile);
         }
 
-        // Add preferences
+        // Add preferences - always include even if empty to allow clearing values
         const preferences = {
-            phone: $('#phone').val(),
-            location: $('#location').val(),
-            bio: $('#bio').val()
+            phone: phone,
+            location: location,
+            bio: bio
         };
         formData.append('preferences', JSON.stringify(preferences));
+
+        // Debug logging
+        console.log('Form data being sent:');
+        for (let [key, value] of formData.entries()) {
+            console.log(key, value);
+        }
 
         $.ajax({
             url: '/api/auth/profile',
@@ -264,8 +287,19 @@ $(document).ready(function () {
                 populateProfileData(userData);
             },
             error: function (xhr) {
-                const errorMsg = xhr.responseJSON?.message || 'Failed to update profile';
-                $('#info-error-alert').text(errorMsg).fadeIn().delay(3000).fadeOut();
+                console.error('Profile update error:', xhr);
+                console.error('Response text:', xhr.responseText);
+
+                let errorMsg = 'Failed to update profile';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMsg = xhr.responseJSON.message;
+                } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    errorMsg = xhr.responseJSON.errors.map(err => err.msg).join(', ');
+                } else if (xhr.responseJSON && xhr.responseJSON.error) {
+                    errorMsg = xhr.responseJSON.error;
+                }
+
+                $('#info-error-alert').text(errorMsg).fadeIn().delay(5000).fadeOut();
             }
         });
     });
