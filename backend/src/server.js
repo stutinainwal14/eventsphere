@@ -30,7 +30,7 @@ if (!fs.existsSync(uploadDir)) {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/events', authMiddleware, eventRoutes);
+app.use('/api/events', eventRoutes);
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.get('/search-events', authMiddleware, async (req, res) => {

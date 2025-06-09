@@ -70,6 +70,155 @@ $(document).ready(function () {
     // Initialize profile loading
     loadUserProfile();
 
+    // Load bookmarked events
+    function loadBookmarkedEvents() {
+        $('#events-loading').show();
+        $('#no-events').hide();
+        $('#events-grid').empty();
+
+        $.ajax({
+            url: '/api/events/bookmarks',
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            success: function (response) {
+                $('#events-loading').hide();
+
+                if (response.events && response.events.length > 0) {
+                    displayBookmarkedEvents(response.events);
+                } else {
+                    $('#no-events').show();
+                }
+            },
+            error: function (xhr) {
+                $('#events-loading').hide();
+                console.error('Error loading bookmarked events:', xhr);
+                $('#no-events').show();
+            }
+        });
+    }
+
+    // Display bookmarked events
+    function displayBookmarkedEvents(events) {
+        const eventsGrid = $('#events-grid');
+
+        events.forEach(event => {
+            const eventCard = $(`
+            <div class="bookmarked-event-card">
+                <img src="${event.image || '/public/homepage/assets/images/event.png'}" alt="${event.name}">
+                <div class="bookmarked-event-content">
+                    <h4 class="bookmarked-event-title">${event.name}</h4>
+                    <div class="bookmarked-event-details">
+                        <p><i class="fas fa-map-marker-alt"></i> ${event.location}</p>
+                        <p><i class="fas fa-calendar-alt"></i> ${event.date}</p>
+                        <p><i class="fas fa-ticket-alt"></i> ${event.platform}</p>
+                    </div>
+                    <div class="bookmarked-event-actions">
+                        <a href="${event.ticketUrl}" target="_blank" class="btn btn-primary btn-sm">
+                            Get Tickets
+                        </a>
+                        <button class="btn btn-outline-danger btn-sm remove-bookmark" data-event-id="${event.id}">
+                            Remove
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `);
+
+            eventsGrid.append(eventCard);
+        });
+
+        // Add remove bookmark functionality
+        $('.remove-bookmark').click(function () {
+            const eventId = $(this).data('event-id');
+            removeBookmark(eventId, $(this).closest('.bookmarked-event-card'));
+        });
+    }
+
+    // Remove bookmark
+    function removeBookmark(eventId, cardElement) {
+        if (confirm('Are you sure you want to remove this event from your bookmarks?')) {
+            $.ajax({
+                url: `/api/events/bookmark/${eventId}`,
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                success: function (response) {
+                    cardElement.fadeOut(300, function () {
+                        $(this).remove();
+                        // Check if no events left
+                        if ($('#events-grid').children().length === 0) {
+                            $('#no-events').show();
+                        }
+                    });
+                },
+                error: function (xhr) {
+                    alert('Failed to remove bookmark');
+                }
+            });
+        }
+    }
+
+    // Add sidebar navigation functionality
+    $('.menu-item[data-section]').click(function (e) {
+        e.preventDefault();
+
+        const section = $(this).data('section');
+
+        // Update active menu item
+        $('.menu-item').removeClass('active');
+        $(this).addClass('active');
+
+        // Hide all sections
+        $('.content-card').hide();
+
+        // Show selected section
+        if (section === 'my-events') {
+            $('#my-events-section').show();
+            loadBookmarkedEvents();
+        } else {
+            // Show the first content card (profile) for other sections
+            $('.content-card').first().show();
+        }
+    });
+
+    // Update the existing dashboard menu item click
+    $('.menu-item:not([data-section])').click(function (e) {
+        e.preventDefault();
+
+        $('.menu-item').removeClass('active');
+        $(this).addClass('active');
+
+        $('.content-card').hide();
+        $('.content-card').first().show();
+    });
+
+    // Add sidebar navigation functionality
+    $('.menu-item').click(function (e) {
+        e.preventDefault();
+
+        const section = $(this).data('section');
+
+        // Update active menu item
+        $('.menu-item').removeClass('active');
+        $(this).addClass('active');
+
+        // Hide all content cards
+        $('.content-card').hide();
+        $('#my-events-section').hide();
+
+        // Show appropriate section
+        if (section === 'my-events') {
+            $('#my-events-section').show();
+            loadBookmarkedEvents();
+        } else {
+            // Show profile section for other menu items
+            $('.content-card').not('#my-events-section').first().show();
+        }
+    });
+
     // User dropdown toggle
     $('#user-profile-dropdown').click(function (e) {
         e.stopPropagation();
@@ -230,8 +379,22 @@ $(document).ready(function () {
         e.preventDefault();
 
         const formData = new FormData();
-        formData.append('username', $('#username').val());
-        formData.append('email', $('#email').val());
+
+        // Get form values
+        const username = $('#username').val().trim();
+        const email = $('#email').val().trim();
+        const phone = $('#phone').val().trim();
+        const location = $('#location').val().trim();
+        const bio = $('#bio').val().trim();
+
+        // Only append non-empty values
+        if (username) {
+            formData.append('username', username);
+        }
+
+        if (email) {
+            formData.append('email', email);
+        }
 
         // Include avatar if uploaded
         const avatarFile = $('#avatar-upload-input')[0].files[0];
@@ -239,13 +402,19 @@ $(document).ready(function () {
             formData.append('avatar', avatarFile);
         }
 
-        // Add preferences
+        // Add preferences - always include even if empty to allow clearing values
         const preferences = {
-            phone: $('#phone').val(),
-            location: $('#location').val(),
-            bio: $('#bio').val()
+            phone: phone,
+            location: location,
+            bio: bio
         };
         formData.append('preferences', JSON.stringify(preferences));
+
+        // Debug logging
+        console.log('Form data being sent:');
+        for (let [key, value] of formData.entries()) {
+            console.log(key, value);
+        }
 
         $.ajax({
             url: '/api/auth/profile',
@@ -264,8 +433,19 @@ $(document).ready(function () {
                 populateProfileData(userData);
             },
             error: function (xhr) {
-                const errorMsg = xhr.responseJSON?.message || 'Failed to update profile';
-                $('#info-error-alert').text(errorMsg).fadeIn().delay(3000).fadeOut();
+                console.error('Profile update error:', xhr);
+                console.error('Response text:', xhr.responseText);
+
+                let errorMsg = 'Failed to update profile';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMsg = xhr.responseJSON.message;
+                } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    errorMsg = xhr.responseJSON.errors.map(err => err.msg).join(', ');
+                } else if (xhr.responseJSON && xhr.responseJSON.error) {
+                    errorMsg = xhr.responseJSON.error;
+                }
+
+                $('#info-error-alert').text(errorMsg).fadeIn().delay(5000).fadeOut();
             }
         });
     });
