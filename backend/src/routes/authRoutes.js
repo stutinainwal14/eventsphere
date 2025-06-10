@@ -145,6 +145,50 @@ router.post(
 
 // Fixed GET /profile route - replace the existing one in authRoutes.js
 
+router.put(
+  '/update-password',
+  authMiddleware,
+  [
+    body('oldPassword')
+      .isLength({ min: 1 }).withMessage('Old password is required'),
+    body('newPassword')
+      .isLength({ min: 6 }).withMessage('New password must be at least 6 characters'),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+    const userId = req.user.id;
+    const { oldPassword, newPassword } = req.body;
+
+    try {
+      // Fetch user's current hashed password
+      const [users] = await db.query('SELECT password FROM Users WHERE user_id = ?', [userId]);
+      if (users.length === 0) return res.status(404).json({ message: 'User not found' });
+
+      const user = users[0];
+
+      // Verify old password
+      const isMatch = await bcrypt.compare(oldPassword, user.password);
+      if (!isMatch) {
+        return res.status(400).json({ message: 'Old password is incorrect' });
+      }
+
+      // Hash new password
+      const hashedNewPassword = await bcrypt.hash(newPassword, 12);
+
+      // Update password
+      await db.query('UPDATE Users SET password = ? WHERE user_id = ?', [hashedNewPassword, userId]);
+
+      res.json({ message: 'Password updated successfully' });
+    } catch (err) {
+      console.error('Update password error:', err.message);
+      res.status(500).json({ error: 'Failed to update password' });
+    }
+  }
+);
+
+
 // GET /profile - Get current user's profile
 router.get('/profile', authMiddleware, async (req, res) => {
   const { id: userId } = req.user;
