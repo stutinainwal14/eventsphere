@@ -722,3 +722,93 @@
       display: none !important;
     }
   }
+
+/* === Dark Mode Styling Updates === */
+body.dark-mode {
+  background-color: #121212;
+  color: #f1f1f1;
+}
+
+/* Navbar styling */
+body.dark-mode .navbar {
+  background-color: #1f1f1f9f;
+}
+
+body.dark-mode a.active {
+  color: #000 !important; 
+}
+body.dark-mode .nav-links a {
+  color: #fff;
+}
+
+/* Hero text white */
+body.dark-mode .hero .description,
+body.dark-mode .hero .sub-note {
+  color: #fff;
+}
+
+/* Toggle button white background in dark mode */
+body.dark-mode .theme-toggle {
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #ccc;
+}
+
+/* Event cards - white background, black text */
+body.dark-mode .event-card {
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #ddd;
+}
+
+body.dark-mode .event-card .event-title,
+body.dark-mode .event-card .location,
+body.dark-mode .event-card .date {
+  color: #000;
+}
+
+body.dark-mode .event-card .bookmark,
+body.dark-mode .event-card .start {
+  background-color: #f5f5f5;
+  color: #000;
+  border: none;
+}
+
+/* Footer - black background and white text */
+body.dark-mode .footer-main {
+  background-color: #1f1f1f9f;
+  color: #fff;
+}
+
+body.dark-mode .footer a,
+body.dark-mode .footer p,
+body.dark-mode .footer .social-icons i {
+  color: #fff;
+}
+
+/* Keep footer bottom part orange */
+.footer-bottom {
+  background-color: #e67e00 !important;
+  color: #fff;
+}
+
+body.dark-mode .start {
+  background-color: #e67e00 !important;
+  color: #fff !important;
+}
+
+body.dark-mode .bookmark {
+  background-color: #1f1f1f9f !important;
+  color: #fff !important;
+}
+
+body.dark-mode .cta-btn{
+  background-color: #e67e00 !important;
+  color: #fff !important;
+}
+
+body.dark-mode .category-list li:hover {
+  color: #fff;
+  cursor: pointer;
+}
+
