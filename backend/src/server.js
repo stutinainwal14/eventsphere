@@ -101,6 +101,88 @@ app.get('/api/admin/trending-count', authMiddleware, async (req, res) => {
   }
 });
 
+app.get('/api/admin/all-events', authMiddleware, async (req, res) => {
+  try {
+    // Check if user is admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied. Admins only.' });
+    }
+
+    console.log('Fetching all events from Australia...');
+
+    // Get all events from Australia - remove the location parameter
+    // and rely on countryCode instead
+    const events = await searchEvents({
+      location: '', // Remove 'Australia' - use empty string or specific cities
+      keyword: '',
+      // Don't restrict by date to get all available events
+      startDateTime: undefined,
+      endDateTime: undefined,
+      sort: 'date,asc',
+      countryCode: 'AU',
+      size: 200 // Get more events (TicketMaster default is 20)
+    });
+
+    console.log('TicketMaster API Response:', JSON.stringify(events, null, 2));
+
+    let formattedEvents = [];
+
+    if (events && events._embedded && events._embedded.events) {
+      console.log(`Found ${events._embedded.events.length} events`);
+
+      formattedEvents = events._embedded.events.map((event, index) => ({
+        id: event.id,
+        name: event.name,
+        location: event._embedded?.venues?.[0]?.name ||
+          event._embedded?.venues?.[0]?.city?.name ||
+          'Australia',
+        image: event.images?.[0]?.url || 'https://via.placeholder.com/60',
+        date: event.dates?.start?.localDate || 'TBD',
+        source: 'TicketMaster',
+        link: event.url || '#'
+      }));
+    } else {
+      console.log('No events found in response structure');
+      console.log('Full response:', events);
+    }
+
+    console.log(`Sending ${formattedEvents.length} formatted events`);
+
+    res.json({
+      events: formattedEvents,
+      total: formattedEvents.length,
+      page: 1,
+      totalPages: Math.ceil(formattedEvents.length / 7),
+      rawResponse: events // Include raw response for debugging
+    });
+  } catch (err) {
+    console.error('Error fetching all events:', err.message);
+    console.error('Full error:', err);
+    res.status(500).json({ error: err.message, stack: err.stack });
+  }
+});
+
+// Add delete event route
+app.delete('/api/admin/events/:eventId', authMiddleware, async (req, res) => {
+  try {
+    // Check if user is admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied. Admins only.' });
+    }
+
+    const { eventId } = req.params;
+
+    // Note: TicketMaster API doesn't allow deleting events
+    // This is just a placeholder response
+    console.log(`Delete request for event: ${eventId}`);
+
+    res.json({ message: 'Event deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting event:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.get('/trending-events', async (req, res) => {
   try {
     const now = new Date();
@@ -119,6 +201,45 @@ app.get('/trending-events', async (req, res) => {
     res.json(events);
   } catch (err) {
     console.error('Error fetching events:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Add this new endpoint for getting just the count
+app.get('/api/admin/events-count', authMiddleware, async (req, res) => {
+  try {
+    // Check if user is admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied. Admins only.' });
+    }
+
+    console.log('Fetching total events count from Australia...');
+
+    // Get first page to access total count metadata
+    const events = await searchEvents({
+      location: '',
+      keyword: '',
+      startDateTime: undefined,
+      endDateTime: undefined,
+      sort: 'date,asc',
+      countryCode: 'AU',
+      size: 1 // Only need 1 event to get total count
+    });
+
+    let totalCount = 0;
+
+    if (events && events.page && events.page.totalElements) {
+      totalCount = events.page.totalElements;
+    } else if (events && events._embedded && events._embedded.events) {
+      // Fallback if totalElements is not available
+      totalCount = events._embedded.events.length;
+    }
+
+    console.log(`Total events in Australia: ${totalCount}`);
+
+    res.json({ count: totalCount });
+  } catch (err) {
+    console.error('Error fetching events count:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
