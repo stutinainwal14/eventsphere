@@ -317,7 +317,12 @@ $(document).ready(function () {
 
         showSuccess('Login successful! Redirecting...');
         setTimeout(() => {
-          window.location.href = "../../dashboard/home.html";
+          // Check user role and redirect accordingly
+          if (data.user && data.user.role === 'admin') {
+            window.location.href = "../../admin/main/admin.html";
+          } else {
+            window.location.href = "../../dashboard/home.html";
+          }
         }, 1000);
       } else {
         throw new Error('Invalid authentication token received');

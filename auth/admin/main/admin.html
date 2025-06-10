@@ -1,28 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Event Sphere Admin</title>
   <link rel="stylesheet" href="admin.css">
-      <!-- Font Awesome for icons -->
-      <script
-      src="https://kit.fontawesome.com/d62bd036de.js"
-      crossorigin="anonymous"
-    ></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-      integrity="sha512-Bx85rE+MT5+IsAwIE9X0Z7FOzMZHzBkgq4U+SBe7pCyRYv/d0VHJ/fZzC4VvW2Wv0G/7P1aeZzLRqap8QeY6Rg=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
+  <!-- Font Awesome for icons -->
+  <script src="https://kit.fontawesome.com/d62bd036de.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    integrity="sha512-Bx85rE+MT5+IsAwIE9X0Z7FOzMZHzBkgq4U+SBe7pCyRYv/d0VHJ/fZzC4VvW2Wv0G/7P1aeZzLRqap8QeY6Rg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+
 <body data-page="insights">
   <div class="container">
     <div id="sidebar"></div>
-
-      
 
     <main class="main-content">
       <header>
@@ -48,7 +41,7 @@
           <i class="fas fa-fire"></i>
           <div>
             <p>Total Trending Events</p>
-            <h2>7</h2> 
+            <h2>7</h2>
           </div>
         </div>
       </section>
@@ -57,6 +50,88 @@
 
   </div>
 
-  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      // Get auth token
+      const authToken = localStorage.getItem('authToken');
+
+      if (!authToken) {
+        window.location.href = '../auth/login/login.html';
+        return;
+      }
+
+      // Function to make authenticated API calls
+      async function makeAuthenticatedRequest(url) {
+        try {
+          const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${authToken}`,
+              'Content-Type': 'application/json'
+            }
+          });
+
+          if (!response.ok) {
+            if (response.status === 401) {
+              localStorage.removeItem('authToken');
+              localStorage.removeItem('userInfo');
+              window.location.href = '../auth/login/login.html';
+              return null;
+            }
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          return await response.json();
+        } catch (error) {
+          console.error('API request failed:', error);
+          return null;
+        }
+      }
+
+      // Load dashboard data
+      async function loadDashboardData() {
+        try {
+          // Fetch total users
+          const users = await makeAuthenticatedRequest('/api/admin/users');
+          if (users) {
+            updateCard('Total Users', users.length);
+          }
+
+          // Fetch total events (saved events)
+          const savedEvents = await makeAuthenticatedRequest('/api/admin/saved-events');
+          if (savedEvents) {
+            updateCard('Total Events', savedEvents.length);
+          }
+
+          // Fetch trending events count
+          const trendingResponse = await makeAuthenticatedRequest('/api/admin/trending-count');
+          if (trendingResponse && typeof trendingResponse.count !== 'undefined') {
+            updateCard('Total Trending Events', trendingResponse.count);
+          }
+
+        } catch (error) {
+          console.error('Error loading dashboard data:', error);
+        }
+      }
+
+      // Function to update card values
+      function updateCard(cardTitle, value) {
+        $('.card').each(function () {
+          const cardText = $(this).find('p').text();
+          if (cardText === cardTitle) {
+            $(this).find('h2').text(value);
+          }
+        });
+      }
+
+      // Load data when page loads
+      loadDashboardData();
+
+      // Refresh data every 5 minutes
+      setInterval(loadDashboardData, 5 * 60 * 1000);
+    });
+  </script>
 </body>
+
 </html>
