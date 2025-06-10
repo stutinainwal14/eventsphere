@@ -1,6 +1,5 @@
-// createAdmin.js
 const bcrypt = require('bcryptjs');
-const db = require('./src/config/db'); // Adjust path to your db config
+const db = require('./src/config/db');
 
 async function createAdminUser() {
     try {
