@@ -98,10 +98,10 @@
             updateCard('Total Users', users.length);
           }
 
-          // Fetch total events (saved events)
-          const savedEvents = await makeAuthenticatedRequest('/api/admin/saved-events');
-          if (savedEvents) {
-            updateCard('Total Events', savedEvents.length);
+          // Fetch total events count (more efficient)
+          const eventsCountResponse = await makeAuthenticatedRequest('/api/admin/events-count');
+          if (eventsCountResponse && typeof eventsCountResponse.count !== 'undefined') {
+            updateCard('Total Events', eventsCountResponse.count);
           }
 
           // Fetch trending events count
