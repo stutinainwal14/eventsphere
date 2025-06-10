@@ -1,5 +1,6 @@
 // src/routes/adminRoutes.js
 const express = require('express');
+const bcrypt = require('bcryptjs');
 const router = express.Router();
 const db = require('../config/db');
 const authMiddleware = require('../middleware/authMiddleware');
@@ -23,54 +24,78 @@ router.get('/users', authMiddleware, requireAdmin, async (req, res) => {
   }
 });
 
-// PUT /api/admin/users/:id - Update any user
+// PUT /api/admin/users/:id - Update any user (but not admin users)
 router.put('/users/:id', authMiddleware, requireAdmin, async (req, res) => {
-    const { username, email, role } = req.body;
-    const updates = [];
-    const params = [];
+  // First check if the user being updated is an admin
+  const [userCheck] = await db.query('SELECT role FROM Users WHERE user_id = ?', [req.params.id]);
+  if (userCheck.length > 0 && userCheck[0].role === 'admin') {
+    return res.status(403).json({ message: 'Cannot modify admin users' });
+  }
 
-    // Check if email is being updated and already exists
-    if (email) {
-      const [existingEmailRows] = await db.query(
-        'SELECT user_id FROM Users WHERE email = ? AND user_id != ?',
-        [email, req.params.id]
-      );
-      if (existingEmailRows.length > 0) {
-        return res.status(400).json({ message: 'Email already in use by another user' });
-      }
+  const { username, email, role, password } = req.body;
+  const updates = [];
+  const params = [];
 
-      updates.push('email = ?');
-      params.push(email);
+  // Prevent setting role to admin
+  if (role === 'admin') {
+    return res.status(403).json({ message: 'Cannot set user role to admin' });
+  }
+
+  // Check if email is being updated and already exists
+  if (email) {
+    const [existingEmailRows] = await db.query(
+      'SELECT user_id FROM Users WHERE email = ? AND user_id != ?',
+      [email, req.params.id]
+    );
+    if (existingEmailRows.length > 0) {
+      return res.status(400).json({ message: 'Email already in use by another user' });
     }
 
-    if (username) {
-      updates.push('username = ?');
-      params.push(username);
-    }
+    updates.push('email = ?');
+    params.push(email);
+  }
 
-    if (role) {
-      updates.push('role = ?');
-      params.push(role);
-    }
+  if (username) {
+    updates.push('username = ?');
+    params.push(username);
+  }
 
-    if (updates.length === 0) {
-      return res.status(400).json({ message: 'No fields to update' });
-    }
+  if (role) {
+    updates.push('role = ?');
+    params.push(role);
+  }
 
-    params.push(req.params.id);
+  // Handle password update (hash it if provided)
+  if (password && password.trim() !== '') {
+    const bcrypt = require('bcrypt');
+    const hashedPassword = await bcrypt.hash(password, 10);
+    updates.push('password = ?');
+    params.push(hashedPassword);
+  }
 
-    try {
-      await db.query(`UPDATE Users SET ${updates.join(', ')} WHERE user_id = ?`, params);
-      res.json({ message: 'User updated successfully' });
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
-  });
+  if (updates.length === 0) {
+    return res.status(400).json({ message: 'No fields to update' });
+  }
 
+  params.push(req.params.id);
 
-// DELETE /api/admin/users/:id - Delete user
+  try {
+    await db.query(`UPDATE Users SET ${updates.join(', ')} WHERE user_id = ?`, params);
+    res.json({ message: 'User updated successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE /api/admin/users/:id - Delete user (but not admin users)
 router.delete('/users/:id', authMiddleware, requireAdmin, async (req, res) => {
   try {
+    // First check if the user being deleted is an admin
+    const [userCheck] = await db.query('SELECT role FROM Users WHERE user_id = ?', [req.params.id]);
+    if (userCheck.length > 0 && userCheck[0].role === 'admin') {
+      return res.status(403).json({ message: 'Cannot delete admin users' });
+    }
+
     await db.query('DELETE FROM Users WHERE user_id = ?', [req.params.id]);
     res.json({ message: 'User deleted successfully' });
   } catch (err) {
