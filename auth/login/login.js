@@ -142,8 +142,8 @@ $(document).ready(function () {
       const twofaHTML = `
         <div class="input-group" id="twofa-group">
           <label for="twofa-token">Enter 2FA Code</label>
-          <input type="text" id="twofa-token" name="twofa-token" 
-                 placeholder="000000" required maxlength="6" 
+          <input type="text" id="twofa-token" name="twofa-token"
+                 placeholder="000000" required maxlength="6"
                  autocomplete="one-time-code" inputmode="numeric"
                  pattern="[0-9]{6}" />
           <div class="help-text">Enter the 6-digit code from your authenticator app</div>
@@ -317,7 +317,12 @@ $(document).ready(function () {
 
         showSuccess('Login successful! Redirecting...');
         setTimeout(() => {
-          window.location.href = "../../dashboard/home.html";
+          // Check user role and redirect accordingly
+          if (data.user && data.user.role === 'admin') {
+            window.location.href = "../../admin/main/admin.html";
+          } else {
+            window.location.href = "../../dashboard/home.html";
+          }
         }, 1000);
       } else {
         throw new Error('Invalid authentication token received');

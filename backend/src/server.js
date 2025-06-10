@@ -70,6 +70,37 @@ app.get('/search-events', authMiddleware, async (req, res) => {
   }
 });
 
+app.get('/api/admin/trending-count', authMiddleware, async (req, res) => {
+  try {
+    // Check if user is admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied. Admins only.' });
+    }
+
+    const now = new Date();
+    const defaultEnd = new Date();
+    defaultEnd.setDate(now.getDate() + 7);
+
+    const events = await searchEvents({
+      startDate: now.toISOString(),
+      endDate: defaultEnd.toISOString(),
+      sort: 'date,asc',
+      countryCode: 'AU'
+    });
+
+    // Count trending events (events with high popularity or recent activity)
+    let trendingCount = 0;
+    if (events && events._embedded && events._embedded.events) {
+      trendingCount = events._embedded.events.length;
+    }
+
+    res.json({ count: trendingCount });
+  } catch (err) {
+    console.error('Error fetching trending events count:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.get('/trending-events', async (req, res) => {
   try {
     const now = new Date();
