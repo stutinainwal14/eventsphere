@@ -2,7 +2,7 @@
 async function fetchTrendingEvents() {
   try {
     // Check if user is logged in
-    const token = localStorage.getItem('authToken'); // Changed from 'token' to 'authToken' to match login.js
+    const token = localStorage.getItem('authToken');
 
     if (!token) {
       // Fixed the redirect path - use absolute path from root
