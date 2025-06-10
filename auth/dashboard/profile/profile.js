@@ -71,12 +71,14 @@ $(document).ready(function () {
     loadUserProfile();
 
     // Load bookmarked events
+    // Load bookmarked events
     function loadBookmarkedEvents() {
         console.log('Loading bookmarked events...'); // Debug log
 
+        // Clear existing content first
+        $('#events-grid').empty();
         $('#events-loading').show();
         $('#no-events').hide();
-        $('#events-grid').empty();
 
         $.ajax({
             url: '/api/events/bookmarks',
@@ -107,6 +109,7 @@ $(document).ready(function () {
     // Display bookmarked events
     function displayBookmarkedEvents(events) {
         const eventsGrid = $('#events-grid');
+        eventsGrid.empty(); // Clear any existing content
 
         events.forEach(event => {
             const eventCard = $(`
@@ -200,7 +203,7 @@ $(document).ready(function () {
         $('.content-card').first().show();
     });
 
-    // Add sidebar navigation functionality
+    // Consolidated sidebar navigation functionality
     $('.menu-item').click(function (e) {
         e.preventDefault();
 
@@ -225,11 +228,11 @@ $(document).ready(function () {
 
         // Show appropriate section
         if (section === 'my-events') {
-            console.log('Showing My Events section'); // Debug log
+            console.log('Showing My Events section');
             $('#my-events-section').show();
             loadBookmarkedEvents();
         } else {
-            // Show profile section for other menu items (Dashboard, Settings, etc.)
+            // Show profile section for Dashboard and other menu items
             $('.content-card').not('#my-events-section').first().show();
         }
     });
@@ -466,6 +469,7 @@ $(document).ready(function () {
     });
 
     // Password form submission
+    // Password form submission
     $('#password-form').submit(function (e) {
         e.preventDefault();
 
@@ -484,14 +488,14 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: '/api/auth/change-password',
-            method: 'POST',
+            url: '/api/auth/update-password',
+            method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
             data: JSON.stringify({
-                currentPassword: currentPassword,
+                oldPassword: currentPassword,
                 newPassword: newPassword
             }),
             success: function (response) {
