@@ -238,3 +238,22 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
+
+// Toggle between dark and light mode
+document.querySelectorAll(".theme-toggle").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
+
+    // Optionally, persist choice in localStorage
+    const mode = document.body.classList.contains("dark-mode") ? "dark" : "light";
+    localStorage.setItem("theme", mode);
+  });
+});
+
+// On load, apply theme from storage
+document.addEventListener("DOMContentLoaded", () => {
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark-mode");
+  }
+});
