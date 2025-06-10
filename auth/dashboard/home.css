@@ -251,3 +251,110 @@
         margin-bottom: 15px;
     }
 }
+
+
+/* Apply dark background and white text */
+body.dark-theme {
+    background-color: #121212;
+    color: #ffffff;
+  }
+  
+  /* Navbar styles */
+  body.dark-theme .navbar {
+    background-color: #000;
+  }
+
+  body.dark-theme .active{
+    background-color: #fff;
+    color: #000 !important;
+  }
+  
+  body.dark-theme .navbar a,
+  body.dark-theme .nav-right button,
+  body.dark-theme .mobile-menu a {
+    color: #ffffff;
+  }
+  
+  body.dark-theme .theme-toggle {
+    background-color: #ffffff;
+    color: #000 !important;
+    border-radius: 10%;
+  }
+  body.dark-theme .search-header {
+    color: #fff !important; 
+  }
+  /* Search section */
+  body.dark-theme .search-name {
+    color: #fff !important;
+  }
+
+  body.dark-theme .search-form {
+    background-color: #000;
+    color: #fff;
+  }
+  
+  body.dark-theme input,
+  body.dark-theme select,
+  body.dark-theme label {
+    color: #fff;
+  }
+  body.dark-theme input {
+    background-color: #1e1e1e
+  }
+  body.dark-theme .xt {
+    background-color: #1e1e1e
+  }
+  /* Buttons */
+  body.dark-theme .search-btn {
+    background-color: #e67e00;
+    color: #fff;
+  }
+  
+  body.dark-theme .search-btn:hover {
+    background-color: #cc6d00;
+  }
+  
+  /* Event Cards */
+  body.dark-theme .event-card {
+    background-color: #fff;
+    color: #000;
+  }
+  
+  body.dark-mode .bookmark {
+    background-color: #1e1e1e !important;
+    color: #fff !important;
+  }
+  
+  body.dark-mode .start{
+    background-color: #e67e00 !important;
+    color: #fff !important;
+  }
+     
+  /* Footer */
+  body.dark-theme .footer-main{
+    background-color: #1f1f1f9f !important;
+    color: #fff;
+  }
+  body.dark-theme .footer-description {
+    background-color: #1f1f1f9f !important;
+    color: #fff;
+  }
+
+  
+
+  
+  /* Highlight category list on hover */
+  body.dark-theme .category-list li:hover {
+    color: #fff;
+  }
+  
+  /* Bookmark and Get Tickets buttons */
+  body.dark-theme .card-buttons button {
+    background-color: #e67e00;
+    color: white;
+  }
+  
+  body.dark-theme .card-buttons button:hover {
+    background-color: #cc6d00;
+  }
+  
