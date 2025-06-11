@@ -1,5 +1,6 @@
 $(document).ready(function () {
     let userData = {}; // Will be populated from API
+    let searchTimeout;
 
     // Check if user is logged in - FIXED: Check both token variations for compatibility
     const token = localStorage.getItem('authToken') || localStorage.getItem('authtoken');
@@ -75,63 +76,125 @@ $(document).ready(function () {
     // Initialize profile loading
     loadUserProfile();
 
-    // Load bookmarked events
-    // Load bookmarked events
-    function loadBookmarkedEvents() {
-        console.log('Loading bookmarked events...'); // Debug log
+    // Enhanced load bookmarked events with search functionality
+    function loadBookmarkedEvents(searchQuery = '', tagFilter = '') {
+        console.log('Loading bookmarked events...', { searchQuery, tagFilter });
 
         // Clear existing content first
         $('#events-grid').empty();
         $('#events-loading').show();
         $('#no-events').hide();
+        $('#search-results-info').hide();
+
+        // Use search endpoint if filters are provided, otherwise use regular bookmarks endpoint
+        let url = '/api/events/bookmarks';
+        let params = {};
+
+        if (searchQuery || tagFilter) {
+            url = '/api/events/saved/search';
+            params = {
+                q: searchQuery,
+                tags: tagFilter
+            };
+        }
 
         $.ajax({
-            url: '/api/events/bookmarks',
+            url: url,
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
             },
+            data: params,
             success: function (response) {
-                console.log('Bookmarks response:', response); // Debug log
+                console.log('Bookmarks response:', response);
                 $('#events-loading').hide();
 
-                if (response.events && response.events.length > 0) {
-                    console.log('Displaying', response.events.length, 'events'); // Debug log
-                    displayBookmarkedEvents(response.events);
+                let events = [];
+                if (url.includes('/saved/search')) {
+                    // Search endpoint returns array directly
+                    events = response || [];
                 } else {
-                    console.log('No events found'); // Debug log
-                    $('#no-events').show();
+                    // Regular bookmarks endpoint returns {events: [...]}
+                    events = response.events || [];
+                }
+
+                // Update search results info
+                if (searchQuery || tagFilter) {
+                    updateSearchResultsInfo(events.length, searchQuery, tagFilter);
+                }
+
+                if (events.length > 0) {
+                    console.log('Displaying', events.length, 'events');
+                    displayBookmarkedEvents(events);
+                } else {
+                    showNoEventsMessage(searchQuery || tagFilter);
                 }
             },
             error: function (xhr) {
                 $('#events-loading').hide();
                 console.error('Error loading bookmarked events:', xhr);
-                $('#no-events').show();
+                showNoEventsMessage(false, true);
             }
         });
     }
 
-    // Display bookmarked events
+    // Update search results info
+    function updateSearchResultsInfo(count, searchQuery, tagFilter) {
+        const resultsInfo = $('#search-results-info');
+        const resultsCount = $('#results-count');
+        const activeFilters = $('#active-filters');
+
+        resultsCount.text(count);
+
+        let filterText = '';
+        if (searchQuery && tagFilter) {
+            filterText = `for "${searchQuery}" with tags "${tagFilter}"`;
+        } else if (searchQuery) {
+            filterText = `for "${searchQuery}"`;
+        } else if (tagFilter) {
+            filterText = `with tags "${tagFilter}"`;
+        }
+
+        activeFilters.text(filterText);
+        resultsInfo.show();
+    }
+
+    // Enhanced display bookmarked events with better data handling
     function displayBookmarkedEvents(events) {
         const eventsGrid = $('#events-grid');
-        eventsGrid.empty(); // Clear any existing content
+        eventsGrid.empty();
 
         events.forEach(event => {
+            // Handle different response formats
+            const eventData = {
+                id: event.id || event.event_id,
+                name: event.name || 'Unknown Event',
+                location: event.location || event.address?.line1 || 'Unknown Location',
+                date: event.date || 'Date TBA',
+                image: event.image || '/public/homepage/assets/images/event.png',
+                ticketUrl: event.ticketUrl || event.url || '#',
+                platform: event.platform || event.source || 'Unknown Platform',
+                event_id: event.event_id || event.id
+            };
+
             const eventCard = $(`
             <div class="bookmarked-event-card">
-                <img src="${event.image || '/public/homepage/assets/images/event.png'}" alt="${event.name}">
+                <img src="${eventData.image}" alt="${eventData.name}"
+                     onerror="this.src='/public/homepage/assets/images/event.png'">
                 <div class="bookmarked-event-content">
-                    <h4 class="bookmarked-event-title">${event.name}</h4>
+                    <h4 class="bookmarked-event-title">${eventData.name}</h4>
                     <div class="bookmarked-event-details">
-                        <p><i class="fas fa-map-marker-alt"></i> ${event.location}</p>
-                        <p><i class="fas fa-calendar-alt"></i> ${event.date}</p>
-                        <p><i class="fas fa-ticket-alt"></i> ${event.platform}</p>
+                        <p><i class="fas fa-map-marker-alt"></i> ${eventData.location}</p>
+                        <p><i class="fas fa-calendar-alt"></i> ${eventData.date}</p>
+                        <p><i class="fas fa-ticket-alt"></i> ${eventData.platform}</p>
                     </div>
                     <div class="bookmarked-event-actions">
-                        <a href="${event.ticketUrl}" target="_blank" class="btn btn-primary btn-sm">
+                        <a href="${eventData.ticketUrl}" target="_blank" class="btn btn-primary btn-sm">
                             Get Tickets
                         </a>
-                        <button class="btn btn-outline-danger btn-sm remove-bookmark" data-event-id="${event.id}">
+                        <button class="btn btn-outline-danger btn-sm remove-bookmark"
+                                data-event-id="${eventData.id}"
+                                data-event-db-id="${eventData.event_id}">
                             Remove
                         </button>
                     </div>
@@ -145,8 +208,62 @@ $(document).ready(function () {
         // Add remove bookmark functionality
         $('.remove-bookmark').click(function () {
             const eventId = $(this).data('event-id');
-            removeBookmark(eventId, $(this).closest('.bookmarked-event-card'));
+            const eventDbId = $(this).data('event-db-id');
+            const cardElement = $(this).closest('.bookmarked-event-card');
+
+            // Use the appropriate ID for removal
+            const idToUse = eventId || eventDbId;
+            removeBookmark(idToUse, cardElement);
         });
+    }
+
+    // Enhanced no events message with different states
+    function showNoEventsMessage(hasFilters, isError = false) {
+        const noEventsDiv = $('#no-events');
+
+        if (isError) {
+            noEventsDiv.html(`
+                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #dc3545; margin-bottom: 1rem;"></i>
+                <h4 style="color: #dc3545; margin-bottom: 0.5rem;">Error Loading Events</h4>
+                <p style="color: #6c757d;">There was an error loading your bookmarked events. Please try again.</p>
+                <button onclick="loadBookmarkedEvents()" class="btn btn-primary" style="margin-top: 1rem;">
+                    <i class="fas fa-refresh"></i> Retry
+                </button>
+            `);
+        } else if (hasFilters) {
+            noEventsDiv.html(`
+                <i class="fas fa-search" style="font-size: 3rem; color: #6c757d; margin-bottom: 1rem;"></i>
+                <h4 style="color: #6c757d; margin-bottom: 0.5rem;">No Events Found</h4>
+                <p style="color: #6c757d;">No events match your search criteria. Try different keywords or tags.</p>
+                <button id="clear-search-from-no-results" class="btn btn-secondary" style="margin-top: 1rem;">
+                    <i class="fas fa-times"></i> Clear Search
+                </button>
+            `);
+
+            // Add click handler for clear search button
+            $('#clear-search-from-no-results').click(function () {
+                clearSearch();
+            });
+        } else {
+            noEventsDiv.html(`
+                <i class="fas fa-calendar-times" style="font-size: 3rem; color: #6c757d; margin-bottom: 1rem;"></i>
+                <h4 style="color: #6c757d; margin-bottom: 0.5rem;">No Bookmarked Events</h4>
+                <p style="color: #6c757d;">You haven't bookmarked any events yet. Browse events and save your favorites!</p>
+                <a href="../home.html" class="btn btn-primary" style="margin-top: 1rem;">
+                    <i class="fas fa-search"></i> Browse Events
+                </a>
+            `);
+        }
+
+        noEventsDiv.show();
+    }
+
+    // Clear search function
+    function clearSearch() {
+        $('#event-search').val('');
+        $('#tag-search').val('');
+        $('#search-results-info').hide();
+        loadBookmarkedEvents();
     }
 
     // Remove bookmark
@@ -173,40 +290,6 @@ $(document).ready(function () {
             });
         }
     }
-
-    // Add sidebar navigation functionality
-    $('.menu-item[data-section]').click(function (e) {
-        e.preventDefault();
-
-        const section = $(this).data('section');
-
-        // Update active menu item
-        $('.menu-item').removeClass('active');
-        $(this).addClass('active');
-
-        // Hide all sections
-        $('.content-card').hide();
-
-        // Show selected section
-        if (section === 'my-events') {
-            $('#my-events-section').show();
-            loadBookmarkedEvents();
-        } else {
-            // Show the first content card (profile) for other sections
-            $('.content-card').first().show();
-        }
-    });
-
-    // Update the existing dashboard menu item click
-    $('.menu-item:not([data-section])').click(function (e) {
-        e.preventDefault();
-
-        $('.menu-item').removeClass('active');
-        $(this).addClass('active');
-
-        $('.content-card').hide();
-        $('.content-card').first().show();
-    });
 
     // Consolidated sidebar navigation functionality
     $('.menu-item').click(function (e) {
@@ -266,6 +349,38 @@ $(document).ready(function () {
     // Sidebar toggle
     $('#sidebar-toggle').click(function () {
         $('#sidebar').toggleClass('show');
+    });
+
+    // Search functionality event listeners
+    $('#search-events-btn').click(function () {
+        const searchQuery = $('#event-search').val().trim();
+        const tagFilter = $('#tag-search').val().trim();
+        loadBookmarkedEvents(searchQuery, tagFilter);
+    });
+
+    $('#clear-search-btn').click(function () {
+        clearSearch();
+    });
+
+    // Enter key support for search inputs
+    $('#event-search, #tag-search').keypress(function (e) {
+        if (e.which === 13) { // Enter key
+            $('#search-events-btn').click();
+        }
+    });
+
+    // Real-time search with debounce
+    $('#event-search, #tag-search').on('input', function () {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(function () {
+            const searchQuery = $('#event-search').val().trim();
+            const tagFilter = $('#tag-search').val().trim();
+
+            // Only auto-search if there's some input
+            if (searchQuery || tagFilter) {
+                loadBookmarkedEvents(searchQuery, tagFilter);
+            }
+        }, 500); // Wait 500ms after user stops typing
     });
 
     // 2FA Status Check
@@ -397,7 +512,7 @@ $(document).ready(function () {
         }
     });
 
-    // Update the profile form submission to clear preview flag
+    // Profile form submission
     $('#profile-form').submit(function (e) {
         e.preventDefault();
 
@@ -596,7 +711,6 @@ $(document).ready(function () {
             reader.readAsDataURL(file);
         }
     });
-
 
     // Delete account button
     $('#delete-account-btn').click(function () {

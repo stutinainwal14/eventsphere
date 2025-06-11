@@ -290,6 +290,46 @@
                 <h3><i class="fas fa-calendar-alt"></i> My Bookmarked Events</h3>
                 <p>Events you've saved for later</p>
             </div>
+            <!-- Search and Filter Section -->
+            <div class="search-filter-section"
+                style="margin-bottom: 2rem; padding: 1.5rem; background-color: #f8f9fa; border-radius: 0.375rem;">
+                <div class="search-row" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+                    <div class="search-group" style="flex: 1; min-width: 200px;">
+                        <label for="event-search"
+                            style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Search Events</label>
+                        <input type="text" id="event-search" placeholder="Search by event name or location..."
+                            style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 0.25rem;">
+                    </div>
+
+                    <div class="search-group" style="flex: 1; min-width: 150px;">
+                        <label for="tag-search" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Filter
+                            by Tags</label>
+                        <input type="text" id="tag-search" placeholder="e.g., music, sports, concert..."
+                            style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 0.25rem;">
+                    </div>
+
+                    <div class="search-group" style="flex: 0 0 auto;">
+                        <label style="display: block; margin-bottom: 0.5rem; opacity: 0;">Actions</label>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button id="search-events-btn" class="btn btn-primary btn-sm">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                            <button id="clear-search-btn" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-times"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search Results Info -->
+                <div id="search-results-info" style="margin-top: 1rem; display: none;">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle"></i>
+                        <span id="results-count">0</span> events found
+                        <span id="active-filters" style="margin-left: 1rem;"></span>
+                    </small>
+                </div>
+            </div>
             <div class="card-body">
                 <!-- Loading State -->
                 <div id="events-loading" style="display: none; text-align: center; padding: 2rem;">

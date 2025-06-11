@@ -89,7 +89,7 @@ router.get('/bookmarks', authMiddleware, async (req, res) => {
 // Bookmark an event (compatible with home.js)
 router.post('/bookmark', authMiddleware, async (req, res) => {
   const userId = req.user.id;
-  const { name, location, date, image, ticketUrl, platform } = req.body;
+  const { name, location, date, image, ticketUrl, platform, tags } = req.body;
 
   try {
     // Create a unique event_id from the data
@@ -104,11 +104,11 @@ router.post('/bookmark', authMiddleware, async (req, res) => {
       platform
     };
 
-    console.log('Bookmarking event:', { userId, event_id, event_data });
+    console.log('Bookmarking event:', { userId, event_id, event_data, tags });
 
     await db.query(
-      'INSERT INTO SavedEvents (user_id, event_id, event_data) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE event_data = VALUES(event_data)',
-      [userId, event_id, JSON.stringify(event_data)]
+      'INSERT INTO SavedEvents (user_id, event_id, event_data, tags) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE event_data = VALUES(event_data), tags = VALUES(tags)',
+      [userId, event_id, JSON.stringify(event_data), tags || null]
     );
 
     res.json({ success: true, message: 'Event bookmarked successfully' });
@@ -124,10 +124,19 @@ router.delete('/bookmark/:eventId', authMiddleware, async (req, res) => {
   const { eventId } = req.params;
 
   try {
-    const [result] = await db.query(
+    // Try to delete by database ID first (from bookmarks API)
+    let [result] = await db.query(
       'DELETE FROM SavedEvents WHERE user_id = ? AND id = ?',
       [userId, eventId]
     );
+
+    // If no rows affected, try deleting by event_id (from search API)
+    if (result.affectedRows === 0) {
+      [result] = await db.query(
+        'DELETE FROM SavedEvents WHERE user_id = ? AND event_id = ?',
+        [userId, eventId]
+      );
+    }
 
     if (result.affectedRows > 0) {
       res.json({ success: true, message: 'Bookmark removed successfully' });
