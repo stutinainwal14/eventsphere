@@ -34,7 +34,7 @@ $(document).ready(function () {
         });
     }
 
-    // Populate profile data in UI
+    // Update the populateProfileData function to handle avatar properly
     function populateProfileData(user) {
         // Parse preferences if it's a string
         let preferences = {};
@@ -57,10 +57,15 @@ $(document).ready(function () {
         $('#location').val(preferences.location || '');
         $('#bio').val(preferences.bio || '');
 
-        // Update avatar if available
-        if (user.avatar) {
-            $('#profile-avatar-img').attr('src', user.avatar);
-            $('#nav-user-avatar').attr('src', user.avatar);
+        // Update avatar - FIXED: Only update if not showing preview
+        if (user.avatar && !$('#profile-avatar-img').attr('data-preview')) {
+            const avatarUrl = user.avatar.startsWith('http') ? user.avatar : user.avatar;
+            $('#profile-avatar-img').attr('src', avatarUrl);
+            $('#nav-user-avatar').attr('src', avatarUrl);
+        } else if (!user.avatar && !$('#profile-avatar-img').attr('data-preview')) {
+            // Set default avatar if no avatar and no preview
+            $('#profile-avatar-img').attr('src', '/public/homepage/assets/images/default-avatar.png');
+            $('#nav-user-avatar').attr('src', '/public/homepage/assets/images/default-avatar.png');
         }
 
         // Check 2FA status
@@ -392,7 +397,7 @@ $(document).ready(function () {
         }
     });
 
-    // Update profile form
+    // Update the profile form submission to clear preview flag
     $('#profile-form').submit(function (e) {
         e.preventDefault();
 
@@ -448,6 +453,14 @@ $(document).ready(function () {
 
                 // Update userData and display
                 userData = response.user;
+
+                // Clear preview flags
+                $('#profile-avatar-img').removeAttr('data-preview');
+                $('#nav-user-avatar').removeAttr('data-preview');
+
+                // Clear the file input
+                $('#avatar-upload-input').val('');
+
                 populateProfileData(userData);
             },
             error: function (xhr) {
@@ -468,7 +481,6 @@ $(document).ready(function () {
         });
     });
 
-    // Password form submission
     // Password form submission
     $('#password-form').submit(function (e) {
         e.preventDefault();
@@ -573,12 +585,18 @@ $(document).ready(function () {
             const reader = new FileReader();
             reader.onload = function (e) {
                 const imageUrl = e.target.result;
+                // Set preview image
                 $('#profile-avatar-img').attr('src', imageUrl);
                 $('#nav-user-avatar').attr('src', imageUrl);
+
+                // Add a flag to indicate this is a preview
+                $('#profile-avatar-img').attr('data-preview', 'true');
+                $('#nav-user-avatar').attr('data-preview', 'true');
             };
             reader.readAsDataURL(file);
         }
     });
+
 
     // Delete account button
     $('#delete-account-btn').click(function () {
