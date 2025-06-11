@@ -3,7 +3,8 @@ const AUTH_CONFIG = {
     TOKEN_KEY: 'authToken',
     FALLBACK_TOKEN_KEY: 'authtoken',
     LOGIN_URL: '../auth/login/login.html',
-    PROFILE_URL: '/dashboard/profile/profile.html'
+    PROFILE_URL: '/dashboard/profile/profile.html',
+    HOME_URL: '/dashboard/home.html'
 };
 
 function getAuthToken() {
@@ -15,15 +16,15 @@ function clearAuthTokens() {
     localStorage.removeItem(AUTH_CONFIG.FALLBACK_TOKEN_KEY);
 }
 
-function redirectToLogin() {
-    window.location.href = AUTH_CONFIG.LOGIN_URL;
+function redirectToHome() {
+    window.location.href = AUTH_CONFIG.HOME_URL;
 }
 
 // IMMEDIATE AUTH CHECK - Redirects before page loads
 (function () {
     const token = getAuthToken();
     if (!token) {
-        redirectToLogin();
+        redirectToHome();
         return;
     }
 })();
@@ -96,12 +97,26 @@ function updateAuthenticatedUI() {
     }
 }
 
-// Handle logout functionality
 function handleLogout(event) {
     event.preventDefault();
-    clearAuthTokens();
-    alert('You have been logged out successfully');
-    redirectToLogin();
+
+    fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include'
+    })
+    .then(res => {
+        if (res.ok) {
+            clearAuthTokens();
+            alert('You have been logged out successfully');
+            window.location.href = AUTH_CONFIG.LOGIN_URL;
+        } else {
+            throw new Error('Logout failed');
+        }
+    })
+    .catch(err => {
+        console.error('Logout error:', err);
+        alert('Failed to log out. Try again.');
+    });
 }
 
 // Event display and carousel functionality
