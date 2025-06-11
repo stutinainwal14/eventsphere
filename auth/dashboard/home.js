@@ -239,18 +239,164 @@ function navigateCarousel(direction, totalSlides) {
     slides[newSlideIndex].style.display = 'flex';
 }
 
-// Bookmark functionality
-function setupBookmarkButtons() {
-    const bookmarkButtons = document.querySelectorAll('.bookmark');
+// Tag Modal Functionality
+function showTagModal(eventData, btn) {
+    // Create modal overlay
+    const modalOverlay = document.createElement('div');
+    modalOverlay.className = 'tag-modal-overlay';
+    modalOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    `;
 
-    bookmarkButtons.forEach(btn => {
-        btn.addEventListener('click', function (e) {
-            e.preventDefault();
-            handleBookmark(btn);
+    // Create modal content
+    const modalContent = document.createElement('div');
+    modalContent.className = 'tag-modal-content';
+    modalContent.style.cssText = `
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    `;
+
+    // Available tags
+    const availableTags = ['Music', 'Dance', 'Sports', 'Comedy', 'Theater', 'Festival'];
+
+    modalContent.innerHTML = `
+        <h3 style="margin-bottom: 15px; color: #333;">Add Tags to Event</h3>
+        <p style="margin-bottom: 20px; color: #666;">Select up to 6 tags for this event (optional):</p>
+        <div class="tag-options" style="margin-bottom: 20px;">
+            ${availableTags.map(tag => `
+                <button class="tag-option" data-tag="${tag}" style="
+                    margin: 5px;
+                    padding: 8px 15px;
+                    border: 2px solid #ddd;
+                    background: white;
+                    border-radius: 20px;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                " onmouseover="this.style.borderColor='#007bff'" onmouseout="this.style.borderColor=this.classList.contains('selected') ? '#007bff' : '#ddd'">${tag}</button>
+            `).join('')}
+        </div>
+        <div class="modal-buttons">
+            <button class="cancel-btn" style="
+                margin-right: 10px;
+                padding: 10px 20px;
+                border: 1px solid #ddd;
+                background: white;
+                border-radius: 5px;
+                cursor: pointer;
+            ">Skip</button>
+            <button class="save-btn" style="
+                padding: 10px 20px;
+                border: none;
+                background: #007bff;
+                color: white;
+                border-radius: 5px;
+                cursor: pointer;
+            ">Save Bookmark</button>
+        </div>
+    `;
+
+    modalOverlay.appendChild(modalContent);
+    document.body.appendChild(modalOverlay);
+
+    // Handle tag selection
+    const tagOptions = modalContent.querySelectorAll('.tag-option');
+    const selectedTags = new Set();
+
+    tagOptions.forEach(option => {
+        option.addEventListener('click', function () {
+            const tag = this.dataset.tag;
+
+            if (this.classList.contains('selected')) {
+                // Deselect tag
+                this.classList.remove('selected');
+                this.style.backgroundColor = 'white';
+                this.style.borderColor = '#ddd';
+                this.style.color = '#333';
+                selectedTags.delete(tag);
+            } else if (selectedTags.size < 6) {
+                // Select tag (max 6)
+                this.classList.add('selected');
+                this.style.backgroundColor = '#007bff';
+                this.style.borderColor = '#007bff';
+                this.style.color = 'white';
+                selectedTags.add(tag);
+            } else {
+                alert('You can select a maximum of 6 tags.');
+            }
         });
+    });
+
+    // Handle buttons
+    modalContent.querySelector('.cancel-btn').addEventListener('click', function () {
+        // Save without tags
+        saveBookmarkWithTags(eventData, [], btn);
+        document.body.removeChild(modalOverlay);
+    });
+
+    modalContent.querySelector('.save-btn').addEventListener('click', function () {
+        // Save with selected tags
+        saveBookmarkWithTags(eventData, Array.from(selectedTags), btn);
+        document.body.removeChild(modalOverlay);
+    });
+
+    // Close modal when clicking outside
+    modalOverlay.addEventListener('click', function (e) {
+        if (e.target === modalOverlay) {
+            saveBookmarkWithTags(eventData, [], btn);
+            document.body.removeChild(modalOverlay);
+        }
     });
 }
 
+function saveBookmarkWithTags(eventData, tags, btn) {
+    const token = getAuthToken();
+
+    // Add tags to event data
+    const bookmarkData = {
+        ...eventData,
+        tags: tags.join(',') // Convert array to comma-separated string
+    };
+
+    fetch('/api/events/bookmark', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(bookmarkData)
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const tagsText = tags.length > 0 ? ` with tags: ${tags.join(', ')}` : '';
+                alert(`Event bookmarked successfully${tagsText}!`);
+                btn.innerHTML = '<i class="fas fa-bookmark" style="color: #gold;"></i> Bookmarked';
+                btn.disabled = true;
+            } else {
+                alert('Failed to bookmark event');
+            }
+        })
+        .catch(error => {
+            console.error('Bookmark error:', error);
+            alert('Failed to bookmark event');
+        });
+}
+
+// Main bookmark handler - now with tag modal integration
 function handleBookmark(btn) {
     const eventCard = btn.closest('.event-card');
     const eventData = {
@@ -262,30 +408,20 @@ function handleBookmark(btn) {
         platform: 'Ticketmaster'
     };
 
-    const token = getAuthToken();
+    // Show tag selection modal
+    showTagModal(eventData, btn);
+}
 
-    fetch('/api/events/bookmark', {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(eventData)
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Event added to bookmarks!');
-                btn.innerHTML = '<i class="fas fa-bookmark" style="color: #gold;"></i> Bookmarked';
-                btn.disabled = true;
-            } else {
-                alert('Failed to bookmark event');
-            }
-        })
-        .catch(error => {
-            console.error('Bookmark error:', error);
-            alert('Failed to bookmark event');
+// Setup bookmark buttons
+function setupBookmarkButtons() {
+    const bookmarkButtons = document.querySelectorAll('.bookmark');
+
+    bookmarkButtons.forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            handleBookmark(btn);
         });
+    });
 }
 
 // API utilities
