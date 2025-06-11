@@ -128,22 +128,54 @@ router.post(
         preferences = JSON.parse(preferences || '{}');
       }
 
-      res.json({
-        token,
-        user: {
-          user_id: user.user_id,
-          username: user.username,
-          email: user.email,
-          role: user.role,
-          preferences,
-        },
-      });
+      res
+    .cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'Lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    })
+    .json({
+      message: 'Login successful',
+      token, //have to remove this for security reason
+      user: {
+        user_id: user.user_id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        preferences,
+      },
+    });
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
   });
 
-// Fixed GET /profile route - replace the existing one in authRoutes.js
+// POST /api/logout
+router.post('/logout', authMiddleware, async (req, res) => {
+    try {
+      const token =
+        req.cookies?.token || (req.headers['authorization']?.split(' ')[1]);
+
+      if (!token) {
+        return res.status(400).json({ message: 'No token provided' });
+      }
+
+      await db.query('INSERT INTO BlacklistedTokens (token) VALUES (?)', [token]);
+
+      res.clearCookie('token', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'Lax',
+      });
+
+      return res.status(200).json({ message: 'Logged out successfully' });
+    } catch (err) {
+      console.error('Logout error:', err.message);
+      res.status(500).json({ error: 'Failed to log out' });
+    }
+  });
+
 
 router.put(
   '/update-password',
