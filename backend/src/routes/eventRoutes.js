@@ -24,6 +24,8 @@ router.get('/', async (req, res) => {
   }
 });
 
+
+
 // Get bookmarked events
 router.get('/bookmarks', authMiddleware, async (req, res) => {
   const userId = req.user.id;
@@ -147,6 +149,17 @@ router.delete('/bookmark/:eventId', authMiddleware, async (req, res) => {
   }
 });
 
+// Parameterized route - MUST be placed after specific routes
+router.get('/:id', authMiddleware, async (req, res) => {
+  const eventId = req.params.id;
+  try {
+    const event = await getEventDetails(eventId);
+    res.json(event);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.post('/save', authMiddleware, async (req, res) => {
   const userId = req.user.id;
   const { event_id, event_data } = req.body;
@@ -249,15 +262,6 @@ router.get('/saved/search', authMiddleware, async (req, res) => {
   }
 });
 
-// Parameterized route - MUST be placed after specific routes
-router.get('/:id', authMiddleware, async (req, res) => {
-  const eventId = req.params.id;
-  try {
-    const event = await getEventDetails(eventId);
-    res.json(event);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+
 
 module.exports = router;

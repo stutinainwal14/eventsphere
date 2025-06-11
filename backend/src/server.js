@@ -9,6 +9,7 @@ const eventRoutes = require('./routes/eventRoutes');
 const { searchEvents } = require('./services/TicketMasterService');
 const adminRoutes = require('./routes/adminRoutes');
 const PORT = process.env.PORT || 8080;
+const cookieParser = require('cookie-parser');
 
 dotenv.config();
 require('dotenv').config();
@@ -16,6 +17,7 @@ require('dotenv').config();
 const app = express();
 app.use(express.static(path.join(__dirname, '../auth')));
 app.use(express.json());
+app.use(cookieParser());
 
 // Test route to see if server is working
 app.get('/', (req, res) => {

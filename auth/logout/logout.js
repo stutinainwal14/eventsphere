@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
+    console.log("logout.js is loaded");
     const logoutBtn = document.getElementById('logout-btn');
     const cancelBtn = document.getElementById('cancel-btn');
     const logoutSpinner = document.getElementById('logout-spinner');
@@ -10,13 +11,26 @@ document.addEventListener('DOMContentLoaded', function () {
         logoutBtn.addEventListener('click', function () {
             console.log('Logging out...');
             logoutSpinner.style.display = 'inline-block';
-            setTimeout(function () {
+
+            fetch('/api/auth/logout', {
+                method: 'POST',
+                credentials: 'include' // Send cookies with request
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Logout failed');
+                }
                 logoutSpinner.style.display = 'none';
                 successAlert.style.display = 'block';
-                setTimeout(function () {
+                setTimeout(() => {
                     window.location.href = '../homepage/index.html';
                 }, 1500);
-            }, 1000);
+            })
+            .catch((error) => {
+                console.error('Logout error:', error);
+                logoutSpinner.style.display = 'none';
+                alert('Something went wrong while logging out.');
+            });
         });
     }
 

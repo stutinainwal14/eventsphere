@@ -1,15 +1,30 @@
 const jwt = require('jsonwebtoken');
+const db = require('../config/db');
 
-const authMiddleware = (req, res, next) => {
-  const token = req.headers['authorization'];
-  if (!token) return res.status(401).json({ message: 'No token provided' });
+const authMiddleware = async (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const tokenFromHeader = authHeader && authHeader.startsWith('Bearer ')
+  ? authHeader.split(' ')[1]
+  : null;
+  const tokenFromCookie = req.cookies && req.cookies.token;
+  const token = tokenFromHeader || tokenFromCookie;
+
+  if (!token) {
+    return res.status(401).json({ message: 'No token provided' });
+  }
 
   try {
-    const decoded = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
+    // Check if token is blacklisted
+    const [rows] = await db.query('SELECT token FROM BlacklistedTokens WHERE token = ?', [token]);
+    if (rows.length > 0) {
+      return res.status(401).json({ message: 'Token has been revoked' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
   } catch (err) {
-    res.status(401).json({ message: 'Invalid token' });
+    return res.status(401).json({ message: 'Invalid token' });
   }
 };
 
