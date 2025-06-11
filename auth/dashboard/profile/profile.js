@@ -300,9 +300,7 @@ $(document).ready(function () {
 
         // Handle logout separately
         if (isLogout) {
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('authtoken');
-            window.location.href = '/auth/login/login.html';
+            handleLogout(e);
             return;
         }
 
@@ -443,6 +441,30 @@ $(document).ready(function () {
             }
         });
     });
+
+    function handleLogout(event) {
+        event.preventDefault();
+
+        fetch('/api/auth/logout', {
+            method: 'POST',
+            credentials: 'include'
+        })
+            .then(res => {
+                if (res.ok) {
+                    // Clean up both token variations
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('authtoken');
+                    alert('You have been logged out successfully');
+                    window.location.href = '/auth/login/login.html';
+                } else {
+                    throw new Error('Logout failed');
+                }
+            })
+            .catch(err => {
+                console.error('Logout error:', err);
+                alert('Failed to log out. Try again.');
+            });
+    }
 
     // Verify 2FA Setup
     $('#verify-2fa-form').submit(function (e) {
@@ -774,10 +796,6 @@ $(document).ready(function () {
 
     // Logout functionality
     $('.logout-btn').click(function (e) {
-        e.preventDefault();
-        // Clean up both token variations
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('authtoken');
-        window.location.href = '/auth/login/login.html';
+        handleLogout(e);
     });
 });

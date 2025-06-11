@@ -95,32 +95,6 @@ body {
     align-items: center;
 }
 
-.notification-bell {
-    position: relative;
-    margin-right: 1.5rem;
-    cursor: pointer;
-}
-
-.notification-bell i {
-    font-size: 1.25rem;
-    color: #525f7f;
-}
-
-.notification-count {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background-color: var(--danger-color);
-    color: white;
-    border-radius: 50%;
-    width: 18px;
-    height: 18px;
-    font-size: 0.75rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .user-profile {
     display: flex;
     align-items: center;
