@@ -67,7 +67,6 @@ router.put('/users/:id', authMiddleware, requireAdmin, async (req, res) => {
 
   // Handle password update (hash it if provided)
   if (password && password.trim() !== '') {
-    const bcrypt = require('bcrypt');
     const hashedPassword = await bcrypt.hash(password, 10);
     updates.push('password = ?');
     params.push(hashedPassword);
