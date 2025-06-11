@@ -194,9 +194,9 @@ router.get('/profile', authMiddleware, async (req, res) => {
   const { id: userId } = req.user;
 
   try {
-    // First, check if avatar column exists in the table
-    const [tableInfo] = await db.query("DESCRIBE Users");
-    const hasAvatarColumn = tableInfo.some(column => column.Field === 'avatar');
+    // Check if avatar column exists in the table
+    const [tableInfo] = await db.query("SHOW COLUMNS FROM Users LIKE 'avatar'");
+    const hasAvatarColumn = tableInfo.length > 0;
 
     // Build query based on whether avatar column exists
     let selectQuery;
@@ -225,10 +225,21 @@ router.get('/profile', authMiddleware, async (req, res) => {
       user.preferences = {};
     }
 
-    // Set avatar to null if column doesn't exist
-    if (!hasAvatarColumn) {
+    // Handle avatar path
+    if (hasAvatarColumn && user.avatar) {
+      // If avatar exists and doesn't start with http (not external URL)
+      if (!user.avatar.startsWith('http')) {
+        // Ensure avatar path starts with /uploads/
+        if (!user.avatar.startsWith('/uploads/')) {
+          user.avatar = `/uploads/${user.avatar}`;
+        }
+      }
+    } else {
       user.avatar = null;
     }
+
+    console.log('Avatar column exists:', hasAvatarColumn);
+    console.log('Sending user profile with avatar:', user.avatar);
 
     res.json({ user });
   } catch (err) {
@@ -236,6 +247,7 @@ router.get('/profile', authMiddleware, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch profile details' });
   }
 });
+
 
 
 const multer = require('multer');
@@ -304,7 +316,6 @@ router.put(
         return value;
       })
       .custom(value => {
-        // Allow null/undefined preferences or valid objects
         return value === null || value === undefined || (typeof value === 'object' && value !== null);
       })
       .withMessage('Preferences must be a valid JSON object')
@@ -330,8 +341,13 @@ router.put(
         }
       }
 
-      // Updated avatar path assignment
-      const avatar = req.file ? `/uploads/${req.file.filename}` : null;
+      // Check if avatar column exists
+      const [tableInfo] = await db.query("SHOW COLUMNS FROM Users LIKE 'avatar'");
+      const hasAvatarColumn = tableInfo.length > 0;
+
+      if (!hasAvatarColumn) {
+        console.warn('Avatar column does not exist in Users table. Please run: ALTER TABLE Users ADD COLUMN avatar VARCHAR(255) DEFAULT NULL;');
+      }
 
       const updates = [];
       const params = [];
@@ -351,15 +367,17 @@ router.put(
         params.push(JSON.stringify(preferences));
       }
 
-      if (avatar) {
-        // Check if avatar column exists before updating
-        const [tableInfo] = await db.query("DESCRIBE Users");
-        const hasAvatarColumn = tableInfo.some(column => column.Field === 'avatar');
-
-        if (hasAvatarColumn) {
-          updates.push('avatar = ?');
-          params.push(avatar);
-        }
+      // Only handle avatar if the column exists and a file was uploaded
+      if (req.file && hasAvatarColumn) {
+        const avatar = `/uploads/${req.file.filename}`;
+        updates.push('avatar = ?');
+        params.push(avatar);
+        console.log('Updating avatar to:', avatar);
+      } else if (req.file && !hasAvatarColumn) {
+        console.warn('Avatar file uploaded but avatar column does not exist in database');
+        return res.status(400).json({
+          message: 'Avatar upload failed: database not configured for avatars. Please contact administrator.'
+        });
       }
 
       if (updates.length === 0) {
@@ -370,10 +388,7 @@ router.put(
 
       await db.query(`UPDATE Users SET ${updates.join(', ')} WHERE user_id = ?`, params);
 
-      // Fetch updated user data with dynamic column selection
-      const [tableInfo] = await db.query("DESCRIBE Users");
-      const hasAvatarColumn = tableInfo.some(column => column.Field === 'avatar');
-
+      // Fetch updated user data
       let selectQuery;
       if (hasAvatarColumn) {
         selectQuery = 'SELECT user_id, username, email, preferences, avatar FROM Users WHERE user_id = ?';
@@ -394,11 +409,10 @@ router.put(
         user.preferences = {};
       }
 
-      // Set avatar to null if column doesn't exist
+      // Handle avatar path
       if (!hasAvatarColumn) {
         user.avatar = null;
       } else if (user.avatar && !user.avatar.startsWith('http')) {
-        // Ensure avatar path starts with /uploads/ for proper serving
         if (!user.avatar.startsWith('/uploads/')) {
           user.avatar = `/uploads/${user.avatar}`;
         }
