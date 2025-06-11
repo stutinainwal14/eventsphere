@@ -1,3 +1,33 @@
+// Authentication utilities
+const AUTH_CONFIG = {
+    TOKEN_KEY: 'authToken',
+    FALLBACK_TOKEN_KEY: 'authtoken',
+    LOGIN_URL: '../auth/login/login.html',
+    PROFILE_URL: '/dashboard/profile/profile.html'
+};
+
+function getAuthToken() {
+    return localStorage.getItem(AUTH_CONFIG.TOKEN_KEY) || localStorage.getItem(AUTH_CONFIG.FALLBACK_TOKEN_KEY);
+}
+
+function clearAuthTokens() {
+    localStorage.removeItem(AUTH_CONFIG.TOKEN_KEY);
+    localStorage.removeItem(AUTH_CONFIG.FALLBACK_TOKEN_KEY);
+}
+
+function redirectToLogin() {
+    window.location.href = AUTH_CONFIG.LOGIN_URL;
+}
+
+// IMMEDIATE AUTH CHECK - Redirects before page loads
+(function () {
+    const token = getAuthToken();
+    if (!token) {
+        redirectToLogin();
+        return;
+    }
+})();
+
 // Toggle mobile menu functionality
 function toggleMenu() {
     const menu = document.querySelector('.mobile-menu');
@@ -22,167 +52,158 @@ function toggleTheme() {
     });
 }
 
-// Checks authentication status and update UI accordingly
-function checkAuthStatus() {
-    // Use consistent token key - check both for compatibility
-    const token = localStorage.getItem('authToken') || localStorage.getItem('authtoken');
-    console.log('Checking auth status, token:', token ? 'Token found' : 'No token'); // Don't log actual token for security
-
-    const isLoggedIn = !!token;
-    console.log('Is logged in:', isLoggedIn);
-
+// Update UI for authenticated users
+function updateAuthenticatedUI() {
     const loginBtns = document.querySelectorAll('.login-btn');
     const signupBtns = document.querySelectorAll('.signup-btn');
     const footerLogin = document.querySelector('.footer-login');
     const footerSignup = document.querySelector('.footer-signup');
 
-    if (isLoggedIn) {
-        console.log('User is logged in, updating UI');
-
-        // If logged in, replace login/signup buttons with profile/logout
-        loginBtns.forEach(btn => {
-            btn.textContent = 'Profile';
-            const parentLink = btn.closest('a');
-            if (parentLink) {
-                parentLink.href = '/dashboard/profile/profile.html'; // Adjust path as needed
-            }
-        });
-
-        signupBtns.forEach(btn => {
-            btn.textContent = 'Logout';
-            btn.classList.add('logout-btn');
-            const parent = btn.closest('a');
-            if (parent) {
-                parent.removeAttribute('href');
-                parent.addEventListener('click', handleLogout);
-            }
-        });
-
-        if (footerLogin) {
-            footerLogin.textContent = 'Profile';
-            footerLogin.closest('a').href = '/dashboard/profile/profile.html';
+    // Replace login buttons with profile links
+    loginBtns.forEach(btn => {
+        btn.textContent = 'Profile';
+        const parentLink = btn.closest('a');
+        if (parentLink) {
+            parentLink.href = AUTH_CONFIG.PROFILE_URL;
         }
+    });
 
-        if (footerSignup) {
-            footerSignup.textContent = 'Logout';
-            footerSignup.classList.add('logout-btn');
-            const parent = footerSignup.closest('a');
-            if (parent) {
-                parent.removeAttribute('href');
-                parent.addEventListener('click', handleLogout);
-            }
+    // Replace signup buttons with logout buttons
+    signupBtns.forEach(btn => {
+        btn.textContent = 'Logout';
+        btn.classList.add('logout-btn');
+        const parent = btn.closest('a');
+        if (parent) {
+            parent.removeAttribute('href');
+            parent.addEventListener('click', handleLogout);
         }
-    } else {
-        console.log('User is not logged in - UI remains as login/signup');
+    });
+
+    // Update footer links
+    if (footerLogin) {
+        footerLogin.textContent = 'Profile';
+        footerLogin.closest('a').href = AUTH_CONFIG.PROFILE_URL;
+    }
+
+    if (footerSignup) {
+        footerSignup.textContent = 'Logout';
+        footerSignup.classList.add('logout-btn');
+        const parent = footerSignup.closest('a');
+        if (parent) {
+            parent.removeAttribute('href');
+            parent.addEventListener('click', handleLogout);
+        }
     }
 }
 
 // Handle logout functionality
 function handleLogout(event) {
     event.preventDefault();
-    // Remove both token variations for cleanup
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('authtoken');
+    clearAuthTokens();
     alert('You have been logged out successfully');
-    window.location.href = '../auth/login/login.html';
+    redirectToLogin();
 }
 
-// Displays event cards in search results
+// Event display and carousel functionality
 function displayEvents(eventData) {
     const eventsList = document.getElementById('eventsList');
     const loading = document.getElementById('loading');
     const noResults = document.getElementById('noResults');
 
     loading.style.display = 'none';
-
-    // Clear existing content
     eventsList.innerHTML = '';
 
-    if (!eventData._embedded || !eventData._embedded.events || eventData._embedded.events.length === 0) {
+    if (!eventData._embedded?.events?.length) {
         noResults.style.display = 'block';
         return;
     }
 
     noResults.style.display = 'none';
-
     const events = eventData._embedded.events;
     const cardColors = ['red', 'blue', 'green', 'pink'];
+    const eventsPerSlide = 4;
+    const totalSlides = Math.ceil(events.length / eventsPerSlide);
 
-    // Creates carousel container
+    // Create carousel structure
     const carouselContainer = document.createElement('div');
     carouselContainer.className = 'event-carousel';
 
-    // Creates carousel inner container for the slides
     const carouselInner = document.createElement('div');
     carouselInner.className = 'carousel-inner';
 
-    const totalEvents = events.length;
-    const eventsPerSlide = 4;
-    const totalSlides = Math.ceil(totalEvents / eventsPerSlide);
-
-    // Create slide pages
+    // Create slides
     for (let slideIndex = 0; slideIndex < totalSlides; slideIndex++) {
         const slideDiv = document.createElement('div');
         slideDiv.className = 'carousel-slide';
-        slideDiv.id = `slide-${slideIndex}`;
         slideDiv.style.display = slideIndex === 0 ? 'flex' : 'none';
 
         for (let i = 0; i < eventsPerSlide; i++) {
             const eventIndex = slideIndex * eventsPerSlide + i;
-            if (eventIndex >= totalEvents) break;
+            if (eventIndex >= events.length) break;
 
             const event = events[eventIndex];
-
-            const venue = event._embedded && event._embedded.venues && event._embedded.venues[0] ?
-                `${event._embedded.venues[0].city.name}, ${event._embedded.venues[0].country.name}` :
-                'Location not specified';
-
-            const eventDate = event.dates && event.dates.start ?
-                new Date(event.dates.start.localDate).toLocaleDateString('en-AU', {
-                    day: '2-digit',
-                    month: 'short',
-                    year: 'numeric'
-                }) :
-                'Date TBA';
-
-            const cardElement = document.createElement('div');
-            cardElement.className = `event-card ${cardColors[eventIndex % cardColors.length]}`;
-
-            const imageUrl = event.images && event.images.length > 0 ?
-                event.images[0].url :
-                '/public/homepage/assets/images/event.png';
-
-            cardElement.innerHTML = `
-                <img src="${imageUrl}" alt="${event.name}" class="event-image">
-                <div class="card-content">
-                    <p class="location">
-                        <i class="fas fa-map-marker-alt"></i> ${venue}
-                    </p>
-                    <h3 class="event-title">${event.name}</h3>
-                    <p class="date">
-                        <i class="fas fa-calendar-alt"></i> ${eventDate}
-                        <span class="platform">Ticketmaster</span>
-                    </p>
-                    <div class="card-buttons">
-                        <button class="bookmark">
-                            <i class="fas fa-bookmark"></i> BookMark
-                        </button>
-                        <button class="start" onclick="window.open('${event.url}', '_blank')">
-                            Get Tickets <i class="fas fa-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            slideDiv.appendChild(cardElement);
+            const eventCard = createEventCard(event, eventIndex, cardColors);
+            slideDiv.appendChild(eventCard);
         }
 
         carouselInner.appendChild(slideDiv);
     }
 
-    // Creates carousel navigation
-    const carouselNavigation = document.createElement('div');
-    carouselNavigation.className = 'carousel-navigation';
+    // Create navigation
+    const navigation = createCarouselNavigation(totalSlides);
+
+    carouselContainer.appendChild(carouselInner);
+    carouselContainer.appendChild(navigation);
+    eventsList.appendChild(carouselContainer);
+
+    setupBookmarkButtons();
+}
+
+function createEventCard(event, index, cardColors) {
+    const venue = event._embedded?.venues?.[0] ?
+        `${event._embedded.venues[0].city.name}, ${event._embedded.venues[0].country.name}` :
+        'Location not specified';
+
+    const eventDate = event.dates?.start?.localDate ?
+        new Date(event.dates.start.localDate).toLocaleDateString('en-AU', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        }) : 'Date TBA';
+
+    const imageUrl = event.images?.[0]?.url || '/public/homepage/assets/images/event.png';
+
+    const cardElement = document.createElement('div');
+    cardElement.className = `event-card ${cardColors[index % cardColors.length]}`;
+
+    cardElement.innerHTML = `
+        <img src="${imageUrl}" alt="${event.name}" class="event-image">
+        <div class="card-content">
+            <p class="location">
+                <i class="fas fa-map-marker-alt"></i> ${venue}
+            </p>
+            <h3 class="event-title">${event.name}</h3>
+            <p class="date">
+                <i class="fas fa-calendar-alt"></i> ${eventDate}
+                <span class="platform">Ticketmaster</span>
+            </p>
+            <div class="card-buttons">
+                <button class="bookmark">
+                    <i class="fas fa-bookmark"></i> BookMark
+                </button>
+                <button class="start" onclick="window.open('${event.url}', '_blank')">
+                    Get Tickets <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    `;
+
+    return cardElement;
+}
+
+function createCarouselNavigation(totalSlides) {
+    const navigation = document.createElement('div');
+    navigation.className = 'carousel-navigation';
 
     const prevButton = document.createElement('button');
     prevButton.className = 'carousel-nav-btn prev-btn';
@@ -194,18 +215,12 @@ function displayEvents(eventData) {
     nextButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
     nextButton.onclick = () => navigateCarousel('next', totalSlides);
 
-    carouselNavigation.appendChild(prevButton);
-    carouselNavigation.appendChild(nextButton);
+    navigation.appendChild(prevButton);
+    navigation.appendChild(nextButton);
 
-    carouselContainer.appendChild(carouselInner);
-    carouselContainer.appendChild(carouselNavigation);
-
-    eventsList.appendChild(carouselContainer);
-
-    setupBookmarkButtons();
+    return navigation;
 }
 
-// Function to navigate the carousel
 function navigateCarousel(direction, totalSlides) {
     const slides = document.querySelectorAll('.carousel-slide');
     let currentSlideIndex = 0;
@@ -217,85 +232,100 @@ function navigateCarousel(direction, totalSlides) {
         }
     });
 
-    let newSlideIndex;
-    if (direction === 'next') {
-        newSlideIndex = (currentSlideIndex + 1) % totalSlides;
-    } else {
-        newSlideIndex = (currentSlideIndex - 1 + totalSlides) % totalSlides;
-    }
+    const newSlideIndex = direction === 'next' ?
+        (currentSlideIndex + 1) % totalSlides :
+        (currentSlideIndex - 1 + totalSlides) % totalSlides;
 
     slides[newSlideIndex].style.display = 'flex';
 }
 
-// Setup bookmark buttons - saves events to backend when logged in
+// Bookmark functionality
 function setupBookmarkButtons() {
-    const token = localStorage.getItem('authToken') || localStorage.getItem('authtoken');
     const bookmarkButtons = document.querySelectorAll('.bookmark');
 
     bookmarkButtons.forEach(btn => {
         btn.addEventListener('click', function (e) {
             e.preventDefault();
-            if (!token) {
-                alert('Please login to bookmark events');
-                window.location.href = '../auth/login/login.html';
-            } else {
-                // Get event data from the card element
-                const eventCard = btn.closest('.event-card');
-                const eventData = {
-                    name: eventCard.querySelector('.event-title').textContent,
-                    location: eventCard.querySelector('.location').textContent.replace(/.*\s/, ''),
-                    date: eventCard.querySelector('.date').textContent.replace(/.*\s/, '').replace('Ticketmaster', '').trim(),
-                    image: eventCard.querySelector('.event-image').src,
-                    ticketUrl: eventCard.querySelector('.start').getAttribute('onclick').match(/'([^']+)'/)[1],
-                    platform: 'Ticketmaster'
-                };
-
-                // Save to backend
-                fetch('/api/events/bookmark', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(eventData)
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Event added to bookmarks!');
-                            btn.innerHTML = '<i class="fas fa-bookmark" style="color: #gold;"></i> Bookmarked';
-                            btn.disabled = true;
-                        } else {
-                            alert('Failed to bookmark event');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Bookmark error:', error);
-                        alert('Failed to bookmark event');
-                    });
-            }
+            handleBookmark(btn);
         });
     });
 }
 
-// Formats date in ISO format with timezone for API request
+function handleBookmark(btn) {
+    const eventCard = btn.closest('.event-card');
+    const eventData = {
+        name: eventCard.querySelector('.event-title').textContent,
+        location: eventCard.querySelector('.location').textContent.replace(/.*\s/, ''),
+        date: eventCard.querySelector('.date').textContent.replace(/.*\s/, '').replace('Ticketmaster', '').trim(),
+        image: eventCard.querySelector('.event-image').src,
+        ticketUrl: eventCard.querySelector('.start').getAttribute('onclick').match(/'([^']+)'/)[1],
+        platform: 'Ticketmaster'
+    };
+
+    const token = getAuthToken();
+
+    fetch('/api/events/bookmark', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(eventData)
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Event added to bookmarks!');
+                btn.innerHTML = '<i class="fas fa-bookmark" style="color: #gold;"></i> Bookmarked';
+                btn.disabled = true;
+            } else {
+                alert('Failed to bookmark event');
+            }
+        })
+        .catch(error => {
+            console.error('Bookmark error:', error);
+            alert('Failed to bookmark event');
+        });
+}
+
+// API utilities
 function formatDateForAPI(dateString) {
     if (!dateString) return '';
-
-    // Creating Date object from the input
     const date = new Date(dateString);
-
-    // Format to YYYY-MM-DDThh:mm:ssZ format
-    // For startDateTime, set time to 00:00:00
-    // For endDateTime, set time to 23:59:59
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
-
     return `${year}-${month}-${day}`;
 }
 
-// Function to fetch events from the API with authentication
+function makeAuthenticatedRequest(url, options = {}) {
+    const token = getAuthToken();
+    const headers = {
+        'Content-Type': 'application/json',
+        ...options.headers
+    };
+
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    return fetch(url, {
+        ...options,
+        headers
+    }).then(response => {
+        if (response.status === 401) {
+            clearAuthTokens();
+            redirectToLogin();
+            throw new Error('Session expired');
+        }
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    });
+}
+
+// Event fetching functions
 function fetchEvents(searchParams) {
     const loading = document.getElementById('loading');
     loading.style.display = 'block';
@@ -304,158 +334,73 @@ function fetchEvents(searchParams) {
 
     if (searchParams.location) queryParams.append('location', searchParams.location);
     if (searchParams.keyword) queryParams.append('keyword', searchParams.keyword);
-
-    // Formats the dates correctly for API
     if (searchParams.startDate) {
-        const formattedStartDate = formatDateForAPI(searchParams.startDate);
-        queryParams.append('startDateTime', `${formattedStartDate}T00:00:00Z`);
+        queryParams.append('startDateTime', `${formatDateForAPI(searchParams.startDate)}T00:00:00Z`);
     }
-
     if (searchParams.endDate) {
-        const formattedEndDate = formatDateForAPI(searchParams.endDate);
-        queryParams.append('endDateTime', `${formattedEndDate}T23:59:59Z`);
+        queryParams.append('endDateTime', `${formatDateForAPI(searchParams.endDate)}T23:59:59Z`);
     }
-
     if (searchParams.sort) queryParams.append('sort', searchParams.sort);
 
     queryParams.append('countryCode', 'AU');
 
-    const endpoint = '/search-events';
-    const apiUrl = `${endpoint}?${queryParams.toString()}`;
+    const apiUrl = `/search-events?${queryParams.toString()}`;
 
-    console.log('Fetching events from API:', apiUrl);
-
-    // Check both token variations for compatibility
-    const token = localStorage.getItem('authToken') || localStorage.getItem('authtoken');
-    const headers = {
-        'Content-Type': 'application/json'
-    };
-
-    // Only add Authorization header if token exists
-    if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    fetch(apiUrl, {
-        method: 'GET',
-        headers: headers
-    })
-        .then(response => {
-            console.log('API Response status:', response.status);
-            if (response.status === 401) {
-                // Only show session expired message if user was actually logged in
-                if (token) {
-                    alert('Your session has expired. Please login again.');
-                    window.location.href = '../auth/login/login.html';
-                }
-                throw new Error('Unauthorized');
-            }
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
+    makeAuthenticatedRequest(apiUrl)
         .then(data => {
-            console.log('API returned data:', data);
             displayEvents(data);
         })
         .catch(error => {
             console.error('Error fetching events:', error);
-            console.error('Error details:', error.toString());
-            displayNoResults();
-            console.log('Falling back to mock data');
             displayEvents(getMockEventData());
         });
 }
 
-// Form submission handler
-function handleSearchFormSubmit(event) {
-    event.preventDefault();
-
-    const location = document.getElementById('location').value;
-    const keyword = document.getElementById('keyword').value;
-    const startDate = document.getElementById('startDate').value;
-    const endDate = document.getElementById('endDate').value;
-    const sort = document.getElementById('sort').value;
-
-    const resultsHeading = document.querySelector('.results-heading');
-    resultsHeading.textContent = `${keyword || 'All'} Events in ${location || 'All of Australia'}`;
-
-    console.log('Search parameters:', {
-        location: location,
-        keyword: keyword,
-        startDate: startDate,
-        endDate: endDate,
-        sort: sort
-    });
-
-    fetchEvents({
-        location: location,
-        keyword: keyword,
-        startDate: startDate,
-        endDate: endDate,
-        sort: sort
-    });
-}
-
-// Function to get trending events with authentication
 function fetchTrendingEvents() {
     const loading = document.getElementById('loading');
     loading.style.display = 'block';
-
-    const queryParams = new URLSearchParams();
 
     const today = new Date();
     const nextWeek = new Date();
     nextWeek.setDate(today.getDate() + 7);
 
-    const formattedToday = formatDateForAPI(today);
-    const formattedNextWeek = formatDateForAPI(nextWeek);
-
-    queryParams.append('startDateTime', `${formattedToday}T00:00:00Z`);
-    queryParams.append('endDateTime', `${formattedNextWeek}T23:59:59Z`);
+    const queryParams = new URLSearchParams();
+    queryParams.append('startDateTime', `${formatDateForAPI(today)}T00:00:00Z`);
+    queryParams.append('endDateTime', `${formatDateForAPI(nextWeek)}T23:59:59Z`);
     queryParams.append('sort', 'date,asc');
     queryParams.append('countryCode', 'AU');
 
     const apiUrl = `/search-events?${queryParams.toString()}`;
-    console.log('Fetching trending events from API:', apiUrl);
 
-    // Check both token variations for compatibility
-    const token = localStorage.getItem('authToken') || localStorage.getItem('authtoken');
-    const headers = {
-        'Content-Type': 'application/json'
-    };
-
-    // Only add Authorization header if token exists
-    if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    fetch(apiUrl, {
-        method: 'GET',
-        headers: headers
-    })
-        .then(response => {
-            console.log('Trending API Response status:', response.status);
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
+    makeAuthenticatedRequest(apiUrl)
         .then(data => {
-            console.log('Trending API returned data:', data);
             displayEvents(data);
         })
         .catch(error => {
             console.error('Error fetching trending events:', error);
-            console.error('Error details:', error.toString());
-
-            console.log('Falling back to mock data for trending events');
             displayEvents(getMockEventData());
         });
 }
 
-// Mock event data for fallback purposes
+// Form handling
+function handleSearchFormSubmit(event) {
+    event.preventDefault();
+
+    const formData = {
+        location: document.getElementById('location').value,
+        keyword: document.getElementById('keyword').value,
+        startDate: document.getElementById('startDate').value,
+        endDate: document.getElementById('endDate').value,
+        sort: document.getElementById('sort').value
+    };
+
+    const resultsHeading = document.querySelector('.results-heading');
+    resultsHeading.textContent = `${formData.keyword || 'All'} Events in ${formData.location || 'All of Australia'}`;
+
+    fetchEvents(formData);
+}
+
+// Mock data for fallback
 function getMockEventData() {
     return {
         "_embedded": {
@@ -463,131 +408,61 @@ function getMockEventData() {
                 {
                     "name": "Ed Sheeran: Mathematics Tour",
                     "url": "https://www.ticketmaster.com.au/ed-sheeran-mathematics-tour-sydney-05-14-2025/event/13005E8D8B681234",
-                    "images": [
-                        {
-                            "url": "/auth/homepage/assets/images/event.png"
-                        }
-                    ],
-                    "dates": {
-                        "start": {
-                            "localDate": "2025-05-15"
-                        }
-                    },
+                    "images": [{ "url": "/auth/homepage/assets/images/event.png" }],
+                    "dates": { "start": { "localDate": "2025-05-15" } },
                     "_embedded": {
-                        "venues": [
-                            {
-                                "city": {
-                                    "name": "Sydney"
-                                },
-                                "country": {
-                                    "name": "Australia"
-                                }
-                            }
-                        ]
+                        "venues": [{
+                            "city": { "name": "Sydney" },
+                            "country": { "name": "Australia" }
+                        }]
                     }
                 },
                 {
                     "name": "Taylor Swift: The Eras Tour",
                     "url": "https://www.ticketmaster.com.au/taylor-swift-the-eras-tour-sydney-05-16-2025/event/13005E81F9A25678",
-                    "images": [
-                        {
-                            "url": "/auth/homepage/assets/images/event.png"
-                        }
-                    ],
-                    "dates": {
-                        "start": {
-                            "localDate": "2025-05-16"
-                        }
-                    },
+                    "images": [{ "url": "/auth/homepage/assets/images/event.png" }],
+                    "dates": { "start": { "localDate": "2025-05-16" } },
                     "_embedded": {
-                        "venues": [
-                            {
-                                "city": {
-                                    "name": "Sydney"
-                                },
-                                "country": {
-                                    "name": "Australia"
-                                }
-                            }
-                        ]
+                        "venues": [{
+                            "city": { "name": "Sydney" },
+                            "country": { "name": "Australia" }
+                        }]
                     }
                 },
                 {
                     "name": "Coldplay: Music of the Spheres",
                     "url": "https://www.ticketmaster.com.au/coldplay-music-of-the-spheres-sydney-05-17-2025/event/13005E91CA9D9012",
-                    "images": [
-                        {
-                            "url": "/auth/homepage/assets/images/event.png"
-                        }
-                    ],
-                    "dates": {
-                        "start": {
-                            "localDate": "2025-05-17"
-                        }
-                    },
+                    "images": [{ "url": "/auth/homepage/assets/images/event.png" }],
+                    "dates": { "start": { "localDate": "2025-05-17" } },
                     "_embedded": {
-                        "venues": [
-                            {
-                                "city": {
-                                    "name": "Sydney"
-                                },
-                                "country": {
-                                    "name": "Australia"
-                                }
-                            }
-                        ]
+                        "venues": [{
+                            "city": { "name": "Sydney" },
+                            "country": { "name": "Australia" }
+                        }]
                     }
                 },
                 {
                     "name": "Bad Bunny: Most Wanted Tour",
                     "url": "https://www.ticketmaster.com.au/bad-bunny-most-wanted-tour-sydney-05-18-2025/event/13005E7AD45B3456",
-                    "images": [
-                        {
-                            "url": "/auth/homepage/assets/images/event.png"
-                        }
-                    ],
-                    "dates": {
-                        "start": {
-                            "localDate": "2025-05-18"
-                        }
-                    },
+                    "images": [{ "url": "/auth/homepage/assets/images/event.png" }],
+                    "dates": { "start": { "localDate": "2025-05-18" } },
                     "_embedded": {
-                        "venues": [
-                            {
-                                "city": {
-                                    "name": "Sydney"
-                                },
-                                "country": {
-                                    "name": "Australia"
-                                }
-                            }
-                        ]
+                        "venues": [{
+                            "city": { "name": "Sydney" },
+                            "country": { "name": "Australia" }
+                        }]
                     }
                 },
                 {
                     "name": "Adele: Weekend With Adele",
                     "url": "https://www.ticketmaster.com.au/adele-weekend-with-adele-sydney-05-19-2025/event/13005E84BA7D7890",
-                    "images": [
-                        {
-                            "url": "/auth/homepage/assets/images/event.png"
-                        }
-                    ],
-                    "dates": {
-                        "start": {
-                            "localDate": "2025-05-19"
-                        }
-                    },
+                    "images": [{ "url": "/auth/homepage/assets/images/event.png" }],
+                    "dates": { "start": { "localDate": "2025-05-19" } },
                     "_embedded": {
-                        "venues": [
-                            {
-                                "city": {
-                                    "name": "Sydney"
-                                },
-                                "country": {
-                                    "name": "Australia"
-                                }
-                            }
-                        ]
+                        "venues": [{
+                            "city": { "name": "Sydney" },
+                            "country": { "name": "Australia" }
+                        }]
                     }
                 }
             ]
@@ -598,43 +473,49 @@ function getMockEventData() {
 function displayNoResults() {
     const loading = document.getElementById('loading');
     const noResults = document.getElementById('noResults');
-
     loading.style.display = 'none';
     noResults.style.display = 'block';
 }
 
+// Initialize page
 document.addEventListener('DOMContentLoaded', function () {
+    // Remove font-awesome integrity check
     const fontAwesomeLink = document.querySelector('link[href*="font-awesome"]');
     if (fontAwesomeLink) {
         fontAwesomeLink.removeAttribute('integrity');
         fontAwesomeLink.removeAttribute('crossorigin');
     }
 
-    checkAuthStatus();
+    // Update UI for authenticated users
+    updateAuthenticatedUI();
 
-    const themeButtons = document.querySelectorAll('.theme-toggle');
-    themeButtons.forEach((button) => {
+    // Setup theme toggle
+    document.querySelectorAll('.theme-toggle').forEach(button => {
         button.addEventListener('click', toggleTheme);
     });
 
+    // Setup search form
     const searchForm = document.getElementById('eventSearchForm');
     if (searchForm) {
         searchForm.addEventListener('submit', handleSearchFormSubmit);
     }
 
+    // Set default dates
+    const today = new Date();
+    const nextWeek = new Date();
+    nextWeek.setDate(today.getDate() + 7);
+
     const startDateInput = document.getElementById('startDate');
     const endDateInput = document.getElementById('endDate');
 
     if (startDateInput && !startDateInput.value) {
-        const today = new Date();
         startDateInput.value = today.toISOString().split('T')[0];
     }
 
     if (endDateInput && !endDateInput.value) {
-        const nextWeek = new Date();
-        nextWeek.setDate(nextWeek.getDate() + 7);
         endDateInput.value = nextWeek.toISOString().split('T')[0];
     }
 
+    // Load trending events
     fetchTrendingEvents();
 });
