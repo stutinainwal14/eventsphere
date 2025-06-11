@@ -42,22 +42,47 @@ function toggleMenu() {
     menu.classList.toggle('show');
 }
 
-// Theme toggle functionality
+// Theme toggle functionality with persistence
 function toggleTheme() {
     document.body.classList.toggle('dark-theme');
+
+    // Save theme preference
+    const isDarkMode = document.body.classList.contains('dark-theme');
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+
+    updateThemeButtons(isDarkMode);
+}
+
+function updateThemeButtons(isDarkMode) {
     const themeToggle = document.querySelectorAll('.theme-toggle');
     themeToggle.forEach(btn => {
         const icon = btn.querySelector('i');
-        if (icon.classList.contains('fa-moon')) {
+        if (isDarkMode) {
+            // Dark mode is active, show sun icon (to switch to light)
             icon.classList.remove('fa-moon');
             icon.classList.add('fa-sun');
             btn.innerHTML = btn.innerHTML.replace('Dark', 'Light');
         } else {
+            // Light mode is active, show moon icon (to switch to dark)
             icon.classList.remove('fa-sun');
             icon.classList.add('fa-moon');
             btn.innerHTML = btn.innerHTML.replace('Light', 'Dark');
         }
     });
+}
+
+// Load saved theme on page load
+function loadSavedTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    const isDarkMode = savedTheme === 'dark';
+
+    if (isDarkMode) {
+        document.body.classList.add('dark-theme');
+    } else {
+        document.body.classList.remove('dark-theme');
+    }
+
+    updateThemeButtons(isDarkMode);
 }
 
 // Update UI for authenticated users
@@ -573,6 +598,9 @@ document.addEventListener('DOMContentLoaded', function () {
         fontAwesomeLink.removeAttribute('integrity');
         fontAwesomeLink.removeAttribute('crossorigin');
     }
+
+    // Load saved theme FIRST before other UI updates
+    loadSavedTheme();
 
     // Update UI for authenticated users
     updateAuthenticatedUI();
