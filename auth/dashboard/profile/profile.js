@@ -2,11 +2,19 @@ $(document).ready(function () {
     let userData = {}; // Will be populated from API
     let searchTimeout;
 
-    // Check if user is logged in - FIXED: Check both token variations for compatibility
+    // Check if user is logged in - Check both token variations for compatibility
     const token = localStorage.getItem('authToken') || localStorage.getItem('authtoken');
     if (!token) {
         window.location.href = '/auth/login/login.html';
         return;
+    }
+
+    // Initialize the application
+    init();
+
+    function init() {
+        loadUserProfile();
+        setupEventHandlers();
     }
 
     // Load user profile data from backend
@@ -24,18 +32,14 @@ $(document).ready(function () {
             error: function (xhr) {
                 console.error('Error loading profile:', xhr);
                 if (xhr.status === 401) {
-                    // Clean up both token variations
-                    localStorage.removeItem('authToken');
-                    localStorage.removeItem('authtoken');
-                    window.location.href = '/auth/login/login.html';
+                    cleanupAndRedirectToLogin();
                 } else {
-                    $('#info-error-alert').text('Failed to load profile data').fadeIn().delay(3000).fadeOut();
+                    showAlert('#info-error-alert', 'Failed to load profile data');
                 }
             }
         });
     }
 
-    // Update the populateProfileData function to handle avatar properly
     function populateProfileData(user) {
         // Parse preferences if it's a string
         let preferences = {};
@@ -58,25 +62,162 @@ $(document).ready(function () {
         $('#location').val(preferences.location || '');
         $('#bio').val(preferences.bio || '');
 
-        // Update avatar - FIXED: Only update if not showing preview
-        if (user.avatar && !$('#profile-avatar-img').attr('data-preview')) {
-            const avatarUrl = user.avatar.startsWith('http') ? user.avatar : user.avatar;
-            $('#profile-avatar-img').attr('src', avatarUrl);
-            $('#nav-user-avatar').attr('src', avatarUrl);
-        } else if (!user.avatar && !$('#profile-avatar-img').attr('data-preview')) {
-            // Set default avatar if no avatar and no preview
-            $('#profile-avatar-img').attr('src', '/public/homepage/assets/images/default-avatar.png');
-            $('#nav-user-avatar').attr('src', '/public/homepage/assets/images/default-avatar.png');
-        }
+        // Update avatar - Only update if not showing preview
+        updateAvatarDisplay(user.avatar);
 
         // Check 2FA status
         check2FAStatus();
     }
 
-    // Initialize profile loading
-    loadUserProfile();
+    function updateAvatarDisplay(avatarUrl) {
+        if (avatarUrl && !$('#profile-avatar-img').attr('data-preview')) {
+            $('#profile-avatar-img').attr('src', avatarUrl);
+            $('#nav-user-avatar').attr('src', avatarUrl);
+        } else if (!avatarUrl && !$('#profile-avatar-img').attr('data-preview')) {
+            // Set default avatar if no avatar and no preview
+            const defaultAvatar = '/public/homepage/assets/images/default-avatar.png';
+            $('#profile-avatar-img').attr('src', defaultAvatar);
+            $('#nav-user-avatar').attr('src', defaultAvatar);
+        }
+    }
 
-    // Enhanced load bookmarked events with search functionality
+    // Event Handlers Setup
+    function setupEventHandlers() {
+        // Sidebar navigation
+        $('.menu-item').on('click', handleMenuItemClick);
+
+        // User dropdown
+        $('#user-profile-dropdown').on('click', toggleUserDropdown);
+        $(document).on('click', closeUserDropdown);
+
+        // Tab switching
+        $('.profile-tab').on('click', handleTabSwitch);
+
+        // Sidebar toggle
+        $('#sidebar-toggle').on('click', toggleSidebar);
+
+        // Search functionality
+        $('#search-events-btn').on('click', handleSearch);
+        $('#clear-search-btn').on('click', clearSearch);
+        $('#event-search, #tag-search').on('keypress', handleSearchKeypress);
+        $('#event-search, #tag-search').on('input', handleRealTimeSearch);
+
+        // 2FA functionality
+        $('#setup-2fa-btn').on('click', setup2FA);
+        $('#verify-2fa-form').on('submit', verify2FA);
+        $('#cancel-2fa-setup').on('click', cancel2FASetup);
+        $('#disable-2fa-btn').on('click', disable2FA);
+
+        // Form submissions
+        $('#profile-form').on('submit', handleProfileUpdate);
+        $('#password-form').on('submit', handlePasswordUpdate);
+
+        // Password strength meter
+        $('#new-password').on('input', updatePasswordStrength);
+
+        // Avatar upload
+        $('#avatar-upload-input').on('change', handleAvatarUpload);
+
+        // Account actions
+        $('#delete-account-btn').on('click', handleAccountDeletion);
+        $('#download-data-btn').on('click', handleDataDownload);
+
+        // Cancel buttons
+        $('#cancel-info-btn').on('click', resetProfileForm);
+        $('#cancel-password-btn').on('click', resetPasswordForm);
+
+        // Logout - Single handler to prevent double execution
+        $('.logout-btn').on('click', handleLogout);
+    }
+
+    // Menu Item Click Handler
+    function handleMenuItemClick(e) {
+        e.preventDefault();
+
+        const section = $(this).data('section');
+        const isLogout = $(this).hasClass('logout-btn');
+
+        // Handle logout separately
+        if (isLogout) {
+            handleLogout(e);
+            return;
+        }
+
+        // Update active menu item
+        $('.menu-item').removeClass('active');
+        $(this).addClass('active');
+
+        // Hide all content sections
+        $('.content-card').hide();
+        $('#my-events-section').hide();
+
+        // Show appropriate section
+        if (section === 'my-events') {
+            $('#my-events-section').show();
+            loadBookmarkedEvents();
+        } else {
+            $('.content-card').not('#my-events-section').first().show();
+        }
+    }
+
+    // User Dropdown Handlers
+    function toggleUserDropdown(e) {
+        e.stopPropagation();
+        $('#user-dropdown').toggleClass('show');
+    }
+
+    function closeUserDropdown() {
+        $('#user-dropdown').removeClass('show');
+    }
+
+    // Tab Switch Handler
+    function handleTabSwitch() {
+        const tabId = $(this).data('tab');
+        $('.profile-tab').removeClass('active');
+        $('.tab-content').removeClass('active');
+        $(this).addClass('active');
+        $('#' + tabId).addClass('active');
+    }
+
+    // Sidebar Toggle
+    function toggleSidebar() {
+        $('#sidebar').toggleClass('show');
+    }
+
+    // Search Handlers
+    function handleSearch() {
+        const searchQuery = $('#event-search').val().trim();
+        const tagFilter = $('#tag-search').val().trim();
+        loadBookmarkedEvents(searchQuery, tagFilter);
+    }
+
+    function handleSearchKeypress(e) {
+        if (e.which === 13) { // Enter key
+            handleSearch();
+        }
+    }
+
+    function handleRealTimeSearch() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(function () {
+            const searchQuery = $('#event-search').val().trim();
+            const tagFilter = $('#tag-search').val().trim();
+
+            // Only auto-search if there's some input
+            if (searchQuery || tagFilter) {
+                loadBookmarkedEvents(searchQuery, tagFilter);
+            }
+        }, 500); // Wait 500ms after user stops typing
+    }
+
+    function clearSearch() {
+        $('#event-search').val('');
+        $('#tag-search').val('');
+        $('#search-results-info').hide();
+        loadBookmarkedEvents();
+    }
+
+    // Bookmarked Events Functions
     function loadBookmarkedEvents(searchQuery = '', tagFilter = '') {
         console.log('Loading bookmarked events...', { searchQuery, tagFilter });
 
@@ -92,10 +233,7 @@ $(document).ready(function () {
 
         if (searchQuery || tagFilter) {
             url = '/api/events/saved/search';
-            params = {
-                q: searchQuery,
-                tags: tagFilter
-            };
+            params = { q: searchQuery, tags: tagFilter };
         }
 
         $.ajax({
@@ -106,15 +244,12 @@ $(document).ready(function () {
             },
             data: params,
             success: function (response) {
-                console.log('Bookmarks response:', response);
                 $('#events-loading').hide();
 
                 let events = [];
                 if (url.includes('/saved/search')) {
-                    // Search endpoint returns array directly
                     events = response || [];
                 } else {
-                    // Regular bookmarks endpoint returns {events: [...]}
                     events = response.events || [];
                 }
 
@@ -124,7 +259,6 @@ $(document).ready(function () {
                 }
 
                 if (events.length > 0) {
-                    console.log('Displaying', events.length, 'events');
                     displayBookmarkedEvents(events);
                 } else {
                     showNoEventsMessage(searchQuery || tagFilter);
@@ -138,7 +272,6 @@ $(document).ready(function () {
         });
     }
 
-    // Update search results info
     function updateSearchResultsInfo(count, searchQuery, tagFilter) {
         const resultsInfo = $('#search-results-info');
         const resultsCount = $('#results-count');
@@ -159,13 +292,11 @@ $(document).ready(function () {
         resultsInfo.show();
     }
 
-    // Enhanced display bookmarked events with better data handling
     function displayBookmarkedEvents(events) {
         const eventsGrid = $('#events-grid');
         eventsGrid.empty();
 
         events.forEach(event => {
-            // Handle different response formats
             const eventData = {
                 id: event.id || event.event_id,
                 name: event.name || 'Unknown Event',
@@ -177,7 +308,22 @@ $(document).ready(function () {
                 event_id: event.event_id || event.id
             };
 
-            const eventCard = $(`
+            const eventCard = createEventCard(eventData);
+            eventsGrid.append(eventCard);
+        });
+
+        // Add remove bookmark functionality
+        $('.remove-bookmark').on('click', function () {
+            const eventId = $(this).data('event-id');
+            const eventDbId = $(this).data('event-db-id');
+            const cardElement = $(this).closest('.bookmarked-event-card');
+            const idToUse = eventId || eventDbId;
+            removeBookmark(idToUse, cardElement);
+        });
+    }
+
+    function createEventCard(eventData) {
+        return $(`
             <div class="bookmarked-event-card">
                 <img src="${eventData.image}" alt="${eventData.name}"
                      onerror="this.src='/public/homepage/assets/images/event.png'">
@@ -201,23 +347,8 @@ $(document).ready(function () {
                 </div>
             </div>
         `);
-
-            eventsGrid.append(eventCard);
-        });
-
-        // Add remove bookmark functionality
-        $('.remove-bookmark').click(function () {
-            const eventId = $(this).data('event-id');
-            const eventDbId = $(this).data('event-db-id');
-            const cardElement = $(this).closest('.bookmarked-event-card');
-
-            // Use the appropriate ID for removal
-            const idToUse = eventId || eventDbId;
-            removeBookmark(idToUse, cardElement);
-        });
     }
 
-    // Enhanced no events message with different states
     function showNoEventsMessage(hasFilters, isError = false) {
         const noEventsDiv = $('#no-events');
 
@@ -240,10 +371,7 @@ $(document).ready(function () {
                 </button>
             `);
 
-            // Add click handler for clear search button
-            $('#clear-search-from-no-results').click(function () {
-                clearSearch();
-            });
+            $('#clear-search-from-no-results').on('click', clearSearch);
         } else {
             noEventsDiv.html(`
                 <i class="fas fa-calendar-times" style="font-size: 3rem; color: #6c757d; margin-bottom: 1rem;"></i>
@@ -258,15 +386,6 @@ $(document).ready(function () {
         noEventsDiv.show();
     }
 
-    // Clear search function
-    function clearSearch() {
-        $('#event-search').val('');
-        $('#tag-search').val('');
-        $('#search-results-info').hide();
-        loadBookmarkedEvents();
-    }
-
-    // Remove bookmark
     function removeBookmark(eventId, cardElement) {
         if (confirm('Are you sure you want to remove this event from your bookmarks?')) {
             $.ajax({
@@ -291,97 +410,7 @@ $(document).ready(function () {
         }
     }
 
-    // Consolidated sidebar navigation functionality
-    $('.menu-item').click(function (e) {
-        e.preventDefault();
-
-        const section = $(this).data('section');
-        const isLogout = $(this).hasClass('logout-btn');
-
-        // Handle logout separately
-        if (isLogout) {
-            handleLogout(e);
-            return;
-        }
-
-        // Update active menu item
-        $('.menu-item').removeClass('active');
-        $(this).addClass('active');
-
-        // Hide all content sections
-        $('.content-card').hide();
-        $('#my-events-section').hide();
-
-        // Show appropriate section
-        if (section === 'my-events') {
-            console.log('Showing My Events section');
-            $('#my-events-section').show();
-            loadBookmarkedEvents();
-        } else {
-            // Show profile section for Dashboard and other menu items
-            $('.content-card').not('#my-events-section').first().show();
-        }
-    });
-
-    // User dropdown toggle
-    $('#user-profile-dropdown').click(function (e) {
-        e.stopPropagation();
-        $('#user-dropdown').toggleClass('show');
-    });
-
-    $(document).click(function () {
-        $('#user-dropdown').removeClass('show');
-    });
-
-    // Tab switching
-    $('.profile-tab').click(function () {
-        const tabId = $(this).data('tab');
-
-        $('.profile-tab').removeClass('active');
-        $('.tab-content').removeClass('active');
-
-        $(this).addClass('active');
-        $('#' + tabId).addClass('active');
-    });
-
-    // Sidebar toggle
-    $('#sidebar-toggle').click(function () {
-        $('#sidebar').toggleClass('show');
-    });
-
-    // Search functionality event listeners
-    $('#search-events-btn').click(function () {
-        const searchQuery = $('#event-search').val().trim();
-        const tagFilter = $('#tag-search').val().trim();
-        loadBookmarkedEvents(searchQuery, tagFilter);
-    });
-
-    $('#clear-search-btn').click(function () {
-        clearSearch();
-    });
-
-    // Enter key support for search inputs
-    $('#event-search, #tag-search').keypress(function (e) {
-        if (e.which === 13) { // Enter key
-            $('#search-events-btn').click();
-        }
-    });
-
-    // Real-time search with debounce
-    $('#event-search, #tag-search').on('input', function () {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(function () {
-            const searchQuery = $('#event-search').val().trim();
-            const tagFilter = $('#tag-search').val().trim();
-
-            // Only auto-search if there's some input
-            if (searchQuery || tagFilter) {
-                loadBookmarkedEvents(searchQuery, tagFilter);
-            }
-        }, 500); // Wait 500ms after user stops typing
-    });
-
-    // 2FA Status Check
+    // 2FA Functions
     function check2FAStatus() {
         $.ajax({
             url: '/api/auth/profile',
@@ -399,7 +428,6 @@ $(document).ready(function () {
         });
     }
 
-    // Update 2FA Status Display
     function update2FAStatus(enabled) {
         const statusIndicator = $('#status-indicator');
         const statusText = $('.status-text');
@@ -421,8 +449,7 @@ $(document).ready(function () {
         }
     }
 
-    // Setup 2FA
-    $('#setup-2fa-btn').click(function () {
+    function setup2FA() {
         $.ajax({
             url: '/api/auth/2fa/setup',
             method: 'GET',
@@ -430,50 +457,24 @@ $(document).ready(function () {
                 'Authorization': `Bearer ${token}`
             },
             success: function (response) {
-                // Display QR code
                 $('#qr-code-container').html(`<img src="${response.qrCode}" alt="QR Code for 2FA">`);
                 $('#setup-steps').show();
                 $('#initial-2fa-buttons').hide();
             },
             error: function (xhr) {
                 const errorMsg = xhr.responseJSON?.message || 'Failed to setup 2FA';
-                $('#twofa-error-alert').text(errorMsg).fadeIn().delay(3000).fadeOut();
+                showAlert('#twofa-error-alert', errorMsg);
             }
         });
-    });
-
-    function handleLogout(event) {
-        event.preventDefault();
-
-        fetch('/api/auth/logout', {
-            method: 'POST',
-            credentials: 'include'
-        })
-            .then(res => {
-                if (res.ok) {
-                    // Clean up both token variations
-                    localStorage.removeItem('authToken');
-                    localStorage.removeItem('authtoken');
-                    alert('You have been logged out successfully');
-                    window.location.href = '/auth/login/login.html';
-                } else {
-                    throw new Error('Logout failed');
-                }
-            })
-            .catch(err => {
-                console.error('Logout error:', err);
-                alert('Failed to log out. Try again.');
-            });
     }
 
-    // Verify 2FA Setup
-    $('#verify-2fa-form').submit(function (e) {
+    function verify2FA(e) {
         e.preventDefault();
 
         const verificationCode = $('#verification-code').val();
 
         if (!verificationCode || verificationCode.length !== 6) {
-            $('#twofa-error-alert').text('Please enter a valid 6-digit code').fadeIn().delay(3000).fadeOut();
+            showAlert('#twofa-error-alert', 'Please enter a valid 6-digit code');
             return;
         }
 
@@ -488,7 +489,7 @@ $(document).ready(function () {
                 token: verificationCode
             }),
             success: function (response) {
-                $('#twofa-success-alert').text('Two-factor authentication enabled successfully!').fadeIn().delay(3000).fadeOut();
+                showAlert('#twofa-success-alert', 'Two-factor authentication enabled successfully!');
 
                 // Reset form and hide setup
                 $('#verification-code').val('');
@@ -500,21 +501,19 @@ $(document).ready(function () {
             },
             error: function (xhr) {
                 const errorMsg = xhr.responseJSON?.message || 'Invalid verification code';
-                $('#twofa-error-alert').text(errorMsg).fadeIn().delay(3000).fadeOut();
+                showAlert('#twofa-error-alert', errorMsg);
             }
         });
-    });
+    }
 
-    // Cancel 2FA Setup
-    $('#cancel-2fa-setup').click(function () {
+    function cancel2FASetup() {
         $('#setup-steps').hide();
         $('#initial-2fa-buttons').show();
         $('#verification-code').val('');
         $('#qr-code-container').empty();
-    });
+    }
 
-    // Disable 2FA
-    $('#disable-2fa-btn').click(function () {
+    function disable2FA() {
         if (confirm('Are you sure you want to disable two-factor authentication? This will make your account less secure.')) {
             $.ajax({
                 url: '/api/auth/2fa/disable',
@@ -523,19 +522,19 @@ $(document).ready(function () {
                     'Authorization': `Bearer ${token}`
                 },
                 success: function (response) {
-                    $('#twofa-success-alert').text('Two-factor authentication has been disabled').fadeIn().delay(3000).fadeOut();
+                    showAlert('#twofa-success-alert', 'Two-factor authentication has been disabled');
                     update2FAStatus(false);
                 },
                 error: function (xhr) {
                     const errorMsg = xhr.responseJSON?.message || 'Failed to disable 2FA';
-                    $('#twofa-error-alert').text(errorMsg).fadeIn().delay(3000).fadeOut();
+                    showAlert('#twofa-error-alert', errorMsg);
                 }
             });
         }
-    });
+    }
 
-    // Profile form submission
-    $('#profile-form').submit(function (e) {
+    // Form Handlers
+    function handleProfileUpdate(e) {
         e.preventDefault();
 
         const formData = new FormData();
@@ -548,33 +547,16 @@ $(document).ready(function () {
         const bio = $('#bio').val().trim();
 
         // Only append non-empty values
-        if (username) {
-            formData.append('username', username);
-        }
-
-        if (email) {
-            formData.append('email', email);
-        }
+        if (username) formData.append('username', username);
+        if (email) formData.append('email', email);
 
         // Include avatar if uploaded
         const avatarFile = $('#avatar-upload-input')[0].files[0];
-        if (avatarFile) {
-            formData.append('avatar', avatarFile);
-        }
+        if (avatarFile) formData.append('avatar', avatarFile);
 
         // Add preferences - always include even if empty to allow clearing values
-        const preferences = {
-            phone: phone,
-            location: location,
-            bio: bio
-        };
+        const preferences = { phone, location, bio };
         formData.append('preferences', JSON.stringify(preferences));
-
-        // Debug logging
-        console.log('Form data being sent:');
-        for (let [key, value] of formData.entries()) {
-            console.log(key, value);
-        }
 
         $.ajax({
             url: '/api/auth/profile',
@@ -586,40 +568,35 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function (response) {
-                $('#info-success-alert').text('Profile updated successfully!').fadeIn().delay(3000).fadeOut();
+                showAlert('#info-success-alert', 'Profile updated successfully!');
 
                 // Update userData and display
                 userData = response.user;
 
-                // Clear preview flags
-                $('#profile-avatar-img').removeAttr('data-preview');
-                $('#nav-user-avatar').removeAttr('data-preview');
-
-                // Clear the file input
+                // Clear preview flags and file input
+                $('#profile-avatar-img, #nav-user-avatar').removeAttr('data-preview');
                 $('#avatar-upload-input').val('');
 
                 populateProfileData(userData);
             },
             error: function (xhr) {
                 console.error('Profile update error:', xhr);
-                console.error('Response text:', xhr.responseText);
-
                 let errorMsg = 'Failed to update profile';
-                if (xhr.responseJSON && xhr.responseJSON.message) {
+
+                if (xhr.responseJSON?.message) {
                     errorMsg = xhr.responseJSON.message;
-                } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                } else if (xhr.responseJSON?.errors) {
                     errorMsg = xhr.responseJSON.errors.map(err => err.msg).join(', ');
-                } else if (xhr.responseJSON && xhr.responseJSON.error) {
+                } else if (xhr.responseJSON?.error) {
                     errorMsg = xhr.responseJSON.error;
                 }
 
-                $('#info-error-alert').text(errorMsg).fadeIn().delay(5000).fadeOut();
+                showAlert('#info-error-alert', errorMsg, 5000);
             }
         });
-    });
+    }
 
-    // Password form submission
-    $('#password-form').submit(function (e) {
+    function handlePasswordUpdate(e) {
         e.preventDefault();
 
         const currentPassword = $('#current-password').val();
@@ -627,12 +604,12 @@ $(document).ready(function () {
         const confirmPassword = $('#confirm-new-password').val();
 
         if (!currentPassword || !newPassword || !confirmPassword) {
-            $('#password-error-alert').text('All fields are required').fadeIn().delay(3000).fadeOut();
+            showAlert('#password-error-alert', 'All fields are required');
             return;
         }
 
         if (newPassword !== confirmPassword) {
-            $('#password-error-alert').text('New passwords do not match').fadeIn().delay(3000).fadeOut();
+            showAlert('#password-error-alert', 'New passwords do not match');
             return;
         }
 
@@ -648,20 +625,17 @@ $(document).ready(function () {
                 newPassword: newPassword
             }),
             success: function (response) {
-                $('#password-form')[0].reset();
-                $('#password-meter').css('width', '0%');
-                $('#password-text').text('');
-                $('#password-success-alert').text('Password updated successfully!').fadeIn().delay(3000).fadeOut();
+                resetPasswordForm();
+                showAlert('#password-success-alert', 'Password updated successfully!');
             },
             error: function (xhr) {
                 const errorMsg = xhr.responseJSON?.message || 'Failed to update password';
-                $('#password-error-alert').text(errorMsg).fadeIn().delay(3000).fadeOut();
+                showAlert('#password-error-alert', errorMsg);
             }
         });
-    });
+    }
 
-    // Password strength meter
-    $('#new-password').on('input', function () {
+    function updatePasswordStrength() {
         const password = $(this).val();
         let strength = 0;
         let color = '';
@@ -673,6 +647,7 @@ $(document).ready(function () {
             if (/[a-z]/.test(password)) strength += 1;
             if (/[0-9]/.test(password)) strength += 1;
             if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+
             const strengthPercentage = (strength / 5) * 100;
 
             if (strength <= 1) {
@@ -696,26 +671,24 @@ $(document).ready(function () {
                 'width': strengthPercentage + '%',
                 'background-color': color
             });
-
             $('#password-text').text(message);
         } else {
             $('#password-meter').css('width', '0%');
             $('#password-text').text('');
         }
-    });
+    }
 
-    // Avatar upload
-    $('#avatar-upload-input').change(function (e) {
+    function handleAvatarUpload(e) {
         const file = e.target.files[0];
 
         if (file) {
             if (!file.type.match('image.*')) {
-                $('#info-error-alert').text('Please select an image file').fadeIn().delay(3000).fadeOut();
+                showAlert('#info-error-alert', 'Please select an image file');
                 return;
             }
 
             if (file.size > 5 * 1024 * 1024) {
-                $('#info-error-alert').text('Image size should not exceed 5MB').fadeIn().delay(3000).fadeOut();
+                showAlert('#info-error-alert', 'Image size should not exceed 5MB');
                 return;
             }
 
@@ -723,19 +696,16 @@ $(document).ready(function () {
             reader.onload = function (e) {
                 const imageUrl = e.target.result;
                 // Set preview image
-                $('#profile-avatar-img').attr('src', imageUrl);
-                $('#nav-user-avatar').attr('src', imageUrl);
-
-                // Add a flag to indicate this is a preview
-                $('#profile-avatar-img').attr('data-preview', 'true');
-                $('#nav-user-avatar').attr('data-preview', 'true');
+                $('#profile-avatar-img, #nav-user-avatar')
+                    .attr('src', imageUrl)
+                    .attr('data-preview', 'true');
             };
             reader.readAsDataURL(file);
         }
-    });
+    }
 
-    // Delete account button
-    $('#delete-account-btn').click(function () {
+    // Account Management
+    function handleAccountDeletion() {
         if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
             $.ajax({
                 url: '/api/auth/delete-account',
@@ -754,10 +724,9 @@ $(document).ready(function () {
                 }
             });
         }
-    });
+    }
 
-    // Download data button
-    $('#download-data-btn').click(function () {
+    function handleDataDownload() {
         $.ajax({
             url: '/api/auth/export-data',
             method: 'GET',
@@ -781,21 +750,59 @@ $(document).ready(function () {
                 alert('Error: ' + errorMsg);
             }
         });
-    });
+    }
 
-    // Cancel buttons functionality
-    $('#cancel-info-btn').click(function () {
+    // Form Reset Functions
+    function resetProfileForm() {
         populateProfileData(userData); // Reset to original data
-    });
+    }
 
-    $('#cancel-password-btn').click(function () {
+    function resetPasswordForm() {
         $('#password-form')[0].reset();
         $('#password-meter').css('width', '0%');
         $('#password-text').text('');
-    });
+    }
 
-    // Logout functionality
-    $('.logout-btn').click(function (e) {
-        handleLogout(e);
-    });
+    // Logout Handler - Single consolidated function
+    function handleLogout(e) {
+        e.preventDefault();
+
+        // Prevent multiple executions
+        if ($(e.target).hasClass('logging-out')) {
+            return;
+        }
+
+        $(e.target).addClass('logging-out');
+
+        fetch('/api/auth/logout', {
+            method: 'POST',
+            credentials: 'include'
+        })
+            .then(res => {
+                if (res.ok) {
+                    cleanupAndRedirectToLogin();
+                    alert('You have been logged out successfully');
+                } else {
+                    throw new Error('Logout failed');
+                }
+            })
+            .catch(err => {
+                console.error('Logout error:', err);
+                alert('Failed to log out. Try again.');
+            })
+            .finally(() => {
+                $(e.target).removeClass('logging-out');
+            });
+    }
+
+    // Utility Functions
+    function cleanupAndRedirectToLogin() {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('authtoken');
+        window.location.href = '/auth/login/login.html';
+    }
+
+    function showAlert(selector, message, duration = 3000) {
+        $(selector).text(message).fadeIn().delay(duration).fadeOut();
+    }
 });
