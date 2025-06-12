@@ -1,0 +1,774 @@
+type: collection.insomnia.rest/5.0
+name: Eventsphere apis
+meta:
+  id: wrk_efc3952e364c4d82b3661ad3355c47d2
+  created: 1746381074252
+  modified: 1746381074252
+  description: ""
+collection:
+  - url: http://localhost:8080/api/auth/login
+    name: Login Api
+    meta:
+      id: req_3e0ace4a27d246798aa41fb29a5ebe47
+      created: 1746381106485
+      modified: 1749569297334
+      isPrivate: false
+      description: ""
+      sortKey: -1746381106485
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {   "email": "stutinainwal@gmail.com",
+        		"password": "Stuti14@@@"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: Cookie
+        value: task3_1=2;
+          connect.sid=s%253AREBGmkrB-mIN50gmV-KA87Xk_s_t0zyJ.93ZDbjkv%252FFetT%252FAtMdYurzpQMNeeM7azt0S8w0CyvC8
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/search-events
+    name: Search Api
+    meta:
+      id: req_67bf03bae6ff48dba399c3e949b3639e
+      created: 1746381122709
+      modified: 1749711098581
+      isPrivate: false
+      description: ""
+      sortKey: -1746381122709
+    method: GET
+    body:
+      mimeType: application/json
+      text: ""
+    parameters:
+      - name: countryCode
+        value: AU
+        disabled: false
+        id: pair_7b1f51a0cbd74b54bc058d2566db2693
+      - name: keyword
+        value: music
+        disabled: false
+        id: pair_41c06deaf35f40f9beb31530edcf829e
+      - id: pair_dd44712c4ac34f97a4f0e8cfa9067a4d
+        name: location
+        value: Melbourne
+        description: ""
+        disabled: false
+      - id: pair_50b70ddaefeb46cd8c1e16582ae6e579
+        name: startDateTime
+        value: 2025-06-15T00:00:00Z
+        description: ""
+        disabled: false
+      - id: pair_2d2ae0b53f4b4115878b0cc5e0e7d847
+        name: endDateTime
+        value: 2025-06-23T00:00:00Z
+        description: ""
+        disabled: false
+      - id: pair_a50916abd99744b6ab7a2b932c6eea2a
+        name: ""
+        value: ""
+        description: ""
+        disabled: false
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_1bdf32251d6f444194dffa5c88941a24
+      - name: Cookie
+        value: task3_1=2;
+          connect.sid=s%253AREBGmkrB-mIN50gmV-KA87Xk_s_t0zyJ.93ZDbjkv%252FFetT%252FAtMdYurzpQMNeeM7azt0S8w0CyvC8
+        id: pair_43a31992206845359457ac40505d4ef8
+      - id: pair_f17aa4ee329740f3bfb599c531a84073
+        name: Authorization
+        value: Bearer
+          eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0OTYzMjc1NiwiZXhwIjoxNzUwMjM3NTU2fQ.txhih3XsyDn6PGsEuXlpTYjuWPqXDE0OAvQ9P9Ad7Bo
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/auth/signup
+    name: Sign Up
+    meta:
+      id: req_3d484e5085b14fae94c5787a90a661e8
+      created: 1746381182946
+      modified: 1749032248633
+      isPrivate: false
+      description: ""
+      sortKey: -1746381182946
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {       	
+         		"email" :"stutinainwal@gmail.com",
+        		"password": "nainwal123",
+         		"preferences": {"music": "true"},
+        		"role": "admin"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: Cookie
+        value: task3_1=2;
+          connect.sid=s%253AREBGmkrB-mIN50gmV-KA87Xk_s_t0zyJ.93ZDbjkv%252FFetT%252FAtMdYurzpQMNeeM7azt0S8w0CyvC8
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/events/ZFwVzcymWZ17AUFz
+    name: Event Details Api
+    meta:
+      id: req_05cf4df421544c8fa45964024d95e672
+      created: 1746381814841
+      modified: 1749633251316
+      isPrivate: false
+      description: ""
+      sortKey: -1746381814841
+    method: GET
+    parameters:
+      - name: location
+        value: Adelaide
+        disabled: false
+      - name: eventType
+        value: Dance
+        disabled: false
+    headers:
+      - name: Authorization
+        value: Bearer
+          eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0OTYzMzI0MSwiZXhwIjoxNzUwMjM4MDQxfQ.MnCvd0QClQ03A97CsDvMHbimgJx0smBSRDOTFjIfCvk
+        id: pair_ab611e325f97461288b0dafde8c6882a
+      - name: Content-Type
+        value: application/json
+        id: pair_59e6e80dbb344abfb226ac220e356a2b
+      - name: Cookie
+        value: task3_1=2;
+          connect.sid=s%253AREBGmkrB-mIN50gmV-KA87Xk_s_t0zyJ.93ZDbjkv%252FFetT%252FAtMdYurzpQMNeeM7azt0S8w0CyvC8
+        id: pair_fa9761222ee448d6bbd62dda0d027f0c
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/trending-events
+    name: Trending Events
+    meta:
+      id: req_a59bacc6ab68449794d8b3540262a5f4
+      created: 1746610287541
+      modified: 1746610386685
+      isPrivate: false
+      description: ""
+      sortKey: -1746610287541
+    method: GET
+    parameters:
+      - name: countryCode
+        value: AU
+        disabled: false
+        id: pair_eced03b2e1724815a7b831d7fa7adc92
+      - name: sort
+        value: relevance,desc
+        disabled: false
+        id: pair_5ab13d6731d3435aaed91badb847f072
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_0fa00573bd1a4c57b6f1ef4c85a52018
+      - name: Cookie
+        value: task3_1=2;
+          connect.sid=s%253AREBGmkrB-mIN50gmV-KA87Xk_s_t0zyJ.93ZDbjkv%252FFetT%252FAtMdYurzpQMNeeM7azt0S8w0CyvC8
+        id: pair_9fe25c9c1c1443bfb09ba398e75d3e73
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/auth/2fa/setup
+    name: 2fa setup
+    meta:
+      id: req_0dbbba4f110d4026a1021ab0945b11db
+      created: 1746614131546
+      modified: 1747062841929
+      isPrivate: false
+      description: ""
+      sortKey: -1746614131546
+    method: GET
+    body:
+      mimeType: application/json
+      text: |-
+        {   "email": "nainwal12",
+        		"password": "nainwal12"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_429cd5ae3dab480ab3c1e1355d612bb3
+      - id: pair_f7690bc36ae8448eac07430a571e44a6
+        name: Authorization
+        value: Bearer
+          eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjEsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ3MDYyODI3LCJleHAiOjE3NDc2Njc2Mjd9.ZBrLTIvjr4qdl-N1zaHH8TpRhEp3pCQnVrFsecV0JIA
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/auth/2fa/verify
+    name: 2fa verify
+    meta:
+      id: req_5362335554954941b4d8c30be7abc771
+      created: 1746614599830
+      modified: 1747062893833
+      isPrivate: false
+      description: ""
+      sortKey: -1746614599830
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"token": "444494"
+        }
+    headers:
+      - name: Authorization
+        value: Bearer
+          eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjEsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ3MDYyODI3LCJleHAiOjE3NDc2Njc2Mjd9.ZBrLTIvjr4qdl-N1zaHH8TpRhEp3pCQnVrFsecV0JIA
+        id: pair_b117dd3dff74467ab817a422e0e7a50f
+      - name: Content-Type
+        value: application/json
+        id: pair_30918101055340579f137518d26afab9
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/auth/profile
+    name: profile management
+    meta:
+      id: req_c4ff6e0df85c4c57a618e50093b55c95
+      created: 1749020035388
+      modified: 1749484386634
+      isPrivate: false
+      description: ""
+      sortKey: -1749020035388
+    method: PUT
+    body:
+      mimeType: multipart/form-data
+      params:
+        - name: email
+          value: stuti@gmail.com
+          type: text
+          id: pair_3623a9ca12fe4549b10e913c5c299b9e
+        - name: preferences
+          value: '{"theme":"dark"}'
+          type: text
+          id: pair_5d0f536ab7b14bfebf98e472c93c6d5a
+        - name: avatar
+          fileName: /Users/stutinainwal/Desktop/UoA_logo.jpg
+          type: file
+          id: pair_3b93b21bf67742be9b83ff85702b144c
+    headers:
+      - name: Authorization
+        value: Bearer
+          eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzYsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0OTQ4NDM3MiwiZXhwIjoxNzUwMDg5MTcyfQ.7af6t3rP-JIofuoyZJ-5hriPi1rWn6kQMB6XyQ9Wt7U
+        id: pair_3f325ae6c2cd428ba2e7549fdbd1463a
+      - name: Content-Type
+        value: multipart/form-data
+        id: pair_3e8ed5613a444e8ebdae351d9fb6c796
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/events/bookmark
+    name: Save Event (add)
+    meta:
+      id: req_e61ae3df333642fd928a2cce94bc7c05
+      created: 1749021327036
+      modified: 1749711295840
+      isPrivate: false
+      description: ""
+      sortKey: -1749021327036
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {     
+        			"name": "Triple Charm Live - World Tour 2025",
+        			"location": "2/252 Swanston St",
+        			"date": "2025-07-14",
+        			"image": "https://example.com/image.jpg",
+        			"ticketUrl": "https://ticketmaster.com/event/123",
+        			"platform": "Ticketmaster",
+        			"tags": "music"
+        }
+    headers:
+      - name: Authorization
+        value: Bearer
+          eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0OTcxMTAwOSwiZXhwIjoxNzUwMzE1ODA5fQ.2o7PeqpXzAvPvWUA9GXSZmj1E-BwYh1hMVyo6vgGv0w
+        id: pair_f9b8107534c64764add06dac7672b899
+      - name: Content-Type
+        value: application/json
+        id: pair_642d0d432524474881122e9b67f339bd
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/events/bookmarks
+    name: Get saved events
+    meta:
+      id: req_6bb849fdeddf4fa3b7ff8f08f748a750
+      created: 1749021707150
+      modified: 1749711021931
+      isPrivate: false
+      description: ""
+      sortKey: -1749021707150
+    method: GET
+    headers:
+      - name: Authorization
+        value: Bearer
+          eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0OTcxMTAwOSwiZXhwIjoxNzUwMzE1ODA5fQ.2o7PeqpXzAvPvWUA9GXSZmj1E-BwYh1hMVyo6vgGv0w
+        id: pair_eb328ed8b0a6486a8052f01d976588b2
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/events/bookmark/14
+    name: Delete/Remove saved events
+    meta:
+      id: req_41c281bd483440a7bc94bb980cea2827
+      created: 1749021889697
+      modified: 1749711334311
+      isPrivate: false
+      description: ""
+      sortKey: -1749021889697
+    method: DELETE
+    headers:
+      - name: Authorization
+        value: Bearer
+          eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0OTcxMTAwOSwiZXhwIjoxNzUwMzE1ODA5fQ.2o7PeqpXzAvPvWUA9GXSZmj1E-BwYh1hMVyo6vgGv0w
+        id: pair_4f993ff2cf5e41a2aeeb885cd1695c31
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/events/saved/search
+    name: Search Saved events
+    meta:
+      id: req_06bf1b4b9444422484c59f3f0dc73a99
+      created: 1749023178815
+      modified: 1749711585184
+      isPrivate: false
+      description: ""
+      sortKey: -1749023178815
+    method: GET
+    parameters:
+      - id: pair_9fe5ae0f466443989a9559ba96c965f6
+        name: tag
+        value: music
+        description: ""
+        disabled: false
+      - id: pair_44760ac8c57040cba68f5ccaff89f6bf
+        name: q
+        value: north
+        description: ""
+        disabled: false
+    headers:
+      - name: Authorization
+        value: Bearer
+          eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0OTcxMTAwOSwiZXhwIjoxNzUwMzE1ODA5fQ.2o7PeqpXzAvPvWUA9GXSZmj1E-BwYh1hMVyo6vgGv0w
+        id: pair_937d385e36df4731a26cac050f0d2e4a
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/auth/profile
+    name: SQL Injection Attempt
+    meta:
+      id: req_29d271453f884873be978385fd15a687
+      created: 1749030853453
+      modified: 1749569465442
+      isPrivate: false
+      description: ""
+      sortKey: -1749030853453
+    method: PUT
+    body:
+      params:
+        - name: username
+          value: Robert'); DROP TABLE Users;--
+          type: text
+      mimeType: multipart/form-data
+    headers:
+      - name: Authorization
+        value: Bearer
+          eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0OTU2OTMwNiwiZXhwIjoxNzUwMTc0MTA2fQ.bfKkG3ZDH1DDXyr2202ine4uzPhLkQ9Zm35BAe9mpMA
+        id: pair_cd990e80ba4a49c79705a8c484a7ee00
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/auth/profile
+    name: XSS Attempt (Script Injection)
+    meta:
+      id: req_7a835955c3a645439d696bec3374eafc
+      created: 1749031040621
+      modified: 1749569498205
+      isPrivate: false
+      description: ""
+      sortKey: -1749031040621
+    method: PUT
+    body:
+      params:
+        - name: email
+          value: '"><script>alert("xss")</script>@test.com'
+          type: text
+      mimeType: multipart/form-data
+    headers:
+      - name: Authorization
+        value: Bearer
+          eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0OTU2OTMwNiwiZXhwIjoxNzUwMTc0MTA2fQ.bfKkG3ZDH1DDXyr2202ine4uzPhLkQ9Zm35BAe9mpMA
+        id: pair_eaff4c184cd64ac7bfd8be1a27fb1c83
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/auth/profile
+    name: " Invalid Preferences Format"
+    meta:
+      id: req_166532ef4a124bf3b0de45a8316adde0
+      created: 1749031071906
+      modified: 1749569510070
+      isPrivate: false
+      description: ""
+      sortKey: -1749031071906
+    method: PUT
+    body:
+      params:
+        - name: preferences
+          value: <script>alert("hack")</script>
+          type: text
+      mimeType: multipart/form-data
+    headers:
+      - name: Authorization
+        value: Bearer
+          eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0OTU2OTMwNiwiZXhwIjoxNzUwMTc0MTA2fQ.bfKkG3ZDH1DDXyr2202ine4uzPhLkQ9Zm35BAe9mpMA
+        id: pair_7d34c95a95474fed92059ad1beb61190
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/auth/profile
+    name: Non-object Preferences
+    meta:
+      id: req_4c8e76e5e2c24b0d8fe7a23213d166b8
+      created: 1749031127353
+      modified: 1749569530653
+      isPrivate: false
+      description: ""
+      sortKey: -1749031127353
+    method: PUT
+    body:
+      params:
+        - name: preferences
+          value: '"just a string"'
+          type: text
+      mimeType: multipart/form-data
+    headers:
+      - name: Authorization
+        value: Bearer
+          eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0OTU2OTMwNiwiZXhwIjoxNzUwMTc0MTA2fQ.bfKkG3ZDH1DDXyr2202ine4uzPhLkQ9Zm35BAe9mpMA
+        id: pair_2c98ba36d3ee4aaf9ab0f5d6a832e1cf
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/admin/users
+    name: Admin Access to view users
+    meta:
+      id: req_ae42a13022ba473bb59487be08482d36
+      created: 1749032314055
+      modified: 1749568966942
+      isPrivate: false
+      description: ""
+      sortKey: -1749032314055
+    method: GET
+    headers:
+      - name: Authorization
+        value: Bearer
+          eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0OTU2ODkwNCwiZXhwIjoxNzUwMTczNzA0fQ.KZmh3HP-AnMrZTiO-9tGIWUBEgio6MSILoyUQQ3XVoQ
+        id: pair_0e63bf17f4d14c27b9b029ec0c3bd8e9
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/admin/users/33
+    name: Admin Access to update users
+    meta:
+      id: req_0f8708af36f94639b549c85fcebb3f48
+      created: 1749032386077
+      modified: 1749032619957
+      isPrivate: false
+      description: ""
+      sortKey: -1749032386077
+    method: PUT
+    body:
+      mimeType: application/json
+      text: |-
+        {     "username": "UpdatedUser",     
+         			"email": "stuti1@gmail.com",
+         			"role": "user"
+        }
+    headers:
+      - name: Authorization
+        value: Bearer
+          eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzYsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0OTAzMjI4NCwiZXhwIjoxNzQ5NjM3MDg0fQ.QiIq0WhsxvNJX3JikCru749layREmg65D3m9CwFihxc
+        id: pair_cfd1c5d86d79464b9fbe3f8f183c88f2
+      - name: Content-Type
+        value: application/json
+        id: pair_32ff0b605080438b8949b60d0f118e15
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/admin/users/33
+    name: Admin Access to delete users
+    meta:
+      id: req_083a6e708eb34e1ba02a86bde1b916da
+      created: 1749032635935
+      modified: 1749032674425
+      isPrivate: false
+      description: ""
+      sortKey: -1749032635935
+    method: DELETE
+    headers:
+      - name: Authorization
+        value: Bearer
+          eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzYsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0OTAzMjI4NCwiZXhwIjoxNzQ5NjM3MDg0fQ.QiIq0WhsxvNJX3JikCru749layREmg65D3m9CwFihxc
+        id: pair_0d7989d18f2f4d84b94d4768d5cba909
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/admin/saved-events
+    name: "Admin access to Get All Saved Events "
+    meta:
+      id: req_35139f1501b04bf9a9f9c88b73365e15
+      created: 1749032697383
+      modified: 1749032978146
+      isPrivate: false
+      description: ""
+      sortKey: -1749032697383
+    method: GET
+    headers:
+      - name: Authorization
+        value: Bearer
+          eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzYsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0OTAzMjI4NCwiZXhwIjoxNzQ5NjM3MDg0fQ.QiIq0WhsxvNJX3JikCru749layREmg65D3m9CwFihxc
+        id: pair_3f52c9bc40b84afc85e1b136d940a2a0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/admin/saved-events/5
+    name: Admin access to Delete Saved Event by ID
+    meta:
+      id: req_dc43ce0ba6c148d698764d7c215aaa72
+      created: 1749033014561
+      modified: 1749033057548
+      isPrivate: false
+      description: ""
+      sortKey: -1749033014561
+    method: DELETE
+    headers:
+      - name: Authorization
+        value: Bearer
+          eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzYsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0OTAzMjI4NCwiZXhwIjoxNzQ5NjM3MDg0fQ.QiIq0WhsxvNJX3JikCru749layREmg65D3m9CwFihxc
+        id: pair_dc0e9957accd43fbbd90f0643fce1245
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/auth/profile
+    name: get profile detail
+    meta:
+      id: req_1deb7eeeea2143feb103f9381ef53a7d
+      created: 1749139089220
+      modified: 1749139164866
+      isPrivate: false
+      description: ""
+      sortKey: -1749139089220
+    method: GET
+    headers:
+      - name: Authorization
+        value: Bearer
+          eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzYsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0OTEzOTEzMiwiZXhwIjoxNzQ5NzQzOTMyfQ.3_HHkeDh7NobpZrzQl7pM4Yg4MWR12dXFmJQaA3-77M
+        id: pair_8a37b9f864c4442ca726cbb7a54ef131
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/auth/update-password
+    name: "update password "
+    meta:
+      id: req_186cd1d9fb2c4baa82709a730d0cf0c8
+      created: 1749569158252
+      modified: 1749569664467
+      isPrivate: false
+      description: ""
+      sortKey: -1749569158252
+    method: PUT
+    body:
+      mimeType: application/json
+      text: |-
+        {     "oldPassword": "nainwal12311",   
+         			"newPassword": "Stuti14@@@"   }
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_461a72412ab74e9a999bfb03e7c89171
+      - name: Authorization
+        value: Bearer
+          eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0OTU2OTMwNiwiZXhwIjoxNzUwMTc0MTA2fQ.bfKkG3ZDH1DDXyr2202ine4uzPhLkQ9Zm35BAe9mpMA
+        id: pair_75c36392761f466baeeecd09fe3e9191
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/auth/logout
+    name: Logout api
+    meta:
+      id: req_7ceddf17a4b84b93a364cbc144139e7b
+      created: 1749632582241
+      modified: 1749633265893
+      isPrivate: false
+      description: ""
+      sortKey: -1749632582241
+    method: POST
+    headers:
+      - name: Cookie
+        value: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0OTYzMzE5NiwiZXhwIjoxNzUwMjM3OTk2fQ.wZHpQO0DNX7zk-z-1JiOYDuXipy0NR34FIMr5GKMboY
+        id: pair_8a3e9976a41d42b68a676902d70c8a5a
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_316b68bb62a6b6b31f2153a1731fdec2cfad3ada
+    created: 1746381074263
+    modified: 1749711009843
+  cookies:
+    - key: token
+      value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0OTcxMTAwOSwiZXhwIjoxNzUwMzE1ODA5fQ.2o7PeqpXzAvPvWUA9GXSZmj1E-BwYh1hMVyo6vgGv0w
+      maxAge: 604800
+      domain: localhost
+      path: /
+      httpOnly: true
+      hostOnly: true
+      creation: 2025-06-11T09:03:59.667Z
+      lastAccessed: 2025-06-12T06:50:09.842Z
+      sameSite: lax
+      id: 67bb1738-da1e-4182-83c2-e099b50b817f
+environments:
+  name: Base Environment
+  meta:
+    id: env_316b68bb62a6b6b31f2153a1731fdec2cfad3ada
+    created: 1746381074260
+    modified: 1746381074260
+    isPrivate: false

@@ -160,65 +160,6 @@ router.get('/:id', authMiddleware, async (req, res) => {
   }
 });
 
-router.post('/save', authMiddleware, async (req, res) => {
-  const userId = req.user.id;
-  const { event_id, event_data } = req.body;
-
-  try {
-    await db.query(
-      'INSERT INTO SavedEvents (user_id, event_id, event_data) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE event_data = VALUES(event_data)',
-      [userId, event_id, JSON.stringify(event_data)]
-    );
-    res.status(200).json({ message: 'Event saved' });
-  } catch (err) {
-    console.error('Save event error:', err.message);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-router.get('/saved', authMiddleware, async (req, res) => {
-  const { id: userId } = req.user;
-
-  try {
-    const [rows] = await db.query('SELECT event_id, event_data FROM SavedEvents WHERE user_id = ?', [userId]);
-    const events = rows.map(({ event_id, event_data }) => {
-      let parsedData;
-      if (typeof event_data === 'string') {
-        try {
-          parsedData = JSON.parse(event_data);
-        } catch (err) {
-          parsedData = {};
-        }
-      } else {
-        parsedData = event_data;
-      }
-
-      return {
-        event_id,
-        ...parsedData
-      };
-    });
-
-    res.json(events);
-  } catch ({ message }) {
-    console.error('Fetch saved events error:', message);
-    res.status(500).json({ error: message });
-  }
-});
-
-router.delete('/unsave/:eventId', authMiddleware, async (req, res) => {
-  const { id: userId } = req.user;
-  const { eventId } = req.params;
-
-  try {
-    await db.query('DELETE FROM SavedEvents WHERE user_id = ? AND event_id = ?', [userId, eventId]);
-    res.status(200).json({ message: 'Event unsaved' });
-  } catch ({ message }) {
-    console.error('Unsave event error:', message);
-    res.status(500).json({ error: message });
-  }
-});
-
 router.get('/saved/search', authMiddleware, async (req, res) => {
   const { id: userId } = req.user;
   const { q = '', date = '', tags = '' } = req.query;
@@ -261,7 +202,4 @@ router.get('/saved/search', authMiddleware, async (req, res) => {
     res.status(500).json({ error: message });
   }
 });
-
-
-
 module.exports = router;
