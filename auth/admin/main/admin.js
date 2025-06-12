@@ -3,7 +3,7 @@ $(document).ready(function () {
     const authToken = localStorage.getItem('authToken');
 
     if (!authToken) {
-        window.location.href = '../auth/login/login.html';
+        window.location.href = '/login/login.html';
         return;
     }
 
@@ -22,7 +22,7 @@ $(document).ready(function () {
                 if (response.status === 401) {
                     localStorage.removeItem('authToken');
                     localStorage.removeItem('userInfo');
-                    window.location.href = '../auth/login/login.html';
+                    window.location.href = '/login/login.html';
                     return null;
                 }
                 throw new Error(`HTTP error! status: ${response.status}`);

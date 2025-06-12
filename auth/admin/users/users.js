@@ -16,7 +16,7 @@ async function loadUsers() {
   try {
     const token = localStorage.getItem('authToken');
     if (!token) {
-      window.location.href = '../login/login.html';
+      window.location.href = '/login/login.html';
       return;
     }
 

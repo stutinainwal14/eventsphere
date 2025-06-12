@@ -2,7 +2,7 @@
 const AUTH_CONFIG = {
     TOKEN_KEY: 'authToken',
     FALLBACK_TOKEN_KEY: 'authtoken',
-    LOGIN_URL: '../auth/login/login.html',
+    LOGIN_URL: '/login/login.html',
     PROFILE_URL: '/dashboard/profile/profile.html',
     HOME_URL: '/dashboard/home.html'
 };
