@@ -45,15 +45,6 @@ app.get('/search-events', authMiddleware, async (req, res) => {
       countryCode
     } = req.query;
 
-    console.log('Search request parameters:', {
-      location,
-      keyword,
-      startDateTime,
-      endDateTime,
-      sort,
-      countryCode
-    });
-
     const events = await searchEvents({
       location: location || '',
       keyword: keyword || '',
@@ -108,8 +99,6 @@ app.get('/api/admin/all-events', authMiddleware, async (req, res) => {
       return res.status(403).json({ message: 'Access denied. Admins only.' });
     }
 
-    console.log('Fetching all events from Australia...');
-
     // Get all events from Australia - remove the location parameter
     // and rely on countryCode instead
     const events = await searchEvents({
@@ -123,12 +112,9 @@ app.get('/api/admin/all-events', authMiddleware, async (req, res) => {
       size: 200 // Get more events (TicketMaster default is 20)
     });
 
-    console.log('TicketMaster API Response:', JSON.stringify(events, null, 2));
-
     let formattedEvents = [];
 
     if (events && events._embedded && events._embedded.events) {
-      console.log(`Found ${events._embedded.events.length} events`);
 
       formattedEvents = events._embedded.events.map((event, index) => ({
         id: event.id,
@@ -141,12 +127,7 @@ app.get('/api/admin/all-events', authMiddleware, async (req, res) => {
         source: 'TicketMaster',
         link: event.url || '#'
       }));
-    } else {
-      console.log('No events found in response structure');
-      console.log('Full response:', events);
     }
-
-    console.log(`Sending ${formattedEvents.length} formatted events`);
 
     res.json({
       events: formattedEvents,
@@ -174,8 +155,6 @@ app.delete('/api/admin/events/:eventId', authMiddleware, async (req, res) => {
 
     // Note: TicketMaster API doesn't allow deleting events
     // This is just a placeholder response
-    console.log(`Delete request for event: ${eventId}`);
-
     res.json({ message: 'Event deleted successfully' });
   } catch (err) {
     console.error('Error deleting event:', err.message);
@@ -213,8 +192,6 @@ app.get('/api/admin/events-count', authMiddleware, async (req, res) => {
       return res.status(403).json({ message: 'Access denied. Admins only.' });
     }
 
-    console.log('Fetching total events count from Australia...');
-
     // Get first page to access total count metadata
     const events = await searchEvents({
       location: '',
@@ -234,8 +211,6 @@ app.get('/api/admin/events-count', authMiddleware, async (req, res) => {
       // Fallback if totalElements is not available
       totalCount = events._embedded.events.length;
     }
-
-    console.log(`Total events in Australia: ${totalCount}`);
 
     res.json({ count: totalCount });
   } catch (err) {

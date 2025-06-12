@@ -1,4 +1,3 @@
-// src/routes/authRoutes.js
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
@@ -267,9 +266,6 @@ router.get('/profile', authMiddleware, async (req, res) => {
       user.avatar = null;
     }
 
-    console.log('Avatar column exists:', hasAvatarColumn);
-    console.log('Sending user profile with avatar:', user.avatar);
-
     res.json({ user });
   } catch (err) {
     console.error('Fetch profile error:', err.message);
@@ -401,7 +397,6 @@ router.put(
         const avatar = `/uploads/${req.file.filename}`;
         updates.push('avatar = ?');
         params.push(avatar);
-        console.log('Updating avatar to:', avatar);
       } else if (req.file && !hasAvatarColumn) {
         console.warn('Avatar file uploaded but avatar column does not exist in database');
         return res.status(400).json({

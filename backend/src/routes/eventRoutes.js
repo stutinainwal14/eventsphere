@@ -31,14 +31,11 @@ router.get('/bookmarks', authMiddleware, async (req, res) => {
   const userId = req.user.id;
 
   try {
-    console.log(`Fetching bookmarks for user ID: ${userId}`); // Debug log
 
     const [rows] = await db.query(
       'SELECT id, event_id, event_data, created_at FROM SavedEvents WHERE user_id = ? ORDER BY created_at DESC',
       [userId]
     );
-
-    console.log(`Found ${rows.length} bookmarked events for user ${userId}`); // Debug log
 
     if (rows.length === 0) {
       return res.json({ events: [] });
@@ -74,8 +71,6 @@ router.get('/bookmarks', authMiddleware, async (req, res) => {
         created_at: row.created_at
       };
     });
-
-    console.log('Returning events:', events.length, 'events'); // Debug log
     res.json({ events });
   } catch (err) {
     console.error('Fetch bookmarks error:', err);
@@ -103,8 +98,6 @@ router.post('/bookmark', authMiddleware, async (req, res) => {
       ticketUrl,
       platform
     };
-
-    console.log('Bookmarking event:', { userId, event_id, event_data, tags });
 
     await db.query(
       'INSERT INTO SavedEvents (user_id, event_id, event_data, tags) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE event_data = VALUES(event_data), tags = VALUES(tags)',
