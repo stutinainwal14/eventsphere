@@ -4,15 +4,12 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../config/db');
-const { publish } = require('../kafka/producer');
 require('dotenv').config();
 const speakeasy = require('speakeasy');
 const qrcode = require('qrcode');
 const authMiddleware = require('../middleware/authMiddleware');
 const path = require('path');
 const { body, validationResult } = require('express-validator');
-
-
 
 router.post(
   '/signup',
