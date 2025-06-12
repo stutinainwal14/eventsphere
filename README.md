@@ -7,7 +7,7 @@ EventSphere is a full-stack web application built to help users explore, filter,
 ##  Project Structure
 
 - **Frontend**: Located in the `auth/` folder, served via a `proxy-server.js` file.
-- **Backend**: Located in the `backend/` folder, built with Node.js and integrated with Kafka.
+- **Backend**: Located in the `backend/` folder, built with Node.js.
 - **Database**: MySQL, managed locally.
 
 ---
@@ -144,8 +144,21 @@ sudo service mysql start
     - “Delete” button removes a user from the database permanently.
 - **All Admin actions are fully synced with the backend and database.**
 
+---
 
+##  Removed Features
+During development, some features and integrations were explored for learning and scalability purposes but were removed from the final submission to prioritize stability, simplicity, and maintainability:
 
+### KafkaJS (Exploratory Integration)
+KafkaJS was initially integrated to explore distributed event streaming and gain experience with asynchronous logging and microservices architecture. It was used to publish audit logs for actions such as:
+
+- User signups
+- Profile updates
+- Admin user edits
+  
+However, as the project matured, we chose to streamline the backend by removing non-critical components. Since advanced logging and event streaming were not essential for the current scope, Kafka integration was removed in the final version.
+
+The codebase remains modular and Kafka-ready if future iterations require reintroducing asynchronous logging, service decoupling, or real-time pipelines.
 
 ---
 
@@ -164,13 +177,6 @@ sudo service mysql start
 
 **Node.js + Express.js**
 We chose Node.js with the Express framework for its non-blocking, event-driven architecture, which is well-suited for real-time, scalable applications like event management platforms. Express allows us to write modular, maintainable route handlers and middleware to efficiently manage API requests.
-
-**KafkaJS (Exploratory Integration)**
-KafkaJS was initially integrated to explore distributed event streaming and enhance our skillset in asynchronous logging and microservices architecture. It was used to publish audit logs for activities such as user signups, profile updates, and admin actions.
-
-However, as development progressed, we prioritized building and stabilizing the core features of the platform. Given that advanced logging wasn't essential for our current project scope, the Kafka-related code was removed in the final submission to reduce complexity and streamline the codebase.
-
-The architecture remains modular, and Kafka can be reintegrated in future iterations if the need arises for scalable logging, service decoupling, or real-time analytics.
 
 ### Frontend
 
