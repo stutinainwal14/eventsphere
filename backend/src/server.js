@@ -8,7 +8,7 @@ const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/authRoutes');
 const authMiddleware = require('./middleware/authMiddleware');
 const eventRoutes = require('./routes/eventRoutes');
-const { searchEvents } = require('./services/TicketMasterService');
+const { searchEvents, getEventDetails } = require('./services/TicketMasterService');
 const adminRoutes = require('./routes/adminRoutes');
 
 
@@ -271,7 +271,7 @@ app.get('/api/admin/events-count', authMiddleware, async (req, res) => {
 app.get('/api/events/details/:eventId', authMiddleware, async (req, res) => {
   try {
     const { eventId } = req.params;
-    const eventDetails = await searchEvents(eventId);
+    const eventDetails = await getEventDetails(eventId);
     res.json(eventDetails);
   } catch (err) {
     console.error('Error fetching event details:', err.message);
