@@ -77,7 +77,7 @@ sudo service mysql start
   3. Start Date and End Date
   4. Sort By: date (ascending/descending), name (A-Z/Z-A), relevance
 - **Bookmark Events with Tags**: You can save events to your profile with or without tags. Tags make saved events searching for the event later easier (Tags music,dance,sports,comedy,theatre,festival). You can also skip this if you don't want to add tags.
-- **Redirect to Ticket Page**: Clicking the “Get Tickets” button redirects you to the official ticket provider (e.g., Ticketmaster) for that event.
+- **Redirect to Event Details Page**: Clicking “Get Details” redirects you to a dedicated event details page, where you can view full event information and access the official ticket purchase link (ticketmaster link).
 
 ### UI Features
 - **Dark/Light Mode Toggle**: Easily switch between dark and light themes using a toggle button in the header.
