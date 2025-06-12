@@ -70,6 +70,12 @@ sudo service mysql start
 
 > Ensure MySQL is properly installed and configured.
 
+**Note:**
+All three services (Backend, Proxy Frontend, and MySQL) must run simultaneously in separate terminal windows or tabs. 
+Make sure:
+1. One terminal runs npm run dev (backend),
+2. One runs node proxy-server.js (frontend),
+3. And MySQL is running in the background or started in its own terminal.
 
 ###  Access the Application
 
