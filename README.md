@@ -166,7 +166,11 @@ sudo service mysql start
 We chose Node.js with the Express framework for its non-blocking, event-driven architecture, which is well-suited for real-time, scalable applications like event management platforms. Express allows us to write modular, maintainable route handlers and middleware to efficiently manage API requests.
 
 **KafkaJS (Exploratory Integration)**
-KafkaJS was initially integrated to explore distributed event streaming and enhance our skillset in asynchronous logging and microservices architecture. It was used to publish audit logs for activities such as user signups, profile updates, and admin actions. However, as development progressed, we prioritized building and stabilizing the core features of the platform. Kafka remains modular and ready for scaling if advanced logging or service decoupling is required in future iterations.
+KafkaJS was initially integrated to explore distributed event streaming and enhance our skillset in asynchronous logging and microservices architecture. It was used to publish audit logs for activities such as user signups, profile updates, and admin actions.
+
+However, as development progressed, we prioritized building and stabilizing the core features of the platform. Given that advanced logging wasn't essential for our current project scope, the Kafka-related code was removed in the final submission to reduce complexity and streamline the codebase.
+
+The architecture remains modular, and Kafka can be reintegrated in future iterations if the need arises for scalable logging, service decoupling, or real-time analytics.
 
 ### Frontend
 
@@ -220,6 +224,23 @@ Our system uses a relational schema optimized for user authentication, event boo
 - **Custom Proxy Server**: Used to enable frontend-backend communication during development.
 
 ---
+
+##  API Testing with Insomnia
+
+A full collection of API endpoints is included for testing with [Insomnia](https://insomnia.rest/), exported in YAML format.
+
+### How to Import
+
+1. Open Insomnia.
+2. Click the top-left dropdown → `Import Data` → `From File`.
+3. Select [`EventSphere_API.insomnia_v5.yaml`](./insomnia/EventSphere_API.insomnia_v5.yaml).
+4. Set your environment base URL (e.g., `http://localhost:8080`) or use variables as configured.
+5. Add cookies or Bearer tokens as needed for protected routes.
+
+### Sample Request Screenshot
+
+<img width="1648" alt="image" src="https://github.com/user-attachments/assets/f0fd4307-9482-40b3-a36d-036f77111352" />
+
 
 ##  Note
 
