@@ -5,7 +5,7 @@ const router = express.Router();
 const db = require('../config/db');
 const authMiddleware = require('../middleware/authMiddleware');
 
-// Middleware to check for admin role
+// Middleware to check admin users access these routes
 const requireAdmin = (req, res, next) => {
   const { role } = req.user;
   if (role !== 'admin') {
@@ -14,7 +14,8 @@ const requireAdmin = (req, res, next) => {
   next();
 };
 
-// GET /api/admin/users - List all users
+// GET /api/admin/users
+// Returns a list of all non-sensitive user information (excluding passwords)
 router.get('/users', authMiddleware, requireAdmin, async (req, res) => {
   try {
     const [users] = await db.query('SELECT user_id, username, email, role FROM Users');
@@ -24,15 +25,19 @@ router.get('/users', authMiddleware, requireAdmin, async (req, res) => {
   }
 });
 
-// PUT /api/admin/users/:id - Update any user (but not admin users)
+// PUT /api/admin/users/:id
+// Updates user data excluding admin accounts (to prevent privilege escalation)
 router.put('/users/:id', authMiddleware, requireAdmin, async (req, res) => {
-  // First check if the user being updated is an admin
+
+  // Check if target user is an admin — disallow
   const [userCheck] = await db.query('SELECT role FROM Users WHERE user_id = ?', [req.params.id]);
   if (userCheck.length > 0 && userCheck[0].role === 'admin') {
     return res.status(403).json({ message: 'Cannot modify admin users' });
   }
 
-  const { username, email, role, password } = req.body;
+  const {
+ username, email, role, password
+} = req.body;
   const updates = [];
   const params = [];
 
@@ -41,7 +46,7 @@ router.put('/users/:id', authMiddleware, requireAdmin, async (req, res) => {
     return res.status(403).json({ message: 'Cannot set user role to admin' });
   }
 
-  // Check if email is being updated and already exists
+  // Check if new email is already used by another user
   if (email) {
     const [existingEmailRows] = await db.query(
       'SELECT user_id FROM Users WHERE email = ? AND user_id != ?',
@@ -55,6 +60,7 @@ router.put('/users/:id', authMiddleware, requireAdmin, async (req, res) => {
     params.push(email);
   }
 
+  // Add other updates if provided
   if (username) {
     updates.push('username = ?');
     params.push(username);
@@ -65,13 +71,14 @@ router.put('/users/:id', authMiddleware, requireAdmin, async (req, res) => {
     params.push(role);
   }
 
-  // Handle password update (hash it if provided)
+  // Hash new password if provided
   if (password && password.trim() !== '') {
     const hashedPassword = await bcrypt.hash(password, 10);
     updates.push('password = ?');
     params.push(hashedPassword);
   }
 
+  // Ensure there is at least one field to update
   if (updates.length === 0) {
     return res.status(400).json({ message: 'No fields to update' });
   }
@@ -86,7 +93,8 @@ router.put('/users/:id', authMiddleware, requireAdmin, async (req, res) => {
   }
 });
 
-// DELETE /api/admin/users/:id - Delete user (but not admin users)
+// DELETE /api/admin/users/:id
+// Deletes a user account by ID — prevents deleting admin accounts
 router.delete('/users/:id', authMiddleware, requireAdmin, async (req, res) => {
   try {
     // First check if the user being deleted is an admin
@@ -102,7 +110,8 @@ router.delete('/users/:id', authMiddleware, requireAdmin, async (req, res) => {
   }
 });
 
-// GET /api/admin/saved-events - Get all saved events
+// GET /api/admin/saved-events
+// Returns all saved events across all users (used in admin panel)
 router.get('/saved-events', authMiddleware, requireAdmin, async (req, res) => {
   try {
     const [rows] = await db.query('SELECT * FROM SavedEvents');
@@ -116,7 +125,8 @@ router.get('/saved-events', authMiddleware, requireAdmin, async (req, res) => {
   }
 });
 
-// DELETE /api/admin/saved-events/:id - Remove saved event by ID
+// DELETE /api/admin/saved-events/:id
+// Deletes a saved event entry by its internal DB ID
 router.delete('/saved-events/:id', authMiddleware, requireAdmin, async (req, res) => {
   try {
     await db.query('DELETE FROM SavedEvents WHERE id = ?', [req.params.id]);

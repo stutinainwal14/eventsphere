@@ -10,7 +10,6 @@ async function createAdminUser() {
         // Check if admin already exists
         const [existing] = await db.query('SELECT user_id FROM Users WHERE email = ?', [adminEmail]);
         if (existing.length > 0) {
-            console.log('Admin user already exists!');
             process.exit(1);
         }
 
@@ -22,13 +21,6 @@ async function createAdminUser() {
             'INSERT INTO Users (username, email, password, role, preferences) VALUES (?, ?, ?, ?, ?)',
             [adminUsername, adminEmail, hashedPassword, 'admin', JSON.stringify({})]
         );
-
-        console.log('Admin user created successfully!');
-        console.log('User ID:', result.insertId);
-        console.log('Email:', adminEmail);
-        console.log('Username:', adminUsername);
-        console.log('Password:', adminPassword);
-
         process.exit(0);
     } catch (error) {
         console.error('Error creating admin user:', error);

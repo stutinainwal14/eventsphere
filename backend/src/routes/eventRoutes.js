@@ -6,6 +6,10 @@ const { getEventDetails } = require('../services/TicketMasterService');
 const authMiddleware = require('../middleware/authMiddleware');
 const db = require('../config/db');
 
+/**
+ * GET /api/events
+ * Search events using TicketMaster API with optional filters: location, keyword.
+ */
 router.get('/', async (req, res) => {
   try {
     const { location, keyword } = req.query;
@@ -14,7 +18,7 @@ router.get('/', async (req, res) => {
     const events = await searchEvents({
       location,
       keyword,
-      startDate: nowIso,
+      startDate: nowIso
     });
 
     res.json(events);
@@ -25,8 +29,10 @@ router.get('/', async (req, res) => {
 });
 
 
-
-// Get bookmarked events
+/**
+ * GET /api/events/bookmarks
+ * Returns all bookmarked events for the authenticated user.
+ */
 router.get('/bookmarks', authMiddleware, async (req, res) => {
   const userId = req.user.id;
 
@@ -41,7 +47,8 @@ router.get('/bookmarks', authMiddleware, async (req, res) => {
       return res.json({ events: [] });
     }
 
-    const events = rows.map(row => {
+    // Parse and normalize each saved event
+    const events = rows.map((row) => {
       let parsedData;
       try {
         if (typeof row.event_data === 'string') {
@@ -81,13 +88,18 @@ router.get('/bookmarks', authMiddleware, async (req, res) => {
   }
 });
 
-// Bookmark an event (compatible with home.js)
+/**
+ * POST /api/events/bookmark
+ * Bookmarks a new event for the authenticated user.
+ */
 router.post('/bookmark', authMiddleware, async (req, res) => {
   const userId = req.user.id;
-  const { name, location, date, image, ticketUrl, platform, tags } = req.body;
+  const {
+ name, location, date, image, ticketUrl, platform, tags
+} = req.body;
 
   try {
-    // Create a unique event_id from the data
+    // Generate unique event_id using event name and timestamp
     const event_id = `${name.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}`;
 
     const event_data = {
@@ -111,19 +123,22 @@ router.post('/bookmark', authMiddleware, async (req, res) => {
   }
 });
 
-// Remove bookmark (compatible with profile.js)
+/**
+ * DELETE /api/events/bookmark/:eventId
+ * Removes a bookmarked event using either DB id or generated event_id.
+ */
 router.delete('/bookmark/:eventId', authMiddleware, async (req, res) => {
   const userId = req.user.id;
   const { eventId } = req.params;
 
   try {
-    // Try to delete by database ID first (from bookmarks API)
+    // Try to remove using DB row ID
     let [result] = await db.query(
       'DELETE FROM SavedEvents WHERE user_id = ? AND id = ?',
       [userId, eventId]
     );
 
-    // If no rows affected, try deleting by event_id (from search API)
+    // Fallback: Try removing using generated event_id
     if (result.affectedRows === 0) {
       [result] = await db.query(
         'DELETE FROM SavedEvents WHERE user_id = ? AND event_id = ?',
@@ -142,7 +157,11 @@ router.delete('/bookmark/:eventId', authMiddleware, async (req, res) => {
   }
 });
 
-// Parameterized route - MUST be placed after specific routes
+/**
+ * GET /api/events/:id
+ * Fetch full details of an event using TicketMaster API.
+ * This must be after other static routes to avoid conflicts.
+ */
 router.get('/:id', authMiddleware, async (req, res) => {
   const eventId = req.params.id;
   try {
@@ -153,6 +172,10 @@ router.get('/:id', authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * GET /api/events/saved/search
+ * Search saved events by name, location, date, and tags for the authenticated user.
+ */
 router.get('/saved/search', authMiddleware, async (req, res) => {
   const { id: userId } = req.user;
   const { q = '', date = '', tags = '' } = req.query;
@@ -166,19 +189,16 @@ router.get('/saved/search', authMiddleware, async (req, res) => {
     const results = rows.filter(({ event_id, event_data, tags: savedTags }) => {
       const data = typeof event_data === 'string' ? JSON.parse(event_data) : event_data;
       const query = q.toLowerCase();
-      const tagList = (tags || '').toLowerCase().split(',').map(t => t.trim());
+      const tagList = (tags || '').toLowerCase().split(',').map((t) => t.trim());
 
-      const matchesText =
-        data.name?.toLowerCase().includes(query) ||
-        data.location?.toLowerCase().includes(query) ||
-        data.address?.line1?.toLowerCase().includes(query);
+      const matchesText = (data.name && data.name.toLowerCase().includes(query))
+        || (data.location && data.location.toLowerCase().includes(query))
+        || (data.address && data.address.line1 && data.address.line1.toLowerCase().includes(query));
 
-      const matchesDate =
-        date ? data.date?.startsWith(date) : true;
+      const matchesDate = date ? (data.date && data.date.startsWith(date)) : true;
 
-      const matchesTags =
-        tagList.length > 0 && savedTags
-          ? tagList.every(tag => savedTags.toLowerCase().includes(tag))
+      const matchesTags = tagList.length > 0 && savedTags
+          ? tagList.every((tag) => savedTags.toLowerCase().includes(tag))
           : true;
 
       return matchesText && matchesDate && matchesTags;
@@ -187,7 +207,7 @@ router.get('/saved/search', authMiddleware, async (req, res) => {
     res.json(
       results.map(({ event_id, event_data }) => ({
         event_id,
-        ...(typeof event_data === 'string' ? JSON.parse(event_data) : event_data),
+        ...(typeof event_data === 'string' ? JSON.parse(event_data) : event_data)
       }))
     );
   } catch ({ message }) {

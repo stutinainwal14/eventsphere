@@ -1,19 +1,32 @@
+// Import required modules
 const express = require('express');
 const dotenv = require('dotenv');
 const path = require('path');
+const cookieParser = require('cookie-parser');
+
+// Import route modules
 const authRoutes = require('./routes/authRoutes');
 const authMiddleware = require('./middleware/authMiddleware');
 const eventRoutes = require('./routes/eventRoutes');
 const { searchEvents } = require('./services/TicketMasterService');
 const adminRoutes = require('./routes/adminRoutes');
-const PORT = process.env.PORT || 8080;
-const cookieParser = require('cookie-parser');
 
+
+// Load environment variables
 dotenv.config();
 require('dotenv').config();
 
+// Set port from .env or default to 8080
+const PORT = process.env.PORT || 8080;
+
+
+// Initialize Express app
 const app = express();
+
+// Serve static frontend files from /auth directory
 app.use(express.static(path.join(__dirname, '../auth')));
+
+// Parse incoming JSON and cookies
 app.use(express.json());
 app.use(cookieParser());
 
@@ -22,17 +35,20 @@ app.get('/', (req, res) => {
   res.send('Server is working!');
 });
 
+// Ensure /uploads directory exists for file storage (e.g., avatars)
 const fs = require('fs');
 const uploadDir = path.join(__dirname, '../uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
 
+// Mount API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/events', eventRoutes);
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads'))); // Serve uploaded files
 
+// Authenticated Ticketmaster search route (general-purpose search)
 app.get('/search-events', authMiddleware, async (req, res) => {
   try {
     // Extracting all parameters from the request
@@ -61,6 +77,7 @@ app.get('/search-events', authMiddleware, async (req, res) => {
   }
 });
 
+// Admin-only route to fetch count of upcoming trending events (within 7 days)
 app.get('/api/admin/trending-count', authMiddleware, async (req, res) => {
   try {
     // Check if user is admin
@@ -81,8 +98,8 @@ app.get('/api/admin/trending-count', authMiddleware, async (req, res) => {
 
     // Count trending events (events with high popularity or recent activity)
     let trendingCount = 0;
-    if (events && events._embedded && events._embedded.events) {
-      trendingCount = events._embedded.events.length;
+    if (events && events['_embedded'] && events['_embedded'].events) {
+      trendingCount = events['_embedded'].events.length;
     }
 
     res.json({ count: trendingCount });
@@ -92,6 +109,8 @@ app.get('/api/admin/trending-count', authMiddleware, async (req, res) => {
   }
 });
 
+
+// Admin-only route to fetch all upcoming events in AU (max 200)
 app.get('/api/admin/all-events', authMiddleware, async (req, res) => {
   try {
     // Check if user is admin
@@ -114,20 +133,47 @@ app.get('/api/admin/all-events', authMiddleware, async (req, res) => {
 
     let formattedEvents = [];
 
-    if (events && events._embedded && events._embedded.events) {
+    if (events && events['_embedded'] && events['_embedded'].events) {
+      formattedEvents = events['_embedded'].events.map((event) => {
+        let location = 'Australia';
+        if (
+          event['_embedded'] &&
+          event['_embedded'].venues &&
+          event['_embedded'].venues[0]
+        ) {
+          if (event['_embedded'].venues[0].name) {
+            location = event['_embedded'].venues[0].name;
+          } else if (
+            event['_embedded'].venues[0].city &&
+            event['_embedded'].venues[0].city.name
+          ) {
+            location = event['_embedded'].venues[0].city.name;
+          }
+        }
+        let image = 'https://via.placeholder.com/60';
+        if (event.images && event.images[0] && event.images[0].url) {
+          image = event.images[0].url;
+        }
+        let date = 'TBD';
+        if (event.dates && event.dates.start && event.dates.start.localDate) {
+          date = event.dates.start.localDate;
+        }
 
-      formattedEvents = events._embedded.events.map((event, index) => ({
-        id: event.id,
-        name: event.name,
-        location: event._embedded?.venues?.[0]?.name ||
-          event._embedded?.venues?.[0]?.city?.name ||
-          'Australia',
-        image: event.images?.[0]?.url || 'https://via.placeholder.com/60',
-        date: event.dates?.start?.localDate || 'TBD',
-        source: 'TicketMaster',
-        link: event.url || '#'
-      }));
+        const link = event.url || '#';
+
+        return {
+          id: event.id,
+          name: event.name,
+          location,
+          image,
+          date,
+          source: 'TicketMaster',
+          link
+        };
+      });
     }
+
+
 
     res.json({
       events: formattedEvents,
@@ -143,7 +189,7 @@ app.get('/api/admin/all-events', authMiddleware, async (req, res) => {
   }
 });
 
-// Add delete event route
+// Admin-only placeholder route for deleting events (TicketMaster doesn’t support deletion)
 app.delete('/api/admin/events/:eventId', authMiddleware, async (req, res) => {
   try {
     // Check if user is admin
@@ -162,6 +208,7 @@ app.delete('/api/admin/events/:eventId', authMiddleware, async (req, res) => {
   }
 });
 
+// Public route to fetch trending events within a date range
 app.get('/trending-events', async (req, res) => {
   try {
     const now = new Date();
@@ -184,7 +231,7 @@ app.get('/trending-events', async (req, res) => {
   }
 });
 
-// Add this new endpoint for getting just the count
+// Admin-only route to get total number of available events
 app.get('/api/admin/events-count', authMiddleware, async (req, res) => {
   try {
     // Check if user is admin
@@ -207,9 +254,9 @@ app.get('/api/admin/events-count', authMiddleware, async (req, res) => {
 
     if (events && events.page && events.page.totalElements) {
       totalCount = events.page.totalElements;
-    } else if (events && events._embedded && events._embedded.events) {
+    } else if (events && events['_embedded'] && events['_embedded'].events) {
       // Fallback if totalElements is not available
-      totalCount = events._embedded.events.length;
+      totalCount = events['_embedded'].events.length;
     }
 
     res.json({ count: totalCount });
@@ -219,6 +266,7 @@ app.get('/api/admin/events-count', authMiddleware, async (req, res) => {
   }
 });
 
+// Start the server
 const start = async () => {
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
