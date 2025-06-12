@@ -206,6 +206,11 @@ function displayEvents(eventData) {
     setupBookmarkButtons();
 }
 
+// Add this function to handle event details navigation
+function viewEventDetails(eventId) {
+    window.location.href = `event-details.html?id=${eventId}`;
+}
+
 function createEventCard(event, index, cardColors) {
     const venue = event._embedded?.venues?.[0] ?
         `${event._embedded.venues[0].city.name}, ${event._embedded.venues[0].country.name}` :
@@ -238,8 +243,8 @@ function createEventCard(event, index, cardColors) {
                 <button class="bookmark">
                     <i class="fas fa-bookmark"></i> BookMark
                 </button>
-                <button class="start" onclick="window.open('${event.url}', '_blank')">
-                    Get Tickets <i class="fas fa-arrow-right"></i>
+                <button class="start" onclick="viewEventDetails('${event.id}')">
+                    Get Details <i class="fas fa-arrow-right"></i>
                 </button>
             </div>
         </div>

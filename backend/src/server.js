@@ -266,7 +266,24 @@ app.get('/api/admin/events-count', authMiddleware, async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
 // Start the server
+=======
+// Event details route
+app.get('/api/events/details/:eventId', authMiddleware, async (req, res) => {
+  try {
+    const { eventId } = req.params;
+    const { getEventDetails } = require('./services/TicketMasterService');
+
+    const eventDetails = await getEventDetails(eventId);
+    res.json(eventDetails);
+  } catch (err) {
+    console.error('Error fetching event details:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+>>>>>>> b7602b4395fe7435c407f3723c908e048a53eddf
 const start = async () => {
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
