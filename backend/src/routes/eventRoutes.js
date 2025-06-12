@@ -158,8 +158,9 @@ router.get('/saved/search', authMiddleware, async (req, res) => {
   const { q = '', date = '', tags = '' } = req.query;
 
   try {
+    // Include the database 'id' field in the query
     const [rows] = await db.query(
-      'SELECT event_id, event_data, tags FROM SavedEvents WHERE user_id = ?',
+      'SELECT id, event_id, event_data, tags FROM SavedEvents WHERE user_id = ?',
       [userId]
     );
 
@@ -184,9 +185,11 @@ router.get('/saved/search', authMiddleware, async (req, res) => {
       return matchesText && matchesDate && matchesTags;
     });
 
+    // Including both 'id' and 'event_id' in the response
     res.json(
-      results.map(({ event_id, event_data }) => ({
-        event_id,
+      results.map(({ id, event_id, event_data }) => ({
+        id,           // Database ID for deletion
+        event_id,     // Event ID
         ...(typeof event_data === 'string' ? JSON.parse(event_data) : event_data),
       }))
     );
@@ -195,4 +198,5 @@ router.get('/saved/search', authMiddleware, async (req, res) => {
     res.status(500).json({ error: message });
   }
 });
+
 module.exports = router;
