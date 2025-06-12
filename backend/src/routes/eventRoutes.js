@@ -207,16 +207,10 @@ router.get('/saved/search', authMiddleware, async (req, res) => {
 
     // Including both 'id' and 'event_id' in the response
     res.json(
-<<<<<<< HEAD
-      results.map(({ event_id, event_data }) => ({
-        event_id,
-        ...(typeof event_data === 'string' ? JSON.parse(event_data) : event_data)
-=======
       results.map(({ id, event_id, event_data }) => ({
-        id,           // Database ID for deletion
-        event_id,     // Event ID
+        id, // Database ID for deletion
+        event_id, // Event ID
         ...(typeof event_data === 'string' ? JSON.parse(event_data) : event_data),
->>>>>>> b7602b4395fe7435c407f3723c908e048a53eddf
       }))
     );
   } catch ({ message }) {
@@ -224,9 +218,5 @@ router.get('/saved/search', authMiddleware, async (req, res) => {
     res.status(500).json({ error: message });
   }
 });
-<<<<<<< HEAD
-module.exports = router;
-=======
 
 module.exports = router;
->>>>>>> b7602b4395fe7435c407f3723c908e048a53eddf
