@@ -237,7 +237,7 @@ Our system uses a relational schema optimized for user authentication, event boo
 - A User can have many SavedEvents — foreign key: SavedEvents.user_id → Users.user_id.
 
 **Notes**
-- user_logs.username is stored as plain text (not FK) for log safety and Kafka compatibility.
+- user_logs.username is stored as plain text (not FK) for log safety and Kafka compatibility. Although Kafka integration was removed in the final version, this design has been retained to keep the logging system Kafka-ready for future enhancements.
 - BlacklistedTokens is standalone and not linked via FK for performance and security decoupling.
 
 <img width="1118" alt="image" src="https://github.com/user-attachments/assets/8fdd1666-6770-4c3f-8be9-cdb1b08a1931" />
