@@ -45,6 +45,25 @@ node proxy-server.js
 
 ### 4. Start the MySQL Database
 
+**Ensure MySQL is properly installed and running.**
+```bash
+cd backend
+sudo service mysql start
+```
+
+**Environment Setup:** Open the .env file and add your own DB_PASSWORD. All other variables are already pre-configured.
+
+**Set up the database:**
+
+1. Create a new database:
+```bash
+mysql -u root -p -e "CREATE DATABASE eventsphere"
+```
+2. Import the backup into the newly created database:
+```bash
+mysql -u root -p eventsphere < eventsphere_backup.sql
+```
+3. Start MySQL (if not already running):
 ```bash
 sudo service mysql start
 ```
