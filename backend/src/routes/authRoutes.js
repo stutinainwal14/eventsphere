@@ -146,7 +146,7 @@ router.post(
     })
     .json({
       message: 'Login successful',
-      token, // Remove this in production for security
+      token,
       user: {
         user_id: user.user_id,
         username: user.username,

@@ -160,10 +160,11 @@ function displayEvents(eventData) {
     loading.style.display = 'none';
     eventsList.innerHTML = '';
 
-    if (!eventData._embedded?.events?.length) {
+    if (!eventData._embedded || !eventData._embedded.events || !eventData._embedded.events.length) {
         noResults.style.display = 'block';
         return;
-    }
+      }
+
 
     noResults.style.display = 'none';
     const events = eventData._embedded.events;

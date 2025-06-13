@@ -4,11 +4,10 @@ const axios = require('axios');
 // Load environment variables from .env file
 require('dotenv').config();
 
-// Define the base URL for the Ticketmaster Discovery API
 const API_BASE = 'https://app.ticketmaster.com/discovery/v2';
 
 // Retrieve your API key from environment variables
-const API_KEY = process.env.TICKETMASTER_API_KEY; // Your API key here
+const API_KEY = process.env.TICKETMASTER_API_KEY;
 
 // Search events using the Ticketmaster API.
 const searchEvents = async ({

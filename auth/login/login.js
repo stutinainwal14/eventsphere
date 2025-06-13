@@ -31,7 +31,7 @@ $(document).ready(function () {
       /(--|\/\*|\*\/|;|'|")/g,
       /(\bOR\b|\bAND\b).*?=.*?=/gi
     ];
-    return sqlPatterns.some(pattern => pattern.test(input));
+    return sqlPatterns.some((pattern) => pattern.test(input));
   }
 
   function detectXSS(input) {
@@ -202,17 +202,20 @@ $(document).ready(function () {
 
     // Check rate limiting
     const now = Date.now();
+
     if (loginAttempts >= maxAttempts) {
       const timeSinceLastAttempt = now - lastAttemptTime;
+
       if (timeSinceLastAttempt < cooldownPeriod) {
         const remainingTime = Math.ceil((cooldownPeriod - timeSinceLastAttempt) / 1000);
         showError(`Too many login attempts. Please wait ${remainingTime} seconds.`);
         return;
-      } else {
-        // Reset attempts after cooldown
-        loginAttempts = 0;
       }
+
+      // Reset attempts after cooldown
+      loginAttempts = 0;
     }
+
 
     $('#login-spinner').show();
     $('#login-btn').prop('disabled', true);
