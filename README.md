@@ -364,8 +364,10 @@ These tests confirm that:
 
 <img width="1707" alt="image" src="https://github.com/user-attachments/assets/8786375c-48e2-443b-8702-5b84d856c4cb" />
 
+## Project Management
 
-
+This project is managed using a Jira board. You can view our sprint tasks, progress, and backlog here:
+[View Jira Board](https://eventsphereweb.atlassian.net/jira/core/projects/WEB4/board?groupBy=priority&atlOrigin=eyJpIjoiMTg5MzJhYmE1MGI1NDM2ODkwY2MyMDFkOTFkMzBkN2QiLCJwIjoiaiJ9)
 ##  Note
 
 This project was developed as part of the **Web and Distributed Computing (WDC)** course group project.
