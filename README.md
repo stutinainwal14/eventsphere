@@ -311,7 +311,7 @@ These tests confirm that:
 - XSS is mitigated via proper input sanitization and content encoding.
 - SQL Injection is prevented using parameterized queries with the mysql2 driver.
 
-**Note** - Tokens in the above examples are obfuscated for security. Never expose real JWTs or credentials in public repositories.
+**Note** - Tokens in the above examples are obfuscated for security. Never expose real JWTs or credentials in repositories.
 
 ---
 
