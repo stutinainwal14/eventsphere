@@ -19,7 +19,7 @@ Follow the steps below to get the EventSphere app up and running locally.
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/UAdelaide/25S1_WDC_PG_Groups_4.git
 cd 25S1_WDC_PG_Groups_4
 ```
 
@@ -319,6 +319,13 @@ These tests confirm that:
 
 ### Home Page
 <img width="1707" alt="image" src="https://github.com/user-attachments/assets/61195e03-a1a5-4443-ae6c-0c35ed5a8c26" />
+
+<img width="1707" alt="image" src="https://github.com/user-attachments/assets/39835f80-dede-4f86-becf-7e7274bf667d" />
+
+<img width="1707" alt="image" src="https://github.com/user-attachments/assets/d2aaa425-f262-4d81-968f-544a870e47d7" />
+
+<img width="1707" alt="image" src="https://github.com/user-attachments/assets/65e3cc51-c34a-48ee-8c28-b20367ea589b" />
+
 
 ### Sign up
 <img width="1677" alt="image" src="https://github.com/user-attachments/assets/6d68ee44-d166-41e3-91bd-43c5949623cb" />
