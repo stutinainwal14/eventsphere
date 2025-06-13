@@ -171,6 +171,50 @@ Make sure:
 
 ---
 
+## Security Testing & Input Validation
+EventSphere implements multiple layers of security to ensure robust protection against common web vulnerabilities such as XSS (Cross-Site Scripting) and SQL Injection. All incoming data is validated and sanitized on both the client and server sides using libraries like express-validator.
+
+To verify our security mechanisms, we manually tested all critical API endpoints, including /api/auth/profile, using malicious payloads and crafted requests via curl. These tests were designed to simulate common attack vectors such as XSS, SQL injection, and authorization bypass, ensuring that each endpoint properly handles and sanitizes input data.
+
+Some curls :
+
+### XSS Attack Attempt
+
+```bash
+curl --request PUT \
+  --url http://localhost:8080/api/auth/profile \
+  --header 'Authorization: Bearer <JWT>' \
+  --header 'content-type: multipart/form-data' \
+  --cookie token=<JWT> \
+  --form 'email="><script>alert("xss")</script>@test.com'
+```
+The input was rejected during validation, and the XSS payload was not executed or stored.
+
+<img width="1348" alt="image" src="https://github.com/user-attachments/assets/5ef6025a-6522-42d7-aa4f-3f19243769f6" />
+
+
+### SQL Injection Attempt
+
+```bash
+curl --request PUT \
+  --url http://localhost:8080/api/auth/profile \
+  --header 'Authorization: Bearer <JWT>' \
+  --header 'content-type: multipart/form-data' \
+  --cookie token=<JWT> \
+  --form 'username=Robert\'); DROP TABLE Users;--'
+```
+The input was sanitized and parameterized, preventing any SQL manipulation.
+
+<img width="1348" alt="image" src="https://github.com/user-attachments/assets/e5ba7c22-dfee-4d5d-a5e7-9913303e77ed" />
+
+These tests confirm that:
+- XSS is mitigated via proper input sanitization and content encoding.
+- SQL Injection is prevented using parameterized queries with the mysql2 driver.
+
+**Note** - Tokens in the above examples are obfuscated for security. Never expose real JWTs or credentials in public repositories.
+
+---
+
 ##  Removed Features
 During development, some features and integrations were explored for learning and scalability purposes but were removed from the final submission to prioritize stability, simplicity, and maintainability:
 
