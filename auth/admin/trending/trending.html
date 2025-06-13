@@ -48,17 +48,17 @@
                 <td>2025-08-10</td>
                 <td>Eventbrite</td>
                 <td><a href="https://example.com" target="_blank">Visit</a></td>
-                <td><button class="edit-btn" onclick="openModal()">Edit</button></td>
-                <td><button class="delete-btn">Delete</button></td>
+                <td><button type="button" class="edit-btn" onclick="openModal()">Edit</button></td>
+                <td><button type="button" class="delete-btn">Delete</button></td>
               </tr>
-         
+
             </tbody>
           </table>
         </div>
       </main>
-      
-      
-      
+
+
+
   </div>
   <!-- Trending Event Edit Modal -->
   <div id="editModal" class="modal-overlay">
@@ -70,23 +70,23 @@
       <form id="editForm">
         <label>Location</label>
         <input type="text" name="location" placeholder="Enter location" required />
-  
+
         <label>Event Name</label>
         <input type="text" name="name" placeholder="Enter event name" required />
-  
+
         <label>Upload Image</label>
         <input type="file" name="image" accept="image/*" />
 
-  
+
         <label>Date</label>
         <input type="date" name="date" required />
-  
+
         <label>Source</label>
         <input type="text" name="source" placeholder="Enter source (e.g. Eventbrite)" required />
-  
+
         <label>Link</label>
         <input type="url" name="link" placeholder="Enter event link" required />
-  
+
         <div class="modal-footer">
           <button type="button" onclick="closeModal()" class="btn-cancel">Cancel</button>
           <button type="submit" class="btn-save">Save</button>
@@ -94,12 +94,12 @@
       </form>
     </div>
   </div>
-  
 
 
-  
 
-  
+
+
+
 <script src="trending.js"></script>
   <script src="../loadSidebar.js"></script>
 </body>
