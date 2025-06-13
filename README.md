@@ -171,50 +171,6 @@ Make sure:
 
 ---
 
-## Security Testing & Input Validation
-EventSphere implements multiple layers of security to ensure robust protection against common web vulnerabilities such as XSS (Cross-Site Scripting) and SQL Injection. All incoming data is validated and sanitized on both the client and server sides using libraries like express-validator.
-
-To verify our security mechanisms, we manually tested all critical API endpoints, including /api/auth/profile, using malicious payloads and crafted requests via curl. These tests were designed to simulate common attack vectors such as XSS, SQL injection, and authorization bypass, ensuring that each endpoint properly handles and sanitizes input data.
-
-Some curls :
-
-### XSS Attack Attempt
-
-```bash
-curl --request PUT \
-  --url http://localhost:8080/api/auth/profile \
-  --header 'Authorization: Bearer <JWT>' \
-  --header 'content-type: multipart/form-data' \
-  --cookie token=<JWT> \
-  --form 'email="><script>alert("xss")</script>@test.com'
-```
-The input was rejected during validation, and the XSS payload was not executed or stored.
-
-<img width="1348" alt="image" src="https://github.com/user-attachments/assets/5ef6025a-6522-42d7-aa4f-3f19243769f6" />
-
-
-### SQL Injection Attempt
-
-```bash
-curl --request PUT \
-  --url http://localhost:8080/api/auth/profile \
-  --header 'Authorization: Bearer <JWT>' \
-  --header 'content-type: multipart/form-data' \
-  --cookie token=<JWT> \
-  --form 'username=Robert\'); DROP TABLE Users;--'
-```
-The input was sanitized and parameterized, preventing any SQL manipulation.
-
-<img width="1348" alt="image" src="https://github.com/user-attachments/assets/e5ba7c22-dfee-4d5d-a5e7-9913303e77ed" />
-
-These tests confirm that:
-- XSS is mitigated via proper input sanitization and content encoding.
-- SQL Injection is prevented using parameterized queries with the mysql2 driver.
-
-**Note** - Tokens in the above examples are obfuscated for security. Never expose real JWTs or credentials in public repositories.
-
----
-
 ##  Removed Features
 During development, some features and integrations were explored for learning and scalability purposes but were removed from the final submission to prioritize stability, simplicity, and maintainability:
 
@@ -315,6 +271,92 @@ A full collection of API endpoints is included for testing with [Insomnia](https
 ### Sample Request Screenshot
 
 <img width="1648" alt="image" src="https://github.com/user-attachments/assets/f0fd4307-9482-40b3-a36d-036f77111352" />
+
+## Security Testing & Input Validation
+EventSphere implements multiple layers of security to ensure robust protection against common web vulnerabilities such as XSS (Cross-Site Scripting) and SQL Injection. All incoming data is validated and sanitized on both the client and server sides using libraries like express-validator.
+
+To verify our security mechanisms, we manually tested all critical API endpoints, including /api/auth/profile, using malicious payloads and crafted requests via curl. These tests were designed to simulate common attack vectors such as XSS, SQL injection, and authorization bypass, ensuring that each endpoint properly handles and sanitizes input data.
+
+Some curls :
+
+### XSS Attack Attempt
+
+```bash
+curl --request PUT \
+  --url http://localhost:8080/api/auth/profile \
+  --header 'Authorization: Bearer <JWT>' \
+  --header 'content-type: multipart/form-data' \
+  --cookie token=<JWT> \
+  --form 'email="><script>alert("xss")</script>@test.com'
+```
+The input was rejected during validation, and the XSS payload was not executed or stored.
+
+<img width="1348" alt="image" src="https://github.com/user-attachments/assets/5ef6025a-6522-42d7-aa4f-3f19243769f6" />
+
+### SQL Injection Attempt
+
+```bash
+curl --request PUT \
+  --url http://localhost:8080/api/auth/profile \
+  --header 'Authorization: Bearer <JWT>' \
+  --header 'content-type: multipart/form-data' \
+  --cookie token=<JWT> \
+  --form 'username=Robert\'); DROP TABLE Users;--'
+```
+The input was sanitized and parameterized, preventing any SQL manipulation.
+
+<img width="1348" alt="image" src="https://github.com/user-attachments/assets/e5ba7c22-dfee-4d5d-a5e7-9913303e77ed" />
+
+These tests confirm that:
+- XSS is mitigated via proper input sanitization and content encoding.
+- SQL Injection is prevented using parameterized queries with the mysql2 driver.
+
+**Note** - Tokens in the above examples are obfuscated for security. Never expose real JWTs or credentials in public repositories.
+
+---
+
+## Application Screenshots
+
+### Home Page
+<img width="1707" alt="image" src="https://github.com/user-attachments/assets/61195e03-a1a5-4443-ae6c-0c35ed5a8c26" />
+
+### Sign up
+<img width="1677" alt="image" src="https://github.com/user-attachments/assets/6d68ee44-d166-41e3-91bd-43c5949623cb" />
+
+### Login with 2FA
+<img width="1707" alt="image" src="https://github.com/user-attachments/assets/d4c2c668-39f7-4cc8-b6d6-41b95854aab4" />
+
+### Event Search and Filters
+<img width="1677" alt="image" src="https://github.com/user-attachments/assets/3284ea0e-4ecd-450b-98a2-c667996e119b" />
+
+### Event Detail Page – Dark Mode
+<img width="1707" alt="image" src="https://github.com/user-attachments/assets/11b07bd2-4827-401d-b874-6920c2bce385" />
+
+### Bookmarking Events
+<img width="1707" alt="image" src="https://github.com/user-attachments/assets/6dddbc12-3e67-4749-93e6-e166db376e04" />
+
+### User Profile
+<img width="1707" alt="image" src="https://github.com/user-attachments/assets/ed127fcb-15f0-4533-a632-21b754e05d67" />
+
+**Bookmarked Events**
+
+<img width="1707" alt="image" src="https://github.com/user-attachments/assets/f9a0dfb6-9b26-4b86-8083-04658c6c88e4" />
+
+### Admin Panel
+<img width="1707" alt="image" src="https://github.com/user-attachments/assets/33f5b276-0ca9-456f-80a3-ae7279d96041" />
+
+**Trending Events**
+
+<img width="1707" alt="image" src="https://github.com/user-attachments/assets/058a90e3-52f3-4a14-a5dc-9181052d7c1d" />
+
+**All Events**
+
+<img width="1707" alt="image" src="https://github.com/user-attachments/assets/bbb4871e-030f-402a-97dc-7bb653e2d52a" />
+
+**Manage Users**
+
+<img width="1707" alt="image" src="https://github.com/user-attachments/assets/8786375c-48e2-443b-8702-5b84d856c4cb" />
+
 
 
 ##  Note
