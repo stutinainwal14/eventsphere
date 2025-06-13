@@ -366,7 +366,7 @@ These tests confirm that:
 
 ## Project Management
 
-This project is managed using a Jira board. You can view our sprint tasks, progress, and backlog here:
+This project is managed using a Jira board. You can view our tasks, progress, and backlog here:
 [View Jira Board](https://eventsphereweb.atlassian.net/jira/core/projects/WEB4/board?groupBy=priority&atlOrigin=eyJpIjoiMTg5MzJhYmE1MGI1NDM2ODkwY2MyMDFkOTFkMzBkN2QiLCJwIjoiaiJ9)
 ##  Note
 
