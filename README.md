@@ -51,6 +51,8 @@ cd backend
 sudo service mysql start
 ```
 
+brew services start mysql
+
 **Environment Setup:** Open the .env file and add your own DB_PASSWORD. All other variables are already pre-configured.
 
 **Set up the database:**
