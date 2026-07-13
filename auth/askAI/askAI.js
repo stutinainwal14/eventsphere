@@ -5,6 +5,11 @@ if (!tokenValue) {
   window.location.href = '../login/login.html';
 }
 
+// DOM elements - initialize at top level
+const chatWindow = document.getElementById('chatWindow');
+const chatInput = document.getElementById('chatInput');
+const sendBtn = document.getElementById('sendBtn');
+
 // Theme
 const savedTheme = localStorage.getItem('theme');
 if (savedTheme === 'dark') document.body.classList.add('dark');
@@ -20,10 +25,7 @@ document.getElementById('themeToggle')?.addEventListener('click', () => {
   localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
 });
 
-// Chat
-const chatWindow = document.getElementById('chatWindow');
-const chatInput = document.getElementById('chatInput');
-const sendBtn = document.getElementById('sendBtn');
+
 
 function useSuggestion(el) {
   chatInput.value = el.textContent;
