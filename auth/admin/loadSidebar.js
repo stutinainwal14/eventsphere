@@ -44,7 +44,7 @@ async function handleLogout(e) {
     // Call logout API if token exists
     if (authToken) {
       try {
-        await fetch("/api/logout", {
+        await fetch("/api/auth/logout", {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -143,7 +143,7 @@ function validateAuthToken() {
   }
 
   // Optional: Validate token with server
-  fetch("/api/validate", {
+  fetch("/api/auth/validate", {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
