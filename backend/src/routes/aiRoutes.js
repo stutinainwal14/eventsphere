@@ -98,7 +98,7 @@ async function formatEventsResponse(events, userMessage) {
   }
 }
 
-router.post('/ask', authMiddleware, async (req, res) => {
+router.post('/ask', async (req, res) => {
   const { message } = req.body;
 
   if (!message) {

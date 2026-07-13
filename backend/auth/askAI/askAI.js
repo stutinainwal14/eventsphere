@@ -2,11 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── AUTH ──────────────────────────────────────────────────
   const tokenValue = localStorage.getItem('authToken') || localStorage.getItem('authtoken');
-  if (!tokenValue) {
-    sessionStorage.setItem('redirectAfterLogin', '/askAI/askAI.html');
-    window.location.href = '../login/login.html';
-    return;
-  }
 
   // ── THEME ─────────────────────────────────────────────────
   const savedTheme = localStorage.getItem('theme');
@@ -106,12 +101,11 @@ document.addEventListener('DOMContentLoaded', () => {
     showTyping();
 
     try {
+      const headers = { 'Content-Type': 'application/json' };
+      if (tokenValue) headers['Authorization'] = `Bearer ${tokenValue}`;
       const response = await fetch('/api/ai/ask', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenValue}`
-        },
+        headers,
         body: JSON.stringify({ message })
       });
 
