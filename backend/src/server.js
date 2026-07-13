@@ -10,6 +10,7 @@ const authMiddleware = require('./middleware/authMiddleware');
 const eventRoutes = require('./routes/eventRoutes');
 const { searchEvents, getEventDetails } = require('./services/TicketMasterService');
 const adminRoutes = require('./routes/adminRoutes');
+const aiRoutes = require('./routes/aiRoutes');
 
 
 // Load environment variables
@@ -45,6 +46,7 @@ if (!fs.existsSync(uploadDir)) {
 // Mount API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/ai', aiRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/uploads', express.static(path.join(__dirname, '../uploads'))); // Serve uploaded files
 

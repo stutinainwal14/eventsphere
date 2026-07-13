@@ -111,3 +111,4 @@ dist
 # VSCode configs
 .vscode/
 backend/.env
+backend/.env
