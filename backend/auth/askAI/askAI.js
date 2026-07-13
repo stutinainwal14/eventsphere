@@ -5,10 +5,14 @@ if (!tokenValue) {
   window.location.href = '../login/login.html';
 }
 
-// DOM elements - initialize at top level
-const chatWindow = document.getElementById('chatWindow');
-const chatInput = document.getElementById('chatInput');
-const sendBtn = document.getElementById('sendBtn');
+// DOM elements - initialized after DOM ready
+let chatWindow, chatInput, sendBtn;
+
+document.addEventListener('DOMContentLoaded', () => {
+  chatWindow = document.getElementById('chatWindow');
+  chatInput = document.getElementById('chatInput');
+  sendBtn = document.getElementById('sendBtn');
+});
 
 // Theme
 const savedTheme = localStorage.getItem('theme');
