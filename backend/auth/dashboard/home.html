@@ -38,7 +38,7 @@
             <div class="nav-links">
                 <a href="/homepage/index.html">Home</a>
                 <a href="#" class="active">Events</a>
-                <a href="#">Ask AI</a>
+                <a href="../askAI/askAI.html">Ask AI</a>
                 <a href="#">FAQs</a>
                 <a href="#">Contact</a>
 
@@ -71,7 +71,32 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="location">Location</label>
-                        <input type="text" id="location" name="location" placeholder="City name">
+                        <input type="text" id="location" name="location" placeholder="City name" autocomplete="off" list="au-cities">
+                        <datalist id="au-cities">
+                          <option value="Sydney">
+                          <option value="Melbourne">
+                          <option value="Brisbane">
+                          <option value="Perth">
+                          <option value="Adelaide">
+                          <option value="Canberra">
+                          <option value="Hobart">
+                          <option value="Darwin">
+                          <option value="Gold Coast">
+                          <option value="Newcastle">
+                          <option value="Wollongong">
+                          <option value="Geelong">
+                          <option value="Townsville">
+                          <option value="Cairns">
+                          <option value="Toowoomba">
+                          <option value="Ballarat">
+                          <option value="Bendigo">
+                          <option value="Launceston">
+                          <option value="Mackay">
+                          <option value="Rockhampton">
+                          <option value="Sunshine Coast">
+                          <option value="Albury">
+                          <option value="Shepparton">
+                        </datalist>
                     </div>
                     <div class="form-group">
                         <label for="keyword">Event Type</label>

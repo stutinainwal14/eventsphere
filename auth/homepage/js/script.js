@@ -259,13 +259,13 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Active nav link on scroll
-const sections = document.querySelectorAll('section[id]');
-const navLinks = document.querySelectorAll('nav a');
-
 window.addEventListener('scroll', () => {
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
   let current = '';
+
   sections.forEach(section => {
-    const sectionTop = section.offsetTop - 100;
+    const sectionTop = section.offsetTop - 120;
     if (window.scrollY >= sectionTop) {
       current = section.getAttribute('id');
     }
@@ -274,9 +274,16 @@ window.addEventListener('scroll', () => {
   navLinks.forEach(link => {
     link.classList.remove('active');
     const href = link.getAttribute('href');
-    if (href === '#' && current === '') {
+    if (!current && (href === '#' || href === '')) {
       link.classList.add('active');
-    } else if (href === `#${current}`) {
+    } else if (href === '#' + current) {
+      link.classList.add('active');
+    }
+    // FAQs and Contact are separate sections - highlight individually
+    if (current === 'faq' && href === '#faq') {
+      link.classList.add('active');
+    }
+    if (current === 'contact' && href === '#contact') {
       link.classList.add('active');
     }
   });

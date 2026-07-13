@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ask AI - EventSphere</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../homepage/css/style.css" />
+  <link rel="stylesheet" href="askAI.css" />
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">
+      <img src="../homepage/assets/icons/logo.svg" alt="Event Sphere Logo" />
+      <span>Event Sphere</span>
+    </div>
+    <nav class="nav-links">
+      <a href="../homepage/index.html">Home</a>
+      <a href="../dashboard/home.html">Events</a>
+      <a href="#" class="active">Ask AI</a>
+      <a href="../homepage/index.html#faq">FAQs</a>
+      <a href="../homepage/index.html#contact">Contact Us</a>
+    </nav>
+    <div class="nav-actions">
+      <div id="guestMenu">
+        <button class="theme-toggle" id="themeToggle"><i class="fa fa-moon"></i> Dark</button>
+        <a href="../login/login.html" class="login-btn">Login</a>
+        <a href="../signup/signup.html" class="signup-btn">Sign Up</a>
+      </div>
+      <div class="user-menu" id="userMenu" style="display:none">
+        <button class="theme-toggle" id="themeToggle2"><i class="fa fa-moon"></i> Dark</button>
+        <span id="usernameDisplay"></span>
+        <button id="logoutBtn" class="login-btn">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="ai-main">
+    <div class="ai-container">
+      <div class="ai-header">
+        <div class="ai-header-icon">🤖</div>
+        <div>
+          <h1>Ask AI</h1>
+          <p>Describe what event you're looking for and I'll find it for you</p>
+        </div>
+      </div>
+
+      <div class="ai-suggestions">
+        <p>Try asking:</p>
+        <div class="suggestion-chips">
+          <button class="chip" onclick="useSuggestion(this)">Music events in Sydney this weekend</button>
+          <button class="chip" onclick="useSuggestion(this)">Comedy shows in Melbourne next month</button>
+          <button class="chip" onclick="useSuggestion(this)">Family friendly events in Brisbane</button>
+          <button class="chip" onclick="useSuggestion(this)">Sports events in Adelaide</button>
+        </div>
+      </div>
+
+      <div class="chat-window" id="chatWindow">
+        <div class="chat-message ai-message">
+          <div class="message-avatar">🤖</div>
+          <div class="message-bubble">
+            <p>Hi! I'm your EventSphere AI assistant. Tell me what kind of event you're looking for — I'll search across Australia and find the best options for you!</p>
+            <p style="margin-top:8px;opacity:0.7;font-size:13px">Try: "Find me jazz concerts in Melbourne next month"</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-input-area">
+        <input
+          type="text"
+          id="chatInput"
+          placeholder="Ask me about events... e.g. 'Music festivals in Sydney'"
+          onkeydown="if(event.key==='Enter') sendMessage()"
+        />
+        <button class="send-btn" onclick="sendMessage()" id="sendBtn">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <script src="askAI.js"></script>
+  <script src="/shared/auth-ui.js"></script>
+</body>
+</html>
