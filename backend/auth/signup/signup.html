@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Event Sphere - Sign Up</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" type="text/css" href="signup.css" />
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-header">
+      <h4>Welcome to Event Sphere</h4>
+      <h1>Create Account</h1>
+    </div>
+    <div class="alert alert-danger" id="error-alert"></div>
+    <div class="alert alert-success" id="success-alert"></div>
+    <form id="signup-form">
+      <div class="input-group">
+        <label for="fullname">Full Name</label>
+        <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required />
+      </div>
+      <div class="input-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email address" required />
+      </div>
+      <div class="input-group">
+        <label for="password">Password</label>
+        <div class="password-field">
+          <input type="password" id="password" name="password" placeholder="8+ chars with uppercase, lowercase & number" required />
+          <span class="password-toggle" id="password-toggle"><i class="fas fa-eye"></i></span>
+        </div>
+        <div class="password-strength" id="password-strength">
+          <div class="password-strength-meter" id="password-meter"></div>
+        </div>
+        <div class="password-strength-text" id="password-text"></div>
+      </div>
+      <div class="input-group">
+        <label for="confirm-password">Confirm Password</label>
+        <div class="password-field">
+          <input type="password" id="confirm-password" name="confirm-password" placeholder="Re-enter your password" required />
+          <span class="password-toggle" id="confirm-password-toggle"><i class="fas fa-eye"></i></span>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" id="signup-btn">
+        Create Account
+        <span class="loading-spinner" id="signup-spinner"></span>
+      </button>
+    </form>
+    <div class="login-footer">
+      <div class="signup-link">Already have an account? <a href="../login/login.html">Sign in</a></div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="signup.js"></script>
+</body>
+</html>

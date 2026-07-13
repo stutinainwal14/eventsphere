@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Event Sphere Admin</title>
+  <link rel="stylesheet" href="admin.css">
+  <!-- Font Awesome for icons -->
+  <script src="https://kit.fontawesome.com/d62bd036de.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    integrity="sha512-Bx85rE+MT5+IsAwIE9X0Z7FOzMZHzBkgq4U+SBe7pCyRYv/d0VHJ/fZzC4VvW2Wv0G/7P1aeZzLRqap8QeY6Rg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body data-page="insights">
+  <div class="container">
+    <div id="sidebar"></div>
+
+    <main class="main-content">
+      <header>
+        <h1>Dashboard</h1>
+      </header>
+
+      <section class="cards">
+        <div class="card">
+          <i class="fas fa-user"></i>
+          <div>
+            <p>Total Users</p>
+            <h2>105</h2>
+          </div>
+        </div>
+        <div class="card">
+          <i class="fas fa-calendar-alt"></i>
+          <div>
+            <p>Total Events</p>
+            <h2>214</h2>
+          </div>
+        </div>
+        <div class="card">
+          <i class="fas fa-fire"></i>
+          <div>
+            <p>Total Trending Events</p>
+            <h2>7</h2>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="../loadSidebar.js"></script>
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="admin.js"></script>
+</body>
+
+</html>

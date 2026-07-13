@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 30px;
+            transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+            background: #555;
+        }
+
+        .event-header {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .event-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .event-basic-info h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .event-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+
+        .meta-item i {
+            color: #007bff;
+            width: 20px;
+        }
+
+        .ticket-button {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.3s;
+        }
+
+        .ticket-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .detail-section {
+            background: #2a2a2a;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .detail-section h3 {
+            color: #007bff;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .price-range {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #444;
+        }
+
+        .price-range:last-child {
+            border-bottom: none;
+        }
+
+        .classification-tag {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin: 3px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2rem;
+        }
+
+        .error {
+            background: #dc3545;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .venue-info {
+            background: #2a2a2a;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .venue-info h3 {
+            color: #007bff;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .venue-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .venue-detail {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .venue-detail i {
+            color: #007bff;
+            width: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .event-header {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .event-basic-info h1 {
+                font-size: 2rem;
+            }
+
+            .venue-details {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .description-section {
+            background: #2a2a2a;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .description-section h3 {
+            color: #007bff;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .additional-info {
+            background: #2a2a2a;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .additional-info h3 {
+            color: #007bff;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-item {
+            margin-bottom: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #444;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #ccc;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border-color: #dee2e6;
+            --accent-color: #007bff;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Dark theme variables */
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2a2a2a;
+            --bg-tertiary: #333333;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --border-color: #444444;
+            --accent-color: #007bff;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Update existing styles to use CSS variables */
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .detail-section,
+        .venue-info,
+        .description-section,
+        .additional-info {
+            background: var(--bg-secondary);
+            transition: background-color 0.3s;
+        }
+
+        .back-button {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .back-button:hover {
+            background: var(--border-color);
+        }
+
+        .price-range,
+        .info-item {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .error {
+            background: #dc3545;
+            color: white;
+        }
+
+        /* Theme toggle button styles */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+
+        .theme-toggle i {
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle:hover i {
+            transform: rotate(180deg);
+        }
+
+        /* Smooth transitions for theme changes */
+        * {
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            .theme-toggle {
+                top: 15px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <button type="button" class="theme-toggle" id="themeToggle" title="Toggle theme">
+        <i class="fas fa-moon" id="themeIcon"></i>
+    </button>
+    <div class="container">
+        <a href="../dashboard/home.html" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            Back to Events
+        </a>
+
+        <div id="loading" class="loading">
+            <i class="fas fa-spinner fa-spin"></i>
+            Loading event details...
+        </div>
+
+        <div id="error" class="error" style="display: none;">
+            Failed to load event details. Please try again.
+        </div>
+
+        <div id="eventContent" style="display: none;">
+            <div class="event-header">
+                <img id="eventImage" class="event-image" src="placeholder.jpg" alt="Event Image">
+                <div class="event-basic-info">
+                    <h1 id="eventName">Unnamed Event</h1>
+                    <div class="event-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span id="eventDate"></span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span id="eventTime"></span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span id="eventLocation"></span>
+                        </div>
+                    </div>
+                    <a id="ticketButton" class="ticket-button" href="#" target="_blank">
+                        <i class="fas fa-ticket-alt"></i>
+                        Get Tickets
+                    </a>
+                </div>
+            </div>
+
+            <div id="venueSection" class="venue-info" style="display: none;">
+                <h3><i class="fas fa-building"></i> Venue Information</h3>
+                <div class="venue-details" id="venueDetails"></div>
+            </div>
+
+            <div id="descriptionSection" class="description-section" style="display: none;">
+                <h3><i class="fas fa-info-circle"></i> Event Description</h3>
+                <div id="eventDescription"></div>
+            </div>
+
+            <div class="details-grid">
+                <div class="detail-section">
+                    <h3><i class="fas fa-tags"></i> Classifications</h3>
+                    <div id="classifications"></div>
+                </div>
+
+                <div class="detail-section">
+                    <h3><i class="fas fa-dollar-sign"></i> Price Range</h3>
+                    <div id="priceRanges"></div>
+                </div>
+            </div>
+
+            <div id="additionalInfoSection" class="additional-info" style="display: none;">
+                <h3><i class="fas fa-exclamation-circle"></i> Additional Information</h3>
+                <div id="additionalInfoContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class ThemeManager {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                // Get saved theme or default to dark
+                this.currentTheme = localStorage.getItem('theme') || 'dark';
+                this.applyTheme(this.currentTheme);
+                this.updateIcon();
+
+                // Add event listener to toggle button
+                document.getElementById('themeToggle').addEventListener('click', () => {
+                    this.toggleTheme();
+                });
+            }
+
+            toggleTheme() {
+                this.currentTheme = this.currentTheme === 'dark' ? 'light' : 'dark';
+                this.applyTheme(this.currentTheme);
+                this.updateIcon();
+                localStorage.setItem('theme', this.currentTheme);
+            }
+
+            applyTheme(theme) {
+                if (theme === 'dark') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                }
+            }
+
+            updateIcon() {
+                const icon = document.getElementById('themeIcon');
+                if (this.currentTheme === 'dark') {
+                    icon.className = 'fas fa-sun'; // Show sun icon in dark mode
+                } else {
+                    icon.className = 'fas fa-moon'; // Show moon icon in light mode
+                }
+            }
+        }
+
+        // Get event ID from URL parameters
+        function getEventIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id');
+        }
+
+        // Get auth token
+        function getAuthToken() {
+            return localStorage.getItem('authToken') || localStorage.getItem('authtoken');
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            if (!dateString) return 'Date TBA';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-AU', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        // Format time
+        function formatTime(timeString) {
+            if (!timeString) return 'Time TBA';
+            const time = new Date(`2000-01-01T${timeString}`);
+            return time.toLocaleTimeString('en-AU', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Load event details
+        async function loadEventDetails() {
+            const eventId = getEventIdFromUrl();
+            if (!eventId) {
+                showError('No event ID provided');
+                return;
+            }
+
+            const token = getAuthToken();
+            if (!token) {
+                window.location.href = '../auth/login/login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/events/details/${eventId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch event details');
+                }
+
+                const data = await response.json();
+                displayEventDetails(data);
+            } catch (error) {
+                console.error('Error loading event details:', error);
+                showError('Failed to load event details');
+            }
+        }
+
+        // Display event details
+        function displayEventDetails(eventData) {
+            const event = eventData;
+
+            // Hide loading, show content
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('eventContent').style.display = 'block';
+
+            // Basic info
+            document.getElementById('eventName').textContent = event.name || 'Event Name';
+            document.getElementById('eventImage').src = event.images?.[0]?.url || '/public/homepage/assets/images/event.png';
+            document.getElementById('eventImage').alt = event.name || 'Event Image';
+
+            // Date and time
+            const startDate = event.dates?.start?.localDate;
+            const startTime = event.dates?.start?.localTime;
+            document.getElementById('eventDate').textContent = formatDate(startDate);
+            document.getElementById('eventTime').textContent = formatTime(startTime);
+
+            // Location
+            const venue = event._embedded?.venues?.[0];
+            let locationText = 'Location TBA';
+            if (venue) {
+                locationText = `${venue.name || ''}, ${venue.city?.name || ''}, ${venue.country?.name || ''}`;
+            }
+            document.getElementById('eventLocation').textContent = locationText;
+
+            // Ticket URL
+            if (event.url) {
+                document.getElementById('ticketButton').href = event.url;
+            }
+
+            // Venue details
+            if (venue) {
+                displayVenueDetails(venue);
+            }
+
+            // Description
+            if (event.description) {
+                document.getElementById('descriptionSection').style.display = 'block';
+                document.getElementById('eventDescription').innerHTML = event.description;
+            }
+
+            // Classifications
+            displayClassifications(event.classifications || []);
+
+            // Price ranges
+            displayPriceRanges(event.priceRanges || []);
+
+            // Additional info
+            displayAdditionalInfo(event);
+        }
+
+        // Display venue details
+        function displayVenueDetails(venue) {
+            document.getElementById('venueSection').style.display = 'block';
+            const venueDetails = document.getElementById('venueDetails');
+
+            let detailsHTML = '';
+
+            if (venue.name) {
+                detailsHTML += `<div class="venue-detail"><i class="fas fa-building"></i><span>${venue.name}</span></div>`;
+            }
+
+            if (venue.address?.line1) {
+                detailsHTML += `<div class="venue-detail"><i class="fas fa-map-marker-alt"></i><span>${venue.address.line1}</span></div>`;
+            }
+
+            if (venue.city?.name) {
+                detailsHTML += `<div class="venue-detail"><i class="fas fa-city"></i><span>${venue.city.name}</span></div>`;
+            }
+
+            if (venue.country?.name) {
+                detailsHTML += `<div class="venue-detail"><i class="fas fa-flag"></i><span>${venue.country.name}</span></div>`;
+            }
+
+            if (venue.postalCode) {
+                detailsHTML += `<div class="venue-detail"><i class="fas fa-mail-bulk"></i><span>${venue.postalCode}</span></div>`;
+            }
+
+            venueDetails.innerHTML = detailsHTML;
+        }
+
+        // Display classifications
+        function displayClassifications(classifications) {
+            const container = document.getElementById('classifications');
+
+            if (!classifications.length) {
+                container.innerHTML = '<p>No classification information available</p>';
+                return;
+            }
+
+            let html = '';
+            classifications.forEach(classification => {
+                if (classification.segment?.name) {
+                    html += `<span class="classification-tag">${classification.segment.name}</span>`;
+                }
+                if (classification.genre?.name) {
+                    html += `<span class="classification-tag">${classification.genre.name}</span>`;
+                }
+                if (classification.subGenre?.name) {
+                    html += `<span class="classification-tag">${classification.subGenre.name}</span>`;
+                }
+            });
+
+            container.innerHTML = html || '<p>No classification information available</p>';
+        }
+
+        // Display price ranges
+        function displayPriceRanges(priceRanges) {
+            const container = document.getElementById('priceRanges');
+
+            if (!priceRanges.length) {
+                container.innerHTML = '<p>Price information not available</p>';
+                return;
+            }
+
+            let html = '';
+            priceRanges.forEach(price => {
+                const currency = price.currency || 'AUD';
+                const min = price.min ? `${currency} ${price.min}` : 'N/A';
+                const max = price.max ? `${currency} ${price.max}` : 'N/A';
+                const type = price.type || 'Standard';
+
+                html += `
+                    <div class="price-range">
+                        <span>${type}</span>
+                        <span>${min} - ${max}</span>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Display additional information
+        function displayAdditionalInfo(event) {
+            const section = document.getElementById('additionalInfoSection');
+            const content = document.getElementById('additionalInfoContent');
+
+            let html = '';
+
+            if (event.info) {
+                html += `<div class="info-item"><div class="info-label">General Info:</div>${event.info}</div>`;
+            }
+
+            if (event.pleaseNote) {
+                html += `<div class="info-item"><div class="info-label">Please Note:</div>${event.pleaseNote}</div>`;
+            }
+
+            if (event.additionalInfo) {
+                html += `<div class="info-item"><div class="info-label">Additional Info:</div>${event.additionalInfo}</div>`;
+            }
+
+            if (event.accessibility?.info) {
+                html += `<div class="info-item"><div class="info-label">Accessibility:</div>${event.accessibility.info}</div>`;
+            }
+
+            if (html) {
+                section.style.display = 'block';
+                content.innerHTML = html;
+            }
+        }
+
+        // Show error
+        function showError(message) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+            document.getElementById('error').textContent = message;
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function () {
+            new ThemeManager();
+            loadEventDetails();
+        });
+    </script>
+</body>
+
+</html>

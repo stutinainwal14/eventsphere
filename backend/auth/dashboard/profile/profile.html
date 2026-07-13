@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Sphere - User Dashboard</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="profile.css">
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="../home.html" style="text-decoration: none;">
+                <h2>Event Sphere</h2>
+            </a>
+        </div>
+        <div class="sidebar-menu">
+            <a href="#" class="menu-item active">
+                <i class="fas fa-tachometer-alt"></i>
+                Dashboard
+            </a>
+            <a href="#" class="menu-item" data-section="my-events">
+                <i class="fas fa-calendar-alt"></i>
+                My Events
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-ticket-alt"></i>
+                My Tickets
+            </a>
+            <a href="#" class="menu-item logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+        <div class="dashboard-header">
+            <div class="left-section">
+                <button class="hamburger" id="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="welcome-text">
+                    <h1>My Profile</h1>
+                    <p>Manage your personal information and account settings</p>
+                </div>
+            </div>
+            <div class="user-actions">
+                <div class="user-profile" id="user-profile-dropdown">
+                    <div class="user-avatar">
+                        <img src="/api/placeholder/200/200" alt="User Avatar" id="nav-user-avatar">
+                    </div>
+                    <div class="user-name" id="nav-user-name">John Doe</div>
+                    <i class="fas fa-chevron-down" style="margin-left: 10px;"></i>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-user"></i>
+                            My Profile
+                        </a>
+                        <a href="#" class="dropdown-item logout-btn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Section -->
+        <div class="content-card">
+            <div class="profile-tabs">
+                <div class="profile-tab active" data-tab="personal-info">Personal Information</div>
+                <div class="profile-tab" data-tab="change-password">Change Password</div>
+                <div class="profile-tab" data-tab="two-factor-auth">Two-Factor Authentication</div>
+            </div>
+
+            <!-- Personal Information Tab -->
+            <div class="tab-content active" id="personal-info">
+                <div class="alert alert-success" id="info-success-alert"></div>
+                <div class="alert alert-danger" id="info-error-alert"></div>
+
+                <div class="profile-info">
+                    <div class="profile-avatar">
+                        <img src="/api/placeholder/200/200" alt="User Profile" id="profile-avatar-img">
+                        <label class="avatar-upload">
+                            <input type="file" id="avatar-upload-input" accept="image/*">
+                            <i class="fas fa-camera"></i> Change
+                        </label>
+                    </div>
+                    <div class="profile-details">
+                        <h2 id="profile-name">John Doe</h2>
+                        <p id="profile-username">@johndoe</p>
+                        <p id="profile-email">john.doe@example.com</p>
+                    </div>
+                </div>
+
+                <form id="profile-form">
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="fullname">Full Name</label>
+                                <input type="text" class="form-control" id="fullname" name="fullname"
+                                    placeholder="Enter your full name">
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" class="form-control" id="username" name="username"
+                                    placeholder="Choose a username">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                    placeholder="Enter your email">
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" class="form-control" id="phone" name="phone"
+                                    placeholder="Enter your phone number">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" class="form-control" id="location" name="location"
+                            placeholder="City, Country">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bio">About Me</label>
+                        <textarea class="form-control" id="bio" name="bio" rows="3"
+                            placeholder="Write something about yourself..."></textarea>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button type="button" class="btn btn-secondary" id="cancel-info-btn">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="save-info-btn">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Change Password Tab -->
+            <div class="tab-content" id="change-password">
+                <div class="alert alert-success" id="password-success-alert"></div>
+                <div class="alert alert-danger" id="password-error-alert"></div>
+
+                <form id="password-form">
+                    <div class="form-group">
+                        <label for="current-password">Current Password</label>
+                        <input type="password" class="form-control" id="current-password" name="current-password"
+                            placeholder="Enter your current password">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="new-password">New Password</label>
+                        <input type="password" class="form-control" id="new-password" name="new-password"
+                            placeholder="Enter your new password">
+                        <div class="password-strength" id="password-strength">
+                            <div class="password-strength-meter" id="password-meter"></div>
+                        </div>
+                        <div class="password-strength-text" id="password-text"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirm-new-password">Confirm New Password</label>
+                        <input type="password" class="form-control" id="confirm-new-password"
+                            name="confirm-new-password" placeholder="Confirm your new password">
+                    </div>
+
+                    <div class="action-buttons">
+                        <button type="button" class="btn btn-secondary" id="cancel-password-btn">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="save-password-btn">Update Password</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Two-Factor Authentication Tab -->
+            <div class="tab-content" id="two-factor-auth">
+                <div class="alert alert-success" id="twofa-success-alert"></div>
+                <div class="alert alert-danger" id="twofa-error-alert"></div>
+
+                <!-- 2FA Status Section -->
+                <div class="form-group">
+                    <h4>Two-Factor Authentication Status</h4>
+                    <div id="twofa-status" class="twofa-status">
+                        <span id="status-indicator" class="status-indicator disabled">
+                            <i class="fas fa-times-circle"></i> Disabled
+                        </span>
+                        <p class="status-text">Two-factor authentication is currently disabled for your account.</p>
+                    </div>
+                </div>
+
+                <!-- Setup 2FA Section -->
+                <div id="setup-2fa-section">
+                    <h4>Setup Two-Factor Authentication</h4>
+                    <p>Secure your account with two-factor authentication using an authenticator app like Google
+                        Authenticator or Authy.</p>
+
+                    <div class="setup-steps" id="setup-steps" style="display: none;">
+                        <div class="step">
+                            <h5>Step 1: Scan QR Code</h5>
+                            <p>Scan this QR code with your authenticator app:</p>
+                            <div class="qr-code-container" id="qr-code-container">
+                                <!-- QR code will be inserted here -->
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <h5>Step 2: Enter Verification Code</h5>
+                            <p>Enter the 6-digit code from your authenticator app:</p>
+                            <form id="verify-2fa-form">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="verification-code"
+                                        placeholder="Enter 6-digit code" maxlength="6" pattern="[0-9]{6}"
+                                        style="text-align: center; font-size: 1.2rem; letter-spacing: 0.3rem;">
+                                </div>
+                                <div class="action-buttons">
+                                    <button type="button" class="btn btn-secondary"
+                                        id="cancel-2fa-setup">Cancel</button>
+                                    <button type="submit" class="btn btn-primary" id="verify-2fa-btn">Enable
+                                        2FA</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons" id="initial-2fa-buttons">
+                        <button type="button" class="btn btn-primary" id="setup-2fa-btn">
+                            <i class="fas fa-shield-alt"></i> Setup Two-Factor Authentication
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Disable 2FA Section -->
+                <div id="disable-2fa-section" style="display: none;">
+                    <h4>Disable Two-Factor Authentication</h4>
+                    <p>If you disable 2FA, your account will be less secure. You can re-enable it at any time.</p>
+                    <div class="action-buttons">
+                        <button type="button" class="btn btn-danger" id="disable-2fa-btn">
+                            <i class="fas fa-times"></i> Disable Two-Factor Authentication
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <div class="card-header">
+                <h3>Account Actions</h3>
+            </div>
+            <div class="card-body">
+                <p style="margin-bottom: 1rem;">These actions are permanent and cannot be undone.</p>
+                <div class="action-buttons" style="justify-content: flex-start;">
+                    <button type="button" class="btn btn-secondary" id="download-data-btn">Download My Data</button>
+                    <button type="button" class="btn btn-danger" id="delete-account-btn">Delete Account</button>
+                </div>
+            </div>
+        </div>
+        <!-- My Events Section -->
+        <div class="content-card" id="my-events-section" style="display: none;">
+            <div class="card-header">
+                <h3><i class="fas fa-calendar-alt"></i> My Bookmarked Events</h3>
+                <p>Events you've saved for later</p>
+            </div>
+            <!-- Search and Filter Section -->
+            <div class="search-filter-section"
+                style="margin-bottom: 2rem; padding: 1.5rem; background-color: #f8f9fa; border-radius: 0.375rem;">
+                <div class="search-row" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+                    <div class="search-group" style="flex: 1; min-width: 200px;">
+                        <label for="event-search"
+                            style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Search Events</label>
+                        <input type="text" id="event-search" placeholder="Search by event name or location..."
+                            style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 0.25rem;">
+                    </div>
+
+                    <div class="search-group" style="flex: 1; min-width: 150px;">
+                        <label for="tag-search" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Filter
+                            by Tags</label>
+                        <input type="text" id="tag-search" placeholder="e.g., music, sports, concert..."
+                            style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 0.25rem;">
+                    </div>
+
+                    <div class="search-group" style="flex: 0 0 auto;">
+                        <label style="display: block; margin-bottom: 0.5rem; opacity: 0;">Actions</label>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button id="search-events-btn" class="btn btn-primary btn-sm">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                            <button id="clear-search-btn" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-times"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search Results Info -->
+                <div id="search-results-info" style="margin-top: 1rem; display: none;">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle"></i>
+                        <span id="results-count">0</span> events found
+                        <span id="active-filters" style="margin-left: 1rem;"></span>
+                    </small>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Loading State -->
+                <div id="events-loading" style="display: none; text-align: center; padding: 2rem;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary-color);"></i>
+                    <p style="margin-top: 1rem;">Loading your bookmarked events...</p>
+                </div>
+
+                <!-- No Events State -->
+                <div id="no-events" style="display: none; text-align: center; padding: 3rem;">
+                    <i class="fas fa-calendar-times" style="font-size: 3rem; color: #6c757d; margin-bottom: 1rem;"></i>
+                    <h4 style="color: #6c757d; margin-bottom: 0.5rem;">No Bookmarked Events</h4>
+                    <p style="color: #6c757d;">You haven't bookmarked any events yet. Browse events and save your
+                        favorites!
+                    </p>
+                    <a href="../home.html" class="btn btn-primary" style="margin-top: 1rem;">
+                        <i class="fas fa-search"></i> Browse Events
+                    </a>
+                </div>
+
+                <!-- Events Grid -->
+                <div id="events-grid" class="events-grid">
+                    <!-- Events will be populated here by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* 2FA Specific Styles */
+        .twofa-status {
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1.5rem;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-indicator.enabled {
+            color: var(--success-color);
+        }
+
+        .status-indicator.disabled {
+            color: #6c757d;
+        }
+
+        .status-indicator i {
+            margin-right: 0.5rem;
+        }
+
+        .status-text {
+            color: #6c757d;
+            margin: 0;
+        }
+
+        .setup-steps {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 0.375rem;
+            margin: 1.5rem 0;
+        }
+
+        .step {
+            margin-bottom: 2rem;
+        }
+
+        .step:last-child {
+            margin-bottom: 0;
+        }
+
+        .step h5 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .qr-code-container {
+            text-align: center;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 0.375rem;
+            border: 1px solid #dee2e6;
+            margin: 1rem 0;
+        }
+
+        .qr-code-container img {
+            max-width: 200px;
+            height: auto;
+        }
+
+        #verification-code {
+            max-width: 200px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .setup-steps {
+                padding: 1rem;
+            }
+
+            .qr-code-container img {
+                max-width: 150px;
+            }
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="profile.js"></script>
+</body>
+
+</html>

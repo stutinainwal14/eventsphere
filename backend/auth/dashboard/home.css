@@ -1,0 +1,360 @@
+.search-container {
+    padding: 2rem 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.search-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.search-header h1 {
+    font-size: 2.5rem;
+    color: #000;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.search-header p {
+    color: #666;
+    font-size: 1rem;
+}
+
+.search-form {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 3rem;
+}
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+}
+
+.search-btn {
+    background-color: #f7931e;
+    color: #fff;
+    border: none;
+    padding: 0.8rem 1.8rem;
+    border-radius: 15px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.3s;
+    display: block;
+    margin: 0 auto;
+}
+
+.search-btn:hover {
+    background-color: #e67e00;
+}
+
+.search-results {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+}
+
+.results-heading {
+    width: 100%;
+    text-align: left;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.no-results {
+    text-align: center;
+    color: #666;
+    font-size: 1.1rem;
+    padding: 3rem 0;
+}
+
+.loading {
+    text-align: center;
+    color: #666;
+    font-size: 1.1rem;
+    padding: 3rem 0;
+}
+
+.event-card {
+    width: 280px;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    transition: transform 0.2s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Random background colors */
+.event-card:nth-child(4n+1) {
+    background-color: #FF8888;
+}
+
+.event-card:nth-child(4n+2) {
+    background-color: #3EB0F7;
+}
+
+.event-card:nth-child(4n+3) {
+    background-color: #E0F782;
+}
+
+.event-card:nth-child(4n+4) {
+    background-color: #FF65D9;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .search-container {
+        padding: 1rem;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .form-group {
+        min-width: 100%;
+    }
+}
+
+/* Carousel Styles */
+.event-carousel {
+    position: relative;
+    width: 100%;
+    margin: 20px 0;
+    overflow: hidden;
+}
+
+.carousel-inner {
+    width: 100%;
+    position: relative;
+}
+
+.carousel-slide {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 20px;
+    width: 100%;
+}
+
+.event-card {
+    flex: 1;
+    min-width: 0;
+    /* Allows cards to shrink below their content size */
+    max-width: calc(25% - 15px);
+    /* 4 cards per row with gap */
+    display: flex;
+    flex-direction: column;
+}
+
+.card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.event-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+/* Navigation buttons */
+.carousel-navigation {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 20px;
+}
+
+.carousel-nav-btn {
+    background-color: #3f51b5;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.carousel-nav-btn:hover {
+    background-color: #303f9f;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .carousel-slide {
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding-bottom: 15px;
+    }
+
+    .event-card {
+        max-width: calc(33.333% - 14px);
+    }
+}
+
+@media (max-width: 768px) {
+    .event-card {
+        max-width: calc(50% - 10px);
+    }
+}
+
+@media (max-width: 576px) {
+    .carousel-slide {
+        flex-wrap: wrap;
+    }
+
+    .event-card {
+        max-width: 100%;
+        margin-bottom: 15px;
+    }
+}
+
+
+/* Apply dark background and white text */
+body.dark-theme {
+    background-color: #121212;
+    color: #ffffff;
+  }
+  
+  /* Navbar styles */
+  body.dark-theme .navbar {
+    background-color: #000;
+  }
+
+  body.dark-theme .active{
+    background-color: #fff;
+    color: #000 !important;
+  }
+  
+  body.dark-theme .navbar a,
+  body.dark-theme .nav-right button,
+  body.dark-theme .mobile-menu a {
+    color: #ffffff;
+  }
+  
+  body.dark-theme .theme-toggle {
+    background-color: #ffffff;
+    color: #000 !important;
+    border-radius: 10%;
+  }
+  body.dark-theme .search-header {
+    color: #fff !important; 
+  }
+  /* Search section */
+  body.dark-theme .search-name {
+    color: #fff !important;
+  }
+
+  body.dark-theme .search-form {
+    background-color: #000;
+    color: #fff;
+  }
+  
+  body.dark-theme input,
+  body.dark-theme select,
+  body.dark-theme label {
+    color: #fff;
+  }
+  body.dark-theme input {
+    background-color: #1e1e1e
+  }
+  body.dark-theme .xt {
+    background-color: #1e1e1e
+  }
+  /* Buttons */
+  body.dark-theme .search-btn {
+    background-color: #e67e00;
+    color: #fff;
+  }
+  
+  body.dark-theme .search-btn:hover {
+    background-color: #cc6d00;
+  }
+  
+  /* Event Cards */
+  body.dark-theme .event-card {
+    background-color: #fff;
+    color: #000;
+  }
+  
+  body.dark-mode .bookmark {
+    background-color: #1e1e1e !important;
+    color: #fff !important;
+  }
+  
+  body.dark-mode .start{
+    background-color: #e67e00 !important;
+    color: #fff !important;
+  }
+     
+  /* Footer */
+  body.dark-theme .footer-main{
+    background-color: #1f1f1f9f !important;
+    color: #fff;
+  }
+  body.dark-theme .footer-description {
+    background-color: #1f1f1f9f !important;
+    color: #fff;
+  }
+
+  
+
+  
+  /* Highlight category list on hover */
+  body.dark-theme .category-list li:hover {
+    color: #fff;
+  }
+  
+  /* Bookmark and Get Tickets buttons */
+  body.dark-theme .card-buttons button {
+    background-color: #e67e00;
+    color: white;
+  }
+  
+  body.dark-theme .card-buttons button:hover {
+    background-color: #cc6d00;
+  }
+  

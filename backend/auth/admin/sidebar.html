@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<div class="sidebar">
+  <div>
+    <h2 class="brand">Event Sphere</h2>
+    <nav>
+      <a href="../main/admin.html" data-page="insights"><i class="fas fa-chart-line"></i> Insights</a>
+      <a href="../trending/trending.html" data-page="trending"><i class="fas fa-fire"></i> Trending</a>
+      <a href="../allevents/allevents.html" data-page="allevents"><i class="fas fa-calendar-alt"></i> All Events</a>
+      <a href="../users/users.html" data-page="users"><i class="fas fa-users"></i> Users</a>
+    </nav>
+  </div>
+  <a href="#" class="logout-link" title="Logout">
+    <i class="fas fa-sign-out-alt"></i> Logout
+  </a>
+</div>
+
+<style>
+  .logout-link {
+    color: white !important;
+    transition: all 0.3s ease;
+    padding: 10px 15px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    margin: 10px;
+    border: 1px solid transparent;
+  }
+
+  .logout-link:hover {
+    background-color: rgba(231, 76, 60, 0.1);
+    border-color: #e74c3c;
+    transform: translateX(5px);
+  }
+
+  .logout-link:active {
+    transform: translateX(3px);
+    background-color: rgba(231, 76, 60, 0.2);
+  }
+
+  .logout-link i {
+    font-size: 16px;
+    transition: transform 0.2s ease;
+  }
+
+  .logout-link:hover i {
+    transform: scale(1.1);
+  }
+
+  .logout-link.logging-out {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .logout-link.logging-out::after {
+    content: "";
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid #e74c3c;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-left: 10px;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .logout-link {
+      margin: 5px;
+      padding: 8px 12px;
+    }
+
+    .logout-link span {
+      display: none;
+    }
+  }
+</style>

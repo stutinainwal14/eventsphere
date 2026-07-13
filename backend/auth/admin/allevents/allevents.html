@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>All Events | Admin</title>
+  <link rel="stylesheet" href="../main/admin.css" />
+  <link rel="stylesheet" href="../trending/trending.css">
+  <link rel="stylesheet" href="allevents.css">
+  <!-- Font Awesome for icons -->
+  <script src="https://kit.fontawesome.com/d62bd036de.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    integrity="sha512-Bx85rE+MT5+IsAwIE9X0Z7FOzMZHzBkgq4U+SBe7pCyRYv/d0VHJ/fZzC4VvW2Wv0G/7P1aeZzLRqap8QeY6Rg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body data-page="allevents">
+  <div class="container">
+    <div id="sidebar"></div>
+
+    <main class="main-content">
+      <h1>All Events</h1>
+
+      <!-- Loading spinner -->
+      <div class="loading-spinner" id="loadingSpinner">
+        <div class="spinner"></div>
+        <p>Loading events...</p>
+      </div>
+
+      <div class="table-container">
+        <table class="trending-table">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Location</th>
+              <th>Name</th>
+              <th>Image</th>
+              <th>Date</th>
+              <th>Source</th>
+              <th>Link</th>
+              <th>Edit</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Events will be populated by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination will be inserted here by JavaScript -->
+    </main>
+
+  </div>
+  <!-- All Events Edit Modal -->
+  <div id="editModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Edit Event</h3>
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+      </div>
+      <form id="editForm">
+        <label>Location</label>
+        <input type="text" name="location" placeholder="Enter location" required />
+
+        <label>Event Name</label>
+        <input type="text" name="name" placeholder="Enter event name" required />
+
+        <label>Upload Image</label>
+        <input type="file" name="image" accept="image/*" />
+
+        <label>Date</label>
+        <input type="date" name="date" required />
+
+        <label>Source</label>
+        <input type="text" name="source" placeholder="Enter source" required />
+
+        <label>Link</label>
+        <input type="url" name="link" placeholder="Enter event link" required />
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+          <button type="submit" class="btn-save">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <script src="../loadSidebar.js"></script>
+  <script src="allevents.js"></script>
+</body>
+
+</html>

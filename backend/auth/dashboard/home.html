@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Search Events - EventSphere</title>
+
+    <!-- Font Awesome for icons -->
+    <script src="https://kit.fontawesome.com/d62bd036de.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        integrity="sha512-Bx85rE+MT5+IsAwIE9X0Z7FOzMZHzBkgq4U+SBe7pCyRYv/d0VHJ/fZzC4VvW2Wv0G/7P1aeZzLRqap8QeY6Rg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Poppins Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/auth/homepage/css/style.css" />
+
+    <link rel="stylesheet" href="home.css" />
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="logo">
+            <img src="/auth/homepage/assets/icons/logo.svg" alt="Event Sphere Logo" />
+            <span>Event Sphere</span>
+        </div>
+
+        <!-- Hamburger icon -->
+        <div class="hamburger" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </div>
+
+        <!-- Navigation links + theme + login inside one mobile-menu container -->
+        <nav class="nav-center mobile-menu">
+            <div class="nav-links">
+                <a href="/auth/homepage/index.html">Home</a>
+                <a href="#" class="active">Events</a>
+                <a href="#">Ask AI</a>
+                <a href="#">FAQs</a>
+                <a href="#">Contact</a>
+
+                <div class="mobile-controls">
+                    <button type="button" class="theme-toggle">
+                        <i class="fa fa-moon"></i> Dark
+                    </button>
+                    <a class="login-btn" href="../auth/login/login.html"> class="login-btn"Login</a>
+                    <a class="signup-btn" href="../auth/signup/signup.html"> Sign Up</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Desktop only right controls -->
+        <div class="nav-right desktop-only">
+            <button type="button" class="theme-toggle"><i class="fa fa-moon"></i> Dark</button>
+            <a class="login-btn" href="../auth/login/login.html">Login</a>
+            <a class="signup-btn" href="../auth/signup/signup.html">Sign Up</a>
+        </div>
+    </header>
+
+    <div class="search-container" style="margin-top: 80px;">
+        <div class="search-header">
+            <h1 class="search-name">Find Events</h1>
+            <p><i class="fas fa-search search-name"></i> Discover events tailored to your interests</p>
+        </div>
+
+        <div class="search-form">
+            <form id="eventSearchForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" name="location" placeholder="City name">
+                    </div>
+                    <div class="form-group">
+                        <label for="keyword">Event Type</label>
+                        <input type="text" id="keyword" name="keyword" placeholder="Concert, Festival, etc.">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="startDate">Start Date</label>
+                        <input type="date" id="startDate" name="startDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">End Date</label>
+                        <input type="date" id="endDate" name="endDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="sort">Sort By</label>
+                        <select id="sort" class="xt" name="sort">
+                            <option value="date,asc">Date (Ascending)</option>
+                            <option value="date,desc">Date (Descending)</option>
+                            <option value="name,asc">Name (A-Z)</option>
+                            <option value="name,desc">Name (Z-A)</option>
+                            <option value="relevance,asc">Relevance</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="search-btn">
+                    <i class="fas fa-search"></i> Search Events
+                </button>
+            </form>
+        </div>
+
+        <div id="searchResults" class="search-results">
+            <h2 class="results-heading">Search Results</h2>
+            <div id="loading" class="loading" style="display: none;">
+                <i class="fas fa-spinner fa-spin"></i> Loading events...
+            </div>
+            <div id="noResults" class="no-results" style="display: none;">
+                No events found. Try adjusting your search criteria.
+            </div>
+            <div id="eventsList"></div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-main">
+            <div class="footer-container">
+                <div class="footer-left">
+                    <div class="footer-logo">
+                        <img src="/auth/homepage/assets/icons/logo.svg" alt="Logo" />
+                        <span>Event Sphere</span>
+                    </div>
+                    <p class="footer-description">
+                        Log in to personalise your experience and save bookmarks &
+                        events.
+                    </p>
+                    <a class="footer-login" href="../auth/login/login.html">Login</a>
+                    <a class="footer-signup" href="../auth/signup/signup.html">Sign Up</a>
+                </div>
+
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <p>Home</p>
+                        <p>Events</p>
+                        <p>Bookmarks</p>
+                    </div>
+                    <div class="footer-column">
+                        <p>Popular Concerts</p>
+                        <p>Ask AI</p>
+                        <p>Lorem Ipsum</p>
+                    </div>
+                    <div class="footer-column">
+                        <p>Socials</p>
+                        <div class="social-icons">
+                            <i class="fab fa-facebook-f"></i>
+                            <i class="fab fa-instagram"></i>
+                            <i class="fab fa-youtube"></i>
+                            <i class="fab fa-twitter"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>@ Made by Group 4 WDC - 2025</p>
+        </div>
+    </footer>
+
+    <script src="home.js"></script>
+</body>
+
+</html>

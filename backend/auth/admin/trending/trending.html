@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Trending | Admin</title>
+  <link rel="stylesheet" href="../main/admin.css" />
+  <link rel="stylesheet" href="trending.css">
+  <!-- Font Awesome for icons -->
+  <script
+  src="https://kit.fontawesome.com/d62bd036de.js"
+  crossorigin="anonymous"
+></script>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  integrity="sha512-Bx85rE+MT5+IsAwIE9X0Z7FOzMZHzBkgq4U+SBe7pCyRYv/d0VHJ/fZzC4VvW2Wv0G/7P1aeZzLRqap8QeY6Rg=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
+</head>
+<body data-page="trending">
+  <div class="container">
+    <div id="sidebar"></div>
+
+    <main class="main-content">
+        <h1>Trending Events</h1>
+        <div class="table-container">
+          <table class="trending-table">
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>Location</th>
+                <th>Name</th>
+                <th>Image</th>
+                <th>Date</th>
+                <th>Source</th>
+                <th>Link</th>
+                <th>Edit</th>
+                <th>Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Adelaide</td>
+                <td>AI Conference 2025</td>
+                <td><img src="https://via.placeholder.com/60" alt="Event Image" class="event-img" /></td>
+                <td>2025-08-10</td>
+                <td>Eventbrite</td>
+                <td><a href="https://example.com" target="_blank">Visit</a></td>
+                <td><button type="button" class="edit-btn" onclick="openModal()">Edit</button></td>
+                <td><button type="button" class="delete-btn">Delete</button></td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </main>
+
+
+
+  </div>
+  <!-- Trending Event Edit Modal -->
+  <div id="editModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Edit Trending Event</h3>
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+      </div>
+      <form id="editForm">
+        <label>Location</label>
+        <input type="text" name="location" placeholder="Enter location" required />
+
+        <label>Event Name</label>
+        <input type="text" name="name" placeholder="Enter event name" required />
+
+        <label>Upload Image</label>
+        <input type="file" name="image" accept="image/*" />
+
+
+        <label>Date</label>
+        <input type="date" name="date" required />
+
+        <label>Source</label>
+        <input type="text" name="source" placeholder="Enter source (e.g. Eventbrite)" required />
+
+        <label>Link</label>
+        <input type="url" name="link" placeholder="Enter event link" required />
+
+        <div class="modal-footer">
+          <button type="button" onclick="closeModal()" class="btn-cancel">Cancel</button>
+          <button type="submit" class="btn-save">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+
+
+
+
+<script src="trending.js"></script>
+  <script src="../loadSidebar.js"></script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Users | Admin</title>
+  <link rel="stylesheet" href="../main/admin.css" />
+  <link rel="stylesheet" href="../trending/trending.css">
+  <link rel="stylesheet" href="users.css">
+  <!-- Font Awesome for icons -->
+  <script src="https://kit.fontawesome.com/d62bd036de.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    integrity="sha512-Bx85rE+MT5+IsAwIE9X0Z7FOzMZHzBkgq4U+SBe7pCyRYv/d0VHJ/fZzC4VvW2Wv0G/7P1aeZzLRqap8QeY6Rg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    .password-hidden {
+      font-weight: bold;
+      color: #666;
+      letter-spacing: 2px;
+    }
+
+    .password-note {
+      display: block;
+      color: #888;
+      font-size: 0.8em;
+      margin-top: 2px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+    }
+
+    .error-message {
+      color: #d32f2f;
+      text-align: center;
+      padding: 20px;
+      background-color: #ffebee;
+      border-radius: 4px;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+
+<body data-page="users">
+  <div class="container">
+    <div id="sidebar"></div>
+
+    <main class="main-content">
+      <h1>User Management</h1>
+      <div class="table-container">
+        <table class="trending-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Password</th>
+              <th>Edit</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Users will be loaded dynamically -->
+            <tr>
+              <td colspan="6" class="loading">Loading users...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- User Edit Modal -->
+  <div id="editModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Edit User</h3>
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+      </div>
+      <form id="editForm">
+        <label>Username</label>
+        <input type="text" name="fullname" placeholder="Enter username" required />
+
+        <label>Email</label>
+        <input type="email" name="email" placeholder="Enter email" required />
+
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Leave empty to keep current password" />
+        <small style="color: #666; font-size: 0.9em;">Leave empty to keep the current password</small>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+          <button type="submit" class="btn-save">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="users.js"></script>
+  <script src="../loadSidebar.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EventSphere</title>
+
+  <!-- Font Awesome for icons -->
+  <script src="https://kit.fontawesome.com/d62bd036de.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    integrity="sha512-Bx85rE+MT5+IsAwIE9X0Z7FOzMZHzBkgq4U+SBe7pCyRYv/d0VHJ/fZzC4VvW2Wv0G/7P1aeZzLRqap8QeY6Rg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Poppins Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <header class="navbar">
+    <div class="logo">
+      <img src="assets/icons/logo.svg" alt="Event Sphere Logo" />
+      <span>Event Sphere</span>
+    </div>
+
+    <!-- Hamburger icon -->
+    <div class="hamburger" onclick="toggleMenu()">
+      <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- Navigation links + theme + login inside one mobile-menu container -->
+    <nav class="nav-center mobile-menu">
+      <div class="nav-links">
+        <a href="#" class="active">Home</a>
+        <a href="#">Events</a>
+        <a href="#">Ask AI</a>
+        <a href="#faq">FAQs</a>
+        <a href="#contact">Contact</a>
+
+        <div class="mobile-controls">
+          <button type="button" class="theme-toggle">
+            <i class="fa fa-moon"></i> Dark
+          </button>
+          <a href="../login/login.html" class="login-btn">Login</a>
+          <a href="../signup/signup.html" class="signup-btn">Sign Up</a>
+
+        </div>
+      </div>
+    </nav>
+
+    <!-- Desktop only right controls -->
+    <div class="nav-right desktop-only">
+      <button type="button" class="theme-toggle"><i class="fa fa-moon"></i> Dark</button>
+      <a href="../login/login.html" class="login-btn">Login</a>
+      <a href="../signup/signup.html" class="signup-btn">Sign Up</a>
+
+    </div>
+  </header>
+
+  <div class="homepage-section">
+    <main>
+      <section class="hero">
+        <button type="button" class="explore-btn">
+          🥤 <i class="fas fa-arrow-right"></i> Explore - Enjoy
+          <i class="fas fa-arrow-right"></i> 🍭
+        </button>
+
+        <h1 class="hero-heading">
+          <span class="highlight">Event Sphere</span><br />
+          One Platform. Endless Experiences!
+        </h1>
+
+        <p class="description">
+          Discover local events in real time, personalise your picks,<br />
+          and organise them seamlessly in one minimalist hub.
+        </p>
+
+        <button class="cta-btn">
+          Get Started <i class="fas fa-arrow-right"></i>
+        </button>
+
+        <p class="sub-note">
+          🔎 Find, save, share unforgettable experiences 🎉
+        </p>
+      </section>
+      <section class="categories">
+        <ul class="category-list">
+          <li>CONCERTS</li>
+          <li>FESTIVALS</li>
+          <li>EXHIBITIONS</li>
+          <li>PARADE</li>
+          <li>TOURNAMENT</li>
+        </ul>
+      </section>
+      <section class="image-strip">
+        <img src="assets/images/img-1.png" class="img-1" alt="Concert" />
+        <img src="assets/images/img-2.png" class="img-2" alt="Festival" />
+        <img src="assets/images/img-3.png" class="img-3" alt="Exhibition" />
+        <img src="assets/images/img-4.png" class="img-4" alt="Parade" />
+        <img src="assets/images/img-5.png" class="img-5" alt="Tournament" />
+        <img src="assets/images/img-6.png" class="img-6" alt="Cheers" />
+      </section>
+    </main>
+  </div>
+  <section class="popular-events">
+    <h2>Popular Events</h2>
+    <p class="subtitle">
+      <i class="fas fa-search"></i> Discover events happening around you right
+      now 🎉
+    </p>
+
+    <div class="card-row">
+      <!-- Card 1: Red -->
+      <div class="event-card red">
+        <img src="assets/images/event.png" alt="Event Image" class="event-image" />
+        <div class="card-content">
+          <p class="location">
+            <i class="fas fa-map-marker-alt"></i> Adelaide, Australia
+          </p>
+          <h3 class="event-title">Lady Gaga Australia Tour</h3>
+          <p class="date">
+            <i class="fas fa-calendar-alt"></i> 24 May 2025
+            <span class="platform">EventBrite</span>
+          </p>
+          <div class="card-buttons">
+            <button class="bookmark">
+              <i class="fas fa-bookmark"></i> BookMark
+            </button>
+            <button class="start">
+              Get Started <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Blue -->
+      <div class="event-card blue">
+        <img src="assets/images/event.png" alt="Event Image" class="event-image" />
+        <div class="card-content">
+          <p class="location">
+            <i class="fas fa-map-marker-alt"></i> Adelaide, Australia
+          </p>
+          <h3 class="event-title">Lady Gaga Australia Tour</h3>
+          <p class="date">
+            <i class="fas fa-calendar-alt"></i> 24 May 2025
+            <span class="platform">EventBrite</span>
+          </p>
+          <div class="card-buttons">
+            <button class="bookmark">
+              <i class="fas fa-bookmark"></i> BookMark
+            </button>
+            <button class="start">
+              Get Started <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Green -->
+      <div class="event-card green">
+        <img src="assets/images/event.png" alt="Event Image" class="event-image" />
+        <div class="card-content">
+          <p class="location">
+            <i class="fas fa-map-marker-alt"></i> Adelaide, Australia
+          </p>
+          <h3 class="event-title">Lady Gaga Australia Tour</h3>
+          <p class="date">
+            <i class="fas fa-calendar-alt"></i>24 May 2025
+            <span class="platform">EventBrite</span>
+          </p>
+          <div class="card-buttons">
+            <button class="bookmark">
+              <i class="fas fa-bookmark"></i> BookMark
+            </button>
+            <button class="start">
+              Get Started <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4: Pink -->
+      <div class="event-card pink">
+        <img src="assets/images/event.png" alt="Event Image" class="event-image" />
+        <div class="card-content">
+          <p class="location">
+            <i class="fas fa-map-marker-alt"></i> Adelaide, Australia
+          </p>
+          <h3 class="event-title">Lady Gaga Australia Tour</h3>
+          <p class="date">
+            <i class="fas fa-calendar-alt"></i> 24 May 2025
+            <span class="platform">EventBrite</span>
+          </p>
+          <div class="card-buttons">
+            <button class="bookmark">
+              <i class="fas fa-bookmark"></i> BookMark
+            </button>
+            <button class="start">
+              Get Started <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="faq" class="faq-section">
+    <h2 class="faq-heading">Frequently Asked Questions</h2>
+    <p class="faq-subtext">
+      Here are some common questions about using Event Sphere.
+    </p>
+    <div class="faq-grid">
+      <div class="faq-item">
+        <h4> How do I create an account?</h4>
+        <p>You can create an account by clicking the Sign Up button and filling in your name, email, and password.</p>
+      </div>
+      <div class="faq-item">
+        <h4> How can I search for events?</h4>
+        <p>Use the search form on the homepage or the Explore Events section to filter by date, type, or location.</p>
+      </div>
+      <div class="faq-item">
+        <h4> Can I bookmark events?</h4>
+        <p>Yes, once logged in, click the bookmark icon on any event to save it to your profile.</p>
+      </div>
+      <div class="faq-item">
+        <h4> Are events updated in real-time?</h4>
+        <p>We fetch events using Ticketmaster and Eventbrite APIs, so listings are refreshed regularly.</p>
+      </div>
+      <div class="faq-item">
+        <h4> What platforms does Event Sphere support?</h4>
+        <p>Our platform works best on Chrome, Firefox, and Edge browsers for both desktop and mobile.</p>
+      </div>
+      <div class="faq-item">
+        <h4> What type of events do we show?</h4>
+        <p>Event Sphere features concerts, festivals, exhibitions, parades, tournaments, and more.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="contact" class="contact-us">
+    <div class="section-container">
+
+    <div class="contact-container">
+      <!-- Left: Contact Info -->
+      <div class="contact-info">
+        <h2>Have questions?<br>Contact us!</h2>
+        <ul>
+          <li><i class="fas fa-map-marker-alt"></i> 123 Event St, Adelaide, SA 5000</li>
+          <li><i class="fas fa-phone"></i> +61 123 456 789</li>
+          <li><i class="fas fa-envelope"></i> contact@eventsphere.com</li>
+        </ul>
+        <a href="#contact-form" class="contact-btn">Contact Form</a>
+      </div>
+
+      <!-- Right: Embedded Google Map -->
+      <div class="contact-map">
+        <iframe title="#"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.2735402047715!2d138.5999322153189!3d-34.92873048037925!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ab0ced2f87b8d1d%3A0xf8f6e350a0e5c14a!2sAdelaide%20SA!5e0!3m2!1sen!2sau!4v1717990934137!5m2!1sen!2sau"
+          width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+    </div>
+  </div>
+  </section>
+
+
+
+  <footer class="footer">
+    <div class="footer-main">
+      <div class="footer-container">
+        <div class="footer-left">
+          <div class="footer-logo">
+            <img src="assets/icons/logo.svg" alt="Logo" />
+            <span>Event Sphere</span>
+          </div>
+          <p>
+            Log in to personalise your experience<br />and save bookmarks &
+            events.
+          </p>
+          <a href="../../auth/login/login.html"><button class="footer-login">Login</button></a>
+          <a href="../../auth/signup/signup.html"><button class="footer-signup">Sign Up</button></a>
+        </div>
+
+        <div class="footer-links">
+          <div class="footer-column">
+            <p>Home</p>
+            <p>Events</p>
+            <p>Bookmarks</p>
+          </div>
+          <div class="footer-column">
+            <p>Popular Concerts</p>
+            <p>Ask AI</p>
+          </div>
+          <div class="footer-column">
+            <p>Socials</p>
+            <div class="social-icons">
+              <i class="fab fa-facebook-f"></i>
+              <i class="fab fa-instagram"></i>
+              <i class="fab fa-youtube"></i>
+              <i class="fab fa-twitter"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>@ Made by Group 4 WDC - 2025</p>
+    </div>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+
+</html>
