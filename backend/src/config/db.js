@@ -8,7 +8,8 @@ const db = mysql.createPool({
   host: process.env.DB_HOST, // Database host
   user: process.env.DB_USER, // Database username
   database: process.env.DB_NAME, // Name of the database to connect to
-  password: process.env.DB_PASSWORD // Password for the database user
+  password: process.env.DB_PASSWORD, // Password for the database user
+  port: process.env.DB_PORT || 3306 // Database port
 });
 
 // Export the database pool for use in other parts of the application
