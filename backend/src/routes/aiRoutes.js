@@ -5,8 +5,11 @@ const { searchEvents } = require('../services/TicketMasterService');
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 
-// ── PARSE AI RESPONSE INTO TICKETMASTER PARAMS ──────────────
-async function extractSearchParams(userMessage) {
+async function callGroq(messages, maxTokens = 200, temperature = 0.1) {
+  if (!GROQ_API_KEY) {
+    throw new Error('GROQ_API_KEY not configured');
+  }
+
   const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -15,45 +18,57 @@ async function extractSearchParams(userMessage) {
     },
     body: JSON.stringify({
       model: 'llama3-8b-8192',
-      messages: [
-        {
-          role: 'system',
-          content: `You are an event search assistant. Extract search parameters from the user's message and return ONLY a JSON object with these fields:
-          - keyword: string (event type, artist, genre e.g. "music", "comedy", "Harry Styles")
-          - location: string (city name e.g. "Sydney", "Melbourne", "Adelaide")
-          - countryCode: string (always "AU" unless user specifies another country)
-          - startDateTime: string (ISO format if user mentions a date, otherwise null)
-          - endDateTime: string (ISO format if user mentions an end date, otherwise null)
-          - sort: string ("date,asc" by default)
-          
-          Return ONLY valid JSON, no explanation.`
-        },
-        {
-          role: 'user',
-          content: userMessage
-        }
-      ],
-      temperature: 0.1,
-      max_tokens: 200
+      messages,
+      temperature,
+      max_tokens: maxTokens
     })
   });
 
+  if (!response.ok) {
+    const err = await response.text();
+    console.error('Groq API error:', response.status, err);
+    throw new Error(`Groq API failed: ${response.status}`);
+  }
+
   const data = await response.json();
-  const content = data.choices[0].message.content.trim();
-  
+
+  if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+    console.error('Groq unexpected response:', JSON.stringify(data));
+    throw new Error('Groq returned empty response');
+  }
+
+  return data.choices[0].message.content.trim();
+}
+
+async function extractSearchParams(userMessage) {
   try {
+    const content = await callGroq([
+      {
+        role: 'system',
+        content: `You are an event search assistant. Extract search parameters from the user message and return ONLY a JSON object with these fields:
+        - keyword: string (event type, artist, genre)
+        - location: string (city name e.g. "Sydney", "Melbourne", "Adelaide")
+        - countryCode: string (always "AU" unless user specifies another country)
+        - startDateTime: string (ISO format if mentioned, otherwise null)
+        - endDateTime: string (ISO format if mentioned, otherwise null)
+        - sort: string ("date,asc" by default)
+        Return ONLY valid JSON, no explanation, no markdown.`
+      },
+      { role: 'user', content: userMessage }
+    ], 200, 0.1);
+
     return JSON.parse(content);
-  } catch {
+  } catch (err) {
+    console.error('extractSearchParams error:', err.message);
     return { keyword: '', location: '', countryCode: 'AU', sort: 'date,asc' };
   }
 }
 
-// ── FORMAT EVENTS INTO READABLE RESPONSE ────────────────────
-async function formatEventsResponse(events, userMessage, searchParams) {
+async function formatEventsResponse(events, userMessage) {
   const eventList = events['_embedded']?.events?.slice(0, 5) || [];
-  
+
   if (eventList.length === 0) {
-    return "I couldn't find any events matching your request. Try searching with different keywords or a different city.";
+    return "I couldn't find any events matching your request. Try different keywords or another city.";
   }
 
   const eventsText = eventList.map((event, i) => {
@@ -61,41 +76,28 @@ async function formatEventsResponse(events, userMessage, searchParams) {
     const venue = event._embedded?.venues?.[0]?.name || 'Unknown venue';
     const city = event._embedded?.venues?.[0]?.city?.name || '';
     const url = event.url || '#';
-    return `${i + 1}. **${event.name}**\n   📅 ${date}\n   📍 ${venue}${city ? ', ' + city : ''}\n   🎟️ ${url}`;
-  }).join('\n\n');
+    return `${i + 1}. ${event.name} | ${date} | ${venue}${city ? ', ' + city : ''} | ${url}`;
+  }).join('\n');
 
-  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${GROQ_API_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      model: 'llama3-8b-8192',
-      messages: [
-        {
-          role: 'system',
-          content: `You are a friendly event recommendation assistant for EventSphere. 
-          Present the events in a conversational, helpful way. 
-          Keep it concise and enthusiastic. 
-          Always mention the event name, date and venue.
-          End with an encouraging message to book tickets.`
-        },
-        {
-          role: 'user',
-          content: `User asked: "${userMessage}"\n\nI found these events:\n\n${eventsText}\n\nPlease present these events in a friendly conversational way.`
-        }
-      ],
-      temperature: 0.7,
-      max_tokens: 500
-    })
-  });
+  try {
+    const response = await callGroq([
+      {
+        role: 'system',
+        content: `You are a friendly event assistant for EventSphere. Present events conversationally and enthusiastically. Keep it concise. Always mention event name, date and venue.`
+      },
+      {
+        role: 'user',
+        content: `User asked: "${userMessage}"\n\nEvents found:\n${eventsText}\n\nPresent these events in a friendly way.`
+      }
+    ], 500, 0.7);
 
-  const data = await response.json();
-  return data.choices[0].message.content;
+    return response;
+  } catch (err) {
+    console.error('formatEventsResponse error:', err.message);
+    return `I found ${eventList.length} events for you:\n\n${eventsText}`;
+  }
 }
 
-// ── MAIN ASK AI ROUTE ────────────────────────────────────────
 router.post('/ask', authMiddleware, async (req, res) => {
   const { message } = req.body;
 
@@ -104,10 +106,12 @@ router.post('/ask', authMiddleware, async (req, res) => {
   }
 
   try {
-    // Step 1: Extract search params from natural language
-    const searchParams = await extractSearchParams(message);
+    console.log('AI ask:', message);
+    console.log('GROQ_API_KEY set:', !!GROQ_API_KEY);
 
-    // Step 2: Search Ticketmaster with extracted params
+    const searchParams = await extractSearchParams(message);
+    console.log('Search params:', searchParams);
+
     const events = await searchEvents({
       keyword: searchParams.keyword || '',
       location: searchParams.location || '',
@@ -117,8 +121,7 @@ router.post('/ask', authMiddleware, async (req, res) => {
       sort: searchParams.sort || 'date,asc'
     });
 
-    // Step 3: Format response with AI
-    const aiResponse = await formatEventsResponse(events, message, searchParams);
+    const aiResponse = await formatEventsResponse(events, message);
 
     res.json({
       message: aiResponse,
@@ -136,7 +139,7 @@ router.post('/ask', authMiddleware, async (req, res) => {
     });
 
   } catch (err) {
-    console.error('AI route error:', err);
+    console.error('AI route error:', err.message);
     res.status(500).json({ error: 'Failed to process your request. Please try again.' });
   }
 });
