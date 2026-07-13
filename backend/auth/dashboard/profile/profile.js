@@ -5,7 +5,7 @@ $(document).ready(function () {
     // Check if user is logged in - Check both token variations for compatibility
     const token = localStorage.getItem('authToken') || localStorage.getItem('authtoken');
     if (!token) {
-        window.location.href = '/auth/login/login.html';
+        window.location.href = '/login/login.html';
         return;
     }
 
@@ -20,7 +20,7 @@ $(document).ready(function () {
     // Load user profile data from backend
     function loadUserProfile() {
         $.ajax({
-            url: '/api/auth/profile',
+            url: '/api/profile',
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -413,7 +413,7 @@ $(document).ready(function () {
     // 2FA Functions
     function check2FAStatus() {
         $.ajax({
-            url: '/api/auth/profile',
+            url: '/api/profile',
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -451,7 +451,7 @@ $(document).ready(function () {
 
     function setup2FA() {
         $.ajax({
-            url: '/api/auth/2fa/setup',
+            url: '/api/2fa/setup',
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -479,7 +479,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: '/api/auth/2fa/verify',
+            url: '/api/2fa/verify',
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -516,7 +516,7 @@ $(document).ready(function () {
     function disable2FA() {
         if (confirm('Are you sure you want to disable two-factor authentication? This will make your account less secure.')) {
             $.ajax({
-                url: '/api/auth/2fa/disable',
+                url: '/api/2fa/disable',
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -559,7 +559,7 @@ $(document).ready(function () {
         formData.append('preferences', JSON.stringify(preferences));
 
         $.ajax({
-            url: '/api/auth/profile',
+            url: '/api/profile',
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -614,7 +614,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: '/api/auth/update-password',
+            url: '/api/update-password',
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -708,7 +708,7 @@ $(document).ready(function () {
     function handleAccountDeletion() {
         if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
             $.ajax({
-                url: '/api/auth/delete-account',
+                url: '/api/delete-account',
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -716,7 +716,7 @@ $(document).ready(function () {
                 success: function (response) {
                     alert('Your account has been deleted. You will be redirected to the homepage.');
                     localStorage.clear();
-                    window.location.href = '/auth/login/login.html';
+                    window.location.href = '/login/login.html';
                 },
                 error: function (xhr) {
                     const errorMsg = xhr.responseJSON?.message || 'Failed to delete account';
@@ -728,7 +728,7 @@ $(document).ready(function () {
 
     function handleDataDownload() {
         $.ajax({
-            url: '/api/auth/export-data',
+            url: '/api/export-data',
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -774,7 +774,7 @@ $(document).ready(function () {
 
         $(e.target).addClass('logging-out');
 
-        fetch('/api/auth/logout', {
+        fetch('/api/logout', {
             method: 'POST',
             credentials: 'include'
         })
@@ -799,7 +799,7 @@ $(document).ready(function () {
     function cleanupAndRedirectToLogin() {
         localStorage.removeItem('authToken');
         localStorage.removeItem('authtoken');
-        window.location.href = '/auth/login/login.html';
+        window.location.href = '/login/login.html';
     }
 
     function showAlert(selector, message, duration = 3000) {

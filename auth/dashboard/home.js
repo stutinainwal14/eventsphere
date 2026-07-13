@@ -132,7 +132,7 @@ function updateAuthenticatedUI() {
 function handleLogout(event) {
     event.preventDefault();
 
-    fetch('/api/auth/logout', {
+    fetch('/api/logout', {
         method: 'POST',
         credentials: 'include'
     })

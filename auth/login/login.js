@@ -268,7 +268,7 @@ $(document).ready(function () {
     }
 
     try {
-      console.log('Sending request to /api/auth/login');
+      console.log('Sending request to /api/login');
 
       const requestBody = {
         email: email.toLowerCase().trim(), // Normalize email
@@ -280,7 +280,7 @@ $(document).ready(function () {
         requestBody.token = twofaToken;
       }
 
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch("/api/login", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

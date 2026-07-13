@@ -16,7 +16,7 @@ async function fetchTrendingEvents() {
       const user = JSON.parse(userInfo);
       if (user.role !== 'admin') {
         alert('Access denied. Admin privileges required.');
-        window.location.href = '/auth/login.html';
+        window.location.href = '/login.html';
         return;
       }
     }
