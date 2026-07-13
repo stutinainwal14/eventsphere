@@ -614,7 +614,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: '/api/update-password',
+            url: '/api/auth/update-password',
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -708,7 +708,7 @@ $(document).ready(function () {
     function handleAccountDeletion() {
         if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
             $.ajax({
-                url: '/api/delete-account',
+                url: '/api/auth/delete-account',
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -728,7 +728,7 @@ $(document).ready(function () {
 
     function handleDataDownload() {
         $.ajax({
-            url: '/api/export-data',
+            url: '/api/auth/export-data',
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
