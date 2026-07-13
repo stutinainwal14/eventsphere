@@ -20,7 +20,7 @@ $(document).ready(function () {
     // Load user profile data from backend
     function loadUserProfile() {
         $.ajax({
-            url: '/api/profile',
+            url: '/api/auth/profile',
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -413,7 +413,7 @@ $(document).ready(function () {
     // 2FA Functions
     function check2FAStatus() {
         $.ajax({
-            url: '/api/profile',
+            url: '/api/auth/profile',
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -451,7 +451,7 @@ $(document).ready(function () {
 
     function setup2FA() {
         $.ajax({
-            url: '/api/2fa/setup',
+            url: '/api/auth/2fa/setup',
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -479,7 +479,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: '/api/2fa/verify',
+            url: '/api/auth/2fa/verify',
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -516,7 +516,7 @@ $(document).ready(function () {
     function disable2FA() {
         if (confirm('Are you sure you want to disable two-factor authentication? This will make your account less secure.')) {
             $.ajax({
-                url: '/api/2fa/disable',
+                url: '/api/auth/2fa/disable',
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -559,7 +559,7 @@ $(document).ready(function () {
         formData.append('preferences', JSON.stringify(preferences));
 
         $.ajax({
-            url: '/api/profile',
+            url: '/api/auth/profile',
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -774,7 +774,7 @@ $(document).ready(function () {
 
         $(e.target).addClass('logging-out');
 
-        fetch('/api/logout', {
+        fetch('/api/auth/logout', {
             method: 'POST',
             credentials: 'include'
         })

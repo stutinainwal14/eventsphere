@@ -268,7 +268,7 @@ $(document).ready(function () {
     }
 
     try {
-      console.log('Sending request to /api/login');
+      console.log('Sending request to /api/auth/login');
 
       const requestBody = {
         email: email.toLowerCase().trim(), // Normalize email
