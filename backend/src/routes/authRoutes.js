@@ -511,3 +511,17 @@ router.post('/2fa/verify', authMiddleware, async (req, res) => {
 });
 
 module.exports = router;
+
+// ── DISABLE 2FA ──────────────────────────────────────────────
+router.post('/2fa/disable', authMiddleware, async (req, res) => {
+  try {
+    await db.query(
+      'UPDATE Users SET twoFactorSecret = NULL, isTwoFactorEnabled = 0 WHERE user_id = ?',
+      [req.user.id]
+    );
+    res.json({ message: '2FA disabled successfully' });
+  } catch (err) {
+    console.error('2FA disable error:', err);
+    res.status(500).json({ error: 'Failed to disable 2FA' });
+  }
+});
