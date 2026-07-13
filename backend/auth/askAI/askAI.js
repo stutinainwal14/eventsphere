@@ -133,28 +133,30 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ── AUTH UI UPDATE ────────────────────────────────────────
-  const loginBtns = document.querySelectorAll('.login-btn');
-  const signupBtns = document.querySelectorAll('.signup-btn');
+  if (tokenValue) {
+    const loginBtns = document.querySelectorAll('.login-btn');
+    const signupBtns = document.querySelectorAll('.signup-btn');
 
-  loginBtns.forEach(btn => {
-    btn.textContent = 'Profile';
-    const parentLink = btn.closest('a');
-    if (parentLink) parentLink.href = '/dashboard/profile/profile.html';
-  });
+    loginBtns.forEach(btn => {
+      btn.textContent = 'Profile';
+      const parentLink = btn.closest('a');
+      if (parentLink) parentLink.href = '/dashboard/profile/profile.html';
+    });
 
-  signupBtns.forEach(btn => {
-    btn.textContent = 'Logout';
-    const parent = btn.closest('a');
-    if (parent) {
-      parent.removeAttribute('href');
-      parent.addEventListener('click', (e) => {
-        e.preventDefault();
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('authtoken');
-        localStorage.removeItem('userInfo');
-        window.location.href = '/homepage/index.html';
-      });
-    }
-  });
+    signupBtns.forEach(btn => {
+      btn.textContent = 'Logout';
+      const parent = btn.closest('a');
+      if (parent) {
+        parent.removeAttribute('href');
+        parent.addEventListener('click', (e) => {
+          e.preventDefault();
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('authtoken');
+          localStorage.removeItem('userInfo');
+          window.location.href = '/homepage/index.html';
+        });
+      }
+    });
+  }
 
 });
